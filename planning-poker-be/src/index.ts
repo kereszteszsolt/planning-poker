@@ -31,6 +31,7 @@ type Room = {
   valueSet: ValueSet;
   participants: Record<string, Participant>;
   revealed: boolean;
+  lastUpdated?: number;
 };
 
 const rooms: Record<string, Room> = {};
@@ -43,6 +44,7 @@ io.on("connection", (socket) => {
       valueSet: "scrum",
       participants: {},
       revealed: false,
+      lastUpdated: Date.now(),
     };
     callback({ roomId });
   });
@@ -56,6 +58,7 @@ io.on("connection", (socket) => {
           valueSet: "scrum",
           participants: {},
           revealed: false,
+          lastUpdated: Date.now(),
         };
       }
       const isModerator = Object.keys(rooms[roomId].participants).length === 0;
@@ -65,6 +68,7 @@ io.on("connection", (socket) => {
         voted: false,
         isModerator,
       };
+      rooms[roomId].lastUpdated = Date.now();
       socket.join(roomId);
       io.to(roomId).emit("room-updated", rooms[roomId]);
     },
@@ -85,6 +89,31 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+setInterval(() => {
+  const now = Date.now();
+  for (const roomId in rooms) {
+    if (
+      rooms[roomId].lastUpdated &&
+      now - rooms[roomId].lastUpdated > 3600000
+    ) {
+      console.log("now", now);
+      // 3600000 1 hour
+      delete rooms[roomId];
+      io.to(roomId).emit("room-closed");
+
+      // Forcefully disconnect all sockets in the room
+      const clients = io.sockets.adapter.rooms.get(roomId);
+      if (clients) {
+        for (const socketId of clients) {
+          const socket = io.sockets.sockets.get(socketId);
+          socket?.leave(roomId);
+        }
+      }
+    }
+  }
+}, 600000);
+// Check every 10 minutes  600000
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
