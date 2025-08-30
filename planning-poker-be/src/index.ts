@@ -36,7 +36,7 @@ type Room = {
 const rooms: Record<string, Room> = {};
 
 io.on("connection", (socket) => {
-  socket.on("create-room", () => {
+  socket.on("create-room", (_, callback) => {
     const roomId = uuidV4();
     rooms[roomId] = {
       id: roomId,
@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
       participants: {},
       revealed: false,
     };
-    socket.emit("room-created", roomId);
+    callback({ roomId });
   });
 
   socket.on(
