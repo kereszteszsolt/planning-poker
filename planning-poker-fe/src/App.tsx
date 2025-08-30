@@ -1,14 +1,39 @@
-import './App.css'
+import "./App.css";
+import HomeScreen from "./features/HomeScreen.tsx";
+import AboutScreen from "./features/AboutScreen.tsx";
+import RoomScreen from "./features/RoomScreen.tsx";
+import Navbar from "./shared/Navbar.tsx";
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { SocketProvider } from "./SocketProvider.tsx";
 
-function App() {
-
-    return (
-        <>
-            <div className="text-2xl text-red-500">
-                Tailwind CSS is working!
-            </div>
-        </>
-    )
+function Layout() {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
 }
 
-export default App
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <HomeScreen /> },
+      { path: "room/:roomId", element: <RoomScreen /> },
+      { path: "about", element: <AboutScreen /> },
+      { path: "*", element: <HomeScreen /> },
+    ],
+  },
+]);
+
+function App() {
+  return (
+    <SocketProvider>
+      <RouterProvider router={router} />
+    </SocketProvider>
+  );
+}
+
+export default App;
