@@ -10,7 +10,9 @@ function Layout() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <div className="h-[calc(100vh-60px)] w-[768px] mx-auto pt-5">
+        <Outlet />
+      </div>
     </>
   );
 }
