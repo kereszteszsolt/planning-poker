@@ -2,6 +2,7 @@ import "./App.css";
 import HomeScreen from "./features/HomeScreen.tsx";
 import AboutScreen from "./features/AboutScreen.tsx";
 import RoomScreen from "./features/RoomScreen.tsx";
+import MessageScreen from "./features/MessageScreen.tsx";
 import Navbar from "./shared/Navbar.tsx";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SocketProvider } from "./SocketProvider.tsx";
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomeScreen /> },
       { path: "room/:roomId", element: <RoomScreen /> },
+      { path: "message/:messageType", element: <MessageScreen /> },
       { path: "about", element: <AboutScreen /> },
       { path: "*", element: <HomeScreen /> },
     ],

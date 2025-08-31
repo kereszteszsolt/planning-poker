@@ -51,7 +51,8 @@ io.on("connection", (socket) => {
 
   socket.on(
     "join-room",
-    ({ roomId, name }: { roomId: string; name: string }) => {
+    ({ roomId, name }: { roomId: string; name: string }, callback) => {
+      console.log(`join-room: ${roomId}`);
       if (!rooms[roomId]) {
         rooms[roomId] = {
           id: roomId,
@@ -60,6 +61,13 @@ io.on("connection", (socket) => {
           revealed: false,
           lastUpdated: Date.now(),
         };
+      }
+      // if name already taken
+      for (const participantId in rooms[roomId].participants) {
+        if (rooms[roomId].participants[participantId].name === name) {
+          callback({ error: `Name "${name}" already taken in this room.` });
+          return;
+        }
       }
       const isModerator = Object.keys(rooms[roomId].participants).length === 0;
       rooms[roomId].participants[socket.id] = {
@@ -71,8 +79,36 @@ io.on("connection", (socket) => {
       rooms[roomId].lastUpdated = Date.now();
       socket.join(roomId);
       io.to(roomId).emit("room-updated", rooms[roomId]);
+      callback({
+        participant: rooms[roomId].participants[socket.id],
+      });
     },
   );
+
+  socket.on("kick-out", ({ roomId, participantId }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const requester = room.participants[socket.id];
+    if (!requester || !requester.isModerator) return; // Only moderator can kick
+
+    if (room.participants[participantId]) {
+      // Notify the kicked participant
+      //get socket by id and emit
+      io.to(participantId).emit("kicked-out");
+      console.log(
+        `Participant ${participantId} kicked out from room ${roomId}`,
+      );
+      // Remove from room
+      delete room.participants[participantId];
+      room.lastUpdated = Date.now();
+      io.to(roomId).emit("room-updated", room);
+
+      // // Forcefully disconnect the kicked socket from the room
+      // const kickedSocket = io.sockets.sockets.get(participantId);
+      // kickedSocket?.leave(roomId);
+    }
+  });
 
   socket.on("disconnect", () => {
     for (const roomId in rooms) {
