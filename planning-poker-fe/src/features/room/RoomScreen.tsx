@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { SocketContext } from "../SocketProvider.tsx";
+import { SocketContext } from "../../SocketProvider.tsx";
+import Join from "./components/Join.tsx";
 
 type Participant = {
   id: string;
@@ -47,8 +48,7 @@ const RoomScreen: React.FC = () => {
     };
   }, [socket]);
 
-  const handleJoin = () => {
-    if (!name.trim()) return;
+  const handleJoin = (name: string) => {
     socket.emit(
       "join-room",
       { roomId, name: name.trim() },
@@ -72,23 +72,24 @@ const RoomScreen: React.FC = () => {
 
   if (state === "joining") {
     return (
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-        <h1 className="text-2xl font-bold mb-4 text-center">Join Room</h1>
-        <input
-          type="text"
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <button
-          onClick={handleJoin}
-          className="w-full p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-        >
-          Join
-        </button>
-        {error && <p className="mt-2 text-red-600 text-center">{error}</p>}
-      </div>
+      <Join roomId={roomId!} onJoin={handleJoin} error={error} />
+      // <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+      //   <h1 className="text-2xl font-bold mb-4 text-center">Join Room</h1>
+      //   <input
+      //     type="text"
+      //     placeholder="Enter your name"
+      //     value={name}
+      //     onChange={(e) => setName(e.target.value)}
+      //     className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      //   />
+      //   <button
+      //     onClick={handleJoin}
+      //     className="w-full p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
+      //   >
+      //     Join
+      //   </button>
+      //   {error && <p className="mt-2 text-red-600 text-center">{error}</p>}
+      // </div>
     );
   }
 

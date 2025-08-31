@@ -1,7 +1,7 @@
 import "./App.css";
 import HomeScreen from "./features/HomeScreen.tsx";
 import AboutScreen from "./features/AboutScreen.tsx";
-import RoomScreen from "./features/RoomScreen.tsx";
+import RoomScreen from "./features/room/RoomScreen.tsx";
 import MessageScreen from "./features/MessageScreen.tsx";
 import Navbar from "./shared/Navbar.tsx";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
