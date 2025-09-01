@@ -4,6 +4,7 @@ import { SocketContext } from "../../SocketProvider.tsx";
 import Join from "./components/Join.tsx";
 import Play from "./components/Play.tsx";
 import type { Room, Participant } from "../../shared/types";
+import Connecting from "../../shared/components/Connecting.tsx";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -11,7 +12,6 @@ const RoomScreen: React.FC = () => {
   const [room, setRoom] = useState<Room | null>(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const [currentUser, setCurrentUser] = useState<Participant | null>(null);
 
   useEffect(() => {
@@ -56,6 +56,9 @@ const RoomScreen: React.FC = () => {
     socket.emit("kick-out", { roomId, participantId });
   };
 
+  if (!socket || !socket.connected) {
+    return <Connecting />;
+  }
   if (room && currentUser) {
     return (
       <Play room={room} currentUser={currentUser} kickOut={handleKickOut} />

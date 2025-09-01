@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../SocketProvider.tsx";
+import Connecting from "../shared/components/Connecting.tsx";
 
 const HomeScreen: React.FC = () => {
   const socket = useContext(SocketContext);
@@ -22,6 +23,9 @@ const HomeScreen: React.FC = () => {
 
   const isJoinDisabled = !joinRoomId.trim();
 
+  if (!socket || !socket.connected) {
+    return <Connecting />;
+  }
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-4 text-center">
