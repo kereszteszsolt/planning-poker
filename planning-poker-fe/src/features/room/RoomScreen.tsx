@@ -3,31 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { SocketContext } from "../../SocketProvider.tsx";
 import Join from "./components/Join.tsx";
 import Play from "./components/Play.tsx";
-
-type Participant = {
-  id: string;
-  name: string;
-  voted: boolean;
-  vote?: number | string;
-  isModerator: boolean;
-};
-
-type ValueSet = "scrum" | "fibonacci" | "tshirt" | "days";
-
-const valueSets: Record<ValueSet, Array<number | string>> = {
-  scrum: [0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100, "?", "∞", "☕"],
-  fibonacci: [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, "?", "∞", "☕"],
-  tshirt: ["XS", "S", "M", "L", "XL", "XXL", "?", "∞", "☕"],
-  days: [0.5, 1, 2, 3, 4, 5, 10, 15, 20, 30, "?", "∞", "☕"],
-};
-
-type Room = {
-  id: string;
-  valueSet: ValueSet;
-  participants: Record<string, Participant>;
-  revealed: boolean;
-  lastUpdated?: number;
-};
+import type { Room, Participant } from "../../shared/types";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
