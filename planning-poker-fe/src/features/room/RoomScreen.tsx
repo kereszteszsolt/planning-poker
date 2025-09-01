@@ -13,9 +13,26 @@ const RoomScreen: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Participant | null>(null);
+  const [serverIsDown, setServerIsDown] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
+
+    if (!socket.connected) {
+      setServerIsDown(true);
+    }
+
+    socket.on("connect", () => {
+      setServerIsDown(false);
+      //TODO use rejoin instead of join
+      if (currentUser) {
+        handleJoin(currentUser.name);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      setServerIsDown(true);
+    });
 
     socket.on("room-updated", (room: Room) => {
       setRoom(room);
@@ -33,6 +50,8 @@ const RoomScreen: React.FC = () => {
       socket.off("room-updated");
       socket.off("room-closed");
       socket.off("kicked-out");
+      socket.off("connect");
+      socket.off("disconnect");
     };
   }, [socket]);
 
@@ -56,7 +75,7 @@ const RoomScreen: React.FC = () => {
     socket.emit("kick-out", { roomId, participantId });
   };
 
-  if (!socket || !socket.connected) {
+  if (serverIsDown) {
     return <Connecting />;
   }
   if (room && currentUser) {

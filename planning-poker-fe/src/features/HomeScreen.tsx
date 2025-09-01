@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../SocketProvider.tsx";
 import Connecting from "../shared/components/Connecting.tsx";
@@ -7,6 +7,28 @@ const HomeScreen: React.FC = () => {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [joinRoomId, setJoinRoomId] = useState("");
+  const [serverIsDown, setServerIsDown] = useState(false);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    if (!socket.connected) {
+      setServerIsDown(true);
+    }
+
+    socket.on("connect", () => {
+      setServerIsDown(false);
+    });
+
+    socket.on("disconnect", () => {
+      setServerIsDown(true);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+    };
+  }, [socket]);
 
   const handleCreateRoom = () => {
     socket &&
@@ -23,7 +45,7 @@ const HomeScreen: React.FC = () => {
 
   const isJoinDisabled = !joinRoomId.trim();
 
-  if (!socket || !socket.connected) {
+  if (serverIsDown) {
     return <Connecting />;
   }
   return (
