@@ -1,18 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SocketContext } from "../../SocketProvider.tsx";
 import Join from "./components/Join.tsx";
 import Play from "./components/Play.tsx";
 import type { Room, Participant } from "../../shared/types";
 import Connecting from "../../shared/components/Connecting.tsx";
+import VoteControls from "./components/VoteControls.tsx";
+import VotingCards from "./components/VotingCards.tsx";
+import { votingValueSets } from "../../shared/constants/voting-value-sets.ts";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const socket = useContext(SocketContext);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState<Participant | null>(null);
   const [serverIsDown, setServerIsDown] = useState(false);
 
   useEffect(() => {
@@ -64,8 +67,8 @@ const RoomScreen: React.FC = () => {
           setError(response.error);
         }
         if (response?.participant) {
+          setCurrentUserId(response.participant.id);
           setError("");
-          setCurrentUser(response.participant);
         }
       },
     );
@@ -100,6 +103,20 @@ const RoomScreen: React.FC = () => {
     socket.emit("change-value-set", { roomId, valueSet });
   };
 
+  const nrOfVotedParticipants = useMemo(() => {
+    return (
+      (room &&
+        room.participants &&
+        Object.values(room.participants).filter((p) => p.voted).length) ||
+      0
+    );
+  }, [room]);
+
+  const currentUser = useMemo(() => {
+    if (!room || !currentUserId) return null;
+    return room.participants[currentUserId] || null;
+  }, [room]);
+
   if (serverIsDown) {
     return <Connecting />;
   }
@@ -115,7 +132,23 @@ const RoomScreen: React.FC = () => {
         reveal={handleReveal}
         reset={handleReset}
         changeValueSet={handleChangeValueSet}
-      />
+      >
+        <VotingCards
+          valueSet={votingValueSets[room.valueSet]}
+          onVote={handleVote}
+          selectedVote={currentUser.vote}
+          disabled={room.revealed}
+        />
+        <VoteControls
+          onReset={handleReset}
+          onReveal={handleReveal}
+          onRevoke={handleRevoke}
+          canReset={nrOfVotedParticipants > 0}
+          canReveal={nrOfVotedParticipants > 0}
+          canRevoke={currentUser.voted}
+          isModerator={currentUser.isModerator}
+        />
+      </Play>
     );
   }
   return <Join roomId={roomId!} onJoin={handleJoin} error={error} />;
