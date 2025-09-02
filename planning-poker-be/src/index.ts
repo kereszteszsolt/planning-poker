@@ -110,6 +110,97 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("delegate", ({ roomId, participantId }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const requester = room.participants[socket.id];
+    if (!requester || !requester.isModerator) return; // Only moderator can delegate
+
+    if (room.participants[participantId]) {
+      // Revoke moderator from current moderator
+      requester.isModerator = false;
+      // Assign moderator to the selected participant
+      room.participants[participantId].isModerator = true;
+      room.lastUpdated = Date.now();
+      io.to(roomId).emit("room-updated", room);
+    }
+  });
+
+  socket.on(
+    "vote",
+    ({ roomId, vote }: { roomId: string; vote: number | string }) => {
+      console.log(`vote: ${vote}`);
+      console.log(`roomId: ${roomId}`);
+      const room = rooms[roomId];
+      if (!room) return;
+
+      const participant = room.participants[socket.id];
+      if (!participant) return;
+
+      if (!valueSets[room.valueSet].includes(vote)) return;
+
+      participant.vote = vote;
+      participant.voted = true;
+      room.lastUpdated = Date.now();
+
+      // Check if all participants have voted
+      const allVoted = Object.values(room.participants).every((p) => p.voted);
+      if (allVoted) {
+        room.revealed = true;
+      }
+
+      io.to(roomId).emit("room-updated", room);
+    },
+  );
+
+  socket.on("reveal", ({ roomId }: { roomId: string }) => {
+    console.log(`reveal roomId: ${roomId}`);
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const requester = room.participants[socket.id];
+    if (!requester || !requester.isModerator) return; // Only moderator can reveal
+
+    room.revealed = true;
+    room.lastUpdated = Date.now();
+    io.to(roomId).emit("room-updated", room);
+  });
+
+  socket.on("reset", ({ roomId }: { roomId: string }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const requester = room.participants[socket.id];
+    if (!requester || !requester.isModerator) return; // Only moderator can reset
+
+    for (const participantId in room.participants) {
+      room.participants[participantId].voted = false;
+      delete room.participants[participantId].vote;
+    }
+    room.revealed = false;
+    room.lastUpdated = Date.now();
+    io.to(roomId).emit("room-updated", room);
+  });
+
+  socket.on(
+    "change-value-set",
+    (data: { roomId: string; valueSet: ValueSet }) => {
+      const { roomId, valueSet } = data;
+      const room = rooms[roomId];
+      if (!room) return;
+
+      const requester = room.participants[socket.id];
+      if (!requester || !requester.isModerator) return; // Only moderator can change value set
+
+      if (!valueSets[valueSet]) return;
+
+      room.valueSet = valueSet;
+      room.lastUpdated = Date.now();
+      io.to(roomId).emit("room-updated", room);
+    },
+  );
+
   socket.on("disconnect", () => {
     for (const roomId in rooms) {
       if (rooms[roomId].participants[socket.id]) {

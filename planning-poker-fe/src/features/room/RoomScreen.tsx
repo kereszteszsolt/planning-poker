@@ -75,12 +75,47 @@ const RoomScreen: React.FC = () => {
     socket.emit("kick-out", { roomId, participantId });
   };
 
+  const handleDelegate = (participantId: string) => {
+    socket.emit("delegate", { roomId, participantId });
+  };
+
+  const handleVote = (value: string | number) => {
+    console.log("Voting for:", value);
+    socket.emit("vote", { roomId, vote: value });
+  };
+
+  const handleRevoke = () => {
+    socket.emit("revoke", { roomId });
+  };
+
+  const handleReveal = () => {
+    socket.emit("reveal", { roomId });
+  };
+
+  const handleReset = () => {
+    socket.emit("reset", { roomId: roomId });
+  };
+
+  const handleChangeValueSet = (valueSet: string) => {
+    socket.emit("change-value-set", { roomId, valueSet });
+  };
+
   if (serverIsDown) {
     return <Connecting />;
   }
   if (room && currentUser) {
     return (
-      <Play room={room} currentUser={currentUser} kickOut={handleKickOut} />
+      <Play
+        room={room}
+        currentUser={currentUser}
+        kickOut={handleKickOut}
+        delegate={handleDelegate}
+        vote={handleVote}
+        revoke={handleRevoke}
+        reveal={handleReveal}
+        reset={handleReset}
+        changeValueSet={handleChangeValueSet}
+      />
     );
   }
   return <Join roomId={roomId!} onJoin={handleJoin} error={error} />;
