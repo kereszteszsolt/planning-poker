@@ -14,7 +14,7 @@ const Play: React.FC<JoinProps> = ({ room, currentUser, kickOut }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+    <div className="p-6 bg-white rounded shadow">
       {/*Participants List*/}
       <h2 className="text-xl font-bold mb-4">Participants</h2>
       <ul className="mb-2">
@@ -38,12 +38,11 @@ const Play: React.FC<JoinProps> = ({ room, currentUser, kickOut }) => {
 
       {/*Voting Cards */}
       <h2 className="text-xl font-bold mb-4">Vote</h2>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="flex flex-row gap-2">
         {votingValueSets[room.valueSet].map((value) => (
           <button
             key={value}
-            className="p-2 bg-blue-500 text-white rounded"
-            // onClick={() => handleVote(value)}
+            className="p-2 bg-blue-500 text-white font-bold rounded w-10 h-14 flex items-center justify-center"
             disabled={currentUser.voted}
           >
             {value}
@@ -51,17 +50,33 @@ const Play: React.FC<JoinProps> = ({ room, currentUser, kickOut }) => {
         ))}
       </div>
 
-      {/*Reveal and Reset Buttons*/}
-      {/*{currentUser.isModerator && (*/}
-      {/*  <div className="mt-4">*/}
-      {/*    <button className="mr-2 p-2 bg-green-500 text-white rounded">*/}
-      {/*      Reveal Votes*/}
-      {/*    </button>*/}
-      {/*    <button className="p-2 bg-yellow-500 text-white rounded">*/}
-      {/*      Reset Votes*/}
-      {/*    </button>*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      {/*Reveal and Reset Buttons - Reveal/Hide, Reset buttons for admin,  Revoke vote for individual use*/}
+      {currentUser.isModerator && (
+        <div className="mt-4 flex space-x-2">
+          <button
+            // onClick={handleReveal}
+            className="p-2 bg-green-500 text-white rounded"
+          >
+            Reveal Votes
+          </button>
+          <button
+            // onClick={handleReset}
+            className="p-2 bg-yellow-500 text-white rounded"
+          >
+            Reset Votes
+          </button>
+        </div>
+      )}
+      {currentUser.voted && !currentUser.isModerator && (
+        <div className="mt-4">
+          <button
+            // onClick={handleRevokeVote}
+            className="p-2 bg-red-500 text-white rounded"
+          >
+            Revoke Vote
+          </button>
+        </div>
+      )}
     </div>
   );
 };
