@@ -15,6 +15,41 @@ const Play: React.FC<JoinProps> = ({ room, currentUser, kickOut }) => {
 
   return (
     <div className="p-6 bg-white rounded shadow">
+      {/*RommId  copy roomID & copy link buttons*/}
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Room ID: {room.id}
+      </h1>
+      <div className="mb-6 text-center">
+        <button
+          // onClick={handleCopyRoomId}
+          className="mr-2 p-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Copy Room ID
+        </button>
+        <button
+          // onClick={handleCopyRoomLink}
+          className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Copy Room Link
+        </button>
+      </div>
+      {/*card valuset radio buttons*/}
+      <h2 className="text-xl font-bold mb-4">Value Set: {room.valueSet}</h2>
+      <div className="mb-6">
+        {Object.keys(votingValueSets).map((set) => (
+          <label key={set} className="mr-4">
+            <input
+              type="radio"
+              name="valueSet"
+              value={set}
+              checked={room.valueSet === set}
+              disabled={!currentUser.isModerator}
+              className="mr-1"
+            />
+            {set}
+          </label>
+        ))}
+      </div>
       {/*Participants List*/}
       <h2 className="text-xl font-bold mb-4">Participants</h2>
       <ul className="mb-2">
