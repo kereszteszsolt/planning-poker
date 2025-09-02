@@ -154,6 +154,20 @@ io.on("connection", (socket) => {
     },
   );
 
+  socket.on("revoke", ({ roomId }: { roomId: string }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const participant = room.participants[socket.id];
+    if (!participant) return;
+
+    participant.voted = false;
+    delete participant.vote;
+    room.revealed = false; // Hide votes if someone revokes
+    room.lastUpdated = Date.now();
+    io.to(roomId).emit("room-updated", room);
+  });
+
   socket.on("reveal", ({ roomId }: { roomId: string }) => {
     console.log(`reveal roomId: ${roomId}`);
     const room = rooms[roomId];

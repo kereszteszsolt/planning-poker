@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import type { Room, Participant } from "../../../shared/types";
 import { votingValueSets } from "../../../shared/constants/voting-value-sets.ts";
 
@@ -44,6 +44,10 @@ const Play: React.FC<JoinProps> = ({
     navigator.clipboard.writeText(roomLink);
     alert("Room link copied to clipboard!");
   };
+
+  const nrOfVotedParticipants = useMemo(() => {
+    return Object.values(room.participants).filter((p) => p.voted).length;
+  }, [room.participants]);
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -156,33 +160,37 @@ const Play: React.FC<JoinProps> = ({
         ))}
       </div>
 
-      {/* Moderator Actions */}
-      {currentUser.isModerator && (
-        <div className="flex space-x-2">
+      <div className="flex flex-row gap-4">
+        {/* Moderator Actions */}
+        {currentUser.isModerator && nrOfVotedParticipants > 0 && (
           <button
             onClick={reveal}
             className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
           >
             Reveal Votes
           </button>
+        )}
+
+        {currentUser.isModerator && nrOfVotedParticipants > 0 && (
           <button
             onClick={reset}
             className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
           >
             Reset Votes
           </button>
-        </div>
-      )}
+        )}
 
-      {/* Revoke Vote Button */}
-      {currentUser.voted && !currentUser.isModerator && (
-        <button
-          onClick={revoke}
-          className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-        >
-          Revoke Vote
-        </button>
-      )}
+        {/* Revoke Vote Button */}
+        {room.participants[currentUser.id] &&
+          room.participants[currentUser.id].voted && (
+            <button
+              onClick={revoke}
+              className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Revoke Vote
+            </button>
+          )}
+      </div>
     </div>
   );
 };
