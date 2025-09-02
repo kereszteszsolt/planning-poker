@@ -25,28 +25,15 @@ const Play: React.FC<JoinProps> = ({
   reset,
   changeValueSet,
 }) => {
-  const handleKickOut = (participantId: string) => {
-    kickOut(participantId);
-  };
-  const handleDelegate = (participantId: string) => {
-    delegate(participantId);
-  };
-  const handleRevoke = () => {
-    revoke();
-  };
-  const handleReveal = () => {
-    reveal();
-  };
-  const handleReset = () => {
-    reset();
-  };
-  const handleChangeValueSet = (valueSet: string) => {
-    changeValueSet(valueSet);
-  };
+  const [selectedVote, setSelectedVote] = React.useState<
+    string | number | null
+  >(null);
+
   const handleVote = (value: string | number) => {
-    console.log("Voting for:", value);
+    setSelectedVote(value);
     vote(value);
   };
+
   const handleCopyRoomId = () => {
     navigator.clipboard.writeText(room.id);
     alert("Room ID copied to clipboard!");
@@ -59,128 +46,142 @@ const Play: React.FC<JoinProps> = ({
   };
 
   return (
-    <div className="p-6 bg-white rounded shadow">
-      {/*RommId  copy roomID & copy link buttons*/}
-      <h1 className="text-2xl font-bold mb-4 text-center">
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      {/* Room ID and Copy Buttons */}
+      <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">
         Room ID: {room.id}
       </h1>
-      <div className="mb-6 text-center">
+      <div className="mb-6 text-center space-x-2">
         <button
           onClick={handleCopyRoomId}
-          className="mr-2 p-2 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
         >
           Copy Room ID
         </button>
         <button
           onClick={handleCopyRoomLink}
-          className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
         >
           Copy Room Link
         </button>
       </div>
-      {/*card valuset radio buttons*/}
-      <h2 className="text-xl font-bold mb-4">Value Set: {room.valueSet}</h2>
-      <div className="mb-6">
+
+      {/* Value Set Selection */}
+      <h2 className="text-xl font-bold mb-4 text-gray-800">
+        Value Set: {room.valueSet}
+      </h2>
+      <div className="mb-6 flex flex-wrap gap-4">
         {Object.keys(votingValueSets).map((set) => (
-          <label key={set} className="mr-4">
+          <label key={set} className="flex items-center space-x-2">
             <input
               type="radio"
               name="valueSet"
               value={set}
               checked={room.valueSet === set}
               disabled={!currentUser.isModerator}
-              className="mr-1"
-              onChange={() => handleChangeValueSet(set)} // Call the handler
+              onChange={() => changeValueSet(set)}
+              className="h-4 w-4 text-blue-500"
             />
-            {set}
+            <span className="text-gray-700">{set}</span>
           </label>
         ))}
       </div>
-      {/*Participants List*/}
-      <h2 className="text-xl font-bold mb-4">Participants</h2>
-      <ul className="mb-2">
-        {currentUser &&
-          room.participants &&
-          Object.values(room.participants).map((p) => (
-            <li
-              key={p.id}
-              className="flex flex-row items-center justify-between border-b py-2"
-            >
-              {p.name} {p.isModerator && "(Moderator)"} {p.voted && "✓"}{" "}
-              {p.id === currentUser.id && "(You)"}
-              {currentUser.isModerator && !p.isModerator && (
-                <div className="flex flex-row items-center gap-2">
-                  <button
-                    onClick={() => handleKickOut(p.id)}
-                    className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
-                  >
-                    Kick Out
-                  </button>
-                  <button
-                    onClick={() => handleDelegate(p.id)}
-                    className="ml-2 bg-green-500 text-white px-2 py-1 rounded"
-                  >
-                    Delegate
-                  </button>
-                </div>
+
+      {/* Participants List */}
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Participants</h2>
+      <ul className="mb-6 space-y-2">
+        {Object.values(room.participants).map((p) => (
+          <li
+            key={p.id}
+            className="flex justify-between items-center p-3 border-b border-gray-200"
+          >
+            <div>
+              {p.name}{" "}
+              {p.isModerator && (
+                <span className="text-sm text-gray-500">(Moderator)</span>
+              )}{" "}
+              {p.voted && <span className="text-sm text-green-500">✓</span>}{" "}
+              {p.id === currentUser.id && (
+                <span className="text-sm text-blue-500">(You)</span>
               )}
-            </li>
-          ))}
+            </div>
+            {currentUser.isModerator && !p.isModerator && (
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => kickOut(p.id)}
+                  className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Kick Out
+                </button>
+                <button
+                  onClick={() => delegate(p.id)}
+                  className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  Delegate
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
       </ul>
 
-      {/*votes*/}
-      <h2 className={"text-xl font-bold mb-4"}>Votes</h2>
-      <ul className="mb-6">
+      {/* Votes Section */}
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Votes</h2>
+      <ul className="mb-6 space-y-2">
         {room.revealed
           ? Object.values(room.participants).map((p) => (
-              <li key={p.id} className="border-b py-2">
+              <li key={p.id} className="p-3 border-b border-gray-200">
                 {p.name}: {p.vote !== null ? p.vote : "No Vote"}
               </li>
             ))
           : "Votes are hidden until revealed."}
       </ul>
 
-      {/*Voting Cards */}
-      <h2 className="text-xl font-bold mb-4">Vote</h2>
-      <div className="flex flex-row gap-2">
+      {/* Voting Cards */}
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Vote</h2>
+      <div className="flex flex-wrap gap-2 mb-6">
         {votingValueSets[room.valueSet].map((value) => (
           <button
             key={value}
             onClick={() => handleVote(value)}
-            className="p-2 bg-blue-500 text-white font-bold rounded w-10 h-14 flex items-center justify-center"
             disabled={currentUser.voted}
+            className={`px-4 py-6 rounded-lg font-bold transition-colors ${
+              selectedVote === value
+                ? "bg-blue-700 text-white"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
+            } ${currentUser.voted ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {value}
           </button>
         ))}
       </div>
 
-      {/*Reveal and Reset Buttons - Reveal/Hide, Reset buttons for admin,  Revoke vote for individual use*/}
+      {/* Moderator Actions */}
       {currentUser.isModerator && (
-        <div className="mt-4 flex space-x-2">
+        <div className="flex space-x-2">
           <button
-            onClick={handleReveal}
-            className="p-2 bg-green-500 text-white rounded"
+            onClick={reveal}
+            className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
           >
             Reveal Votes
           </button>
           <button
-            onClick={handleReset}
-            className="p-2 bg-yellow-500 text-white rounded"
+            onClick={reset}
+            className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
           >
             Reset Votes
           </button>
         </div>
       )}
+
+      {/* Revoke Vote Button */}
       {currentUser.voted && !currentUser.isModerator && (
-        <div className="mt-4">
-          <button
-            onClick={handleRevoke}
-            className="p-2 bg-red-500 text-white rounded"
-          >
-            Revoke Vote
-          </button>
-        </div>
+        <button
+          onClick={revoke}
+          className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Revoke Vote
+        </button>
       )}
     </div>
   );
