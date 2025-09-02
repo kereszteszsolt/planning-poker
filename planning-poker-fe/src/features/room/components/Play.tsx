@@ -56,16 +56,27 @@ const Play: React.FC<JoinProps> = ({ room, currentUser, kickOut }) => {
         {currentUser &&
           room.participants &&
           Object.values(room.participants).map((p) => (
-            <li key={p.id}>
+            <li
+              key={p.id}
+              className="flex flex-row items-center justify-between border-b py-2"
+            >
               {p.name} {p.isModerator && "(Moderator)"} {p.voted && "✓"}{" "}
               {p.id === currentUser.id && "(You)"}
               {currentUser.isModerator && !p.isModerator && (
-                <button
-                  onClick={() => handleKickOut(p.id)}
-                  className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Kick Out
-                </button>
+                <div className="flex flex-row items-center gap-2">
+                  <button
+                    onClick={() => handleKickOut(p.id)}
+                    className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
+                  >
+                    Kick Out
+                  </button>
+                  <button
+                    // onClick={() => handleDelegate(p.id)}
+                    className="ml-2 bg-green-500 text-white px-2 py-1 rounded"
+                  >
+                    Delegate
+                  </button>
+                </div>
               )}
             </li>
           ))}
