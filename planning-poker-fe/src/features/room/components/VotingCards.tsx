@@ -14,8 +14,7 @@ const VotingCards: React.FC<VotingCardsProps> = ({
   disabled,
 }) => {
   return (
-    <>
-      {/* Voting Cards */}
+    <div className="flex flex-col">
       <h2 className="text-xl font-bold mb-4 text-gray-800">Vote</h2>
       <div className="flex flex-wrap gap-2 mb-6">
         {valueSet.map((value) => (
@@ -33,7 +32,7 @@ const VotingCards: React.FC<VotingCardsProps> = ({
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

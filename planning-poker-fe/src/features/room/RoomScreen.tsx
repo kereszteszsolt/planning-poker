@@ -8,6 +8,7 @@ import Connecting from "../../shared/components/Connecting.tsx";
 import VoteControls from "./components/VoteControls.tsx";
 import VotingCards from "./components/VotingCards.tsx";
 import { votingValueSets } from "../../shared/constants/voting-value-sets.ts";
+import Votes from "./components/Votes.tsx";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -112,6 +113,18 @@ const RoomScreen: React.FC = () => {
     );
   }, [room]);
 
+  const votes = useMemo(() => {
+    if (!room) return {};
+    const voteMap: Record<string, string | number> = {};
+    Object.values(room.participants).forEach((participant) => {
+      const vote = participant.vote;
+      if (typeof vote === "string" || typeof vote === "number") {
+        voteMap[participant.name] = vote;
+      }
+    });
+    return voteMap;
+  }, [room]);
+
   const currentUser = useMemo(() => {
     if (!room || !currentUserId) return null;
     return room.participants[currentUserId] || null;
@@ -133,6 +146,7 @@ const RoomScreen: React.FC = () => {
         reset={handleReset}
         changeValueSet={handleChangeValueSet}
       >
+        <Votes votes={votes} isRevealed={room.revealed} />
         <VotingCards
           valueSet={votingValueSets[room.valueSet]}
           onVote={handleVote}
