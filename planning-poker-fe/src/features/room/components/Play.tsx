@@ -48,25 +48,6 @@ const Play: React.FC<JoinProps> = ({
       </div>
 
       {/* Value Set Selection */}
-      <h2 className="text-xl font-bold mb-4 text-gray-800">
-        Value Set: {room.valueSet}
-      </h2>
-      <div className="mb-6 flex flex-wrap gap-4">
-        {Object.keys(votingValueSets).map((set) => (
-          <label key={set} className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="valueSet"
-              value={set}
-              checked={room.valueSet === set}
-              disabled={!currentUser.isModerator}
-              onChange={() => changeValueSet(set)}
-              className="h-4 w-4 text-blue-500"
-            />
-            <span className="text-gray-700">{set}</span>
-          </label>
-        ))}
-      </div>
 
       {/* Participants List */}
 

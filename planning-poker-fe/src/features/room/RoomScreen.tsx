@@ -10,6 +10,7 @@ import VotingCards from "./components/VotingCards.tsx";
 import { votingValueSets } from "../../shared/constants/voting-value-sets.ts";
 import Votes from "./components/Votes.tsx";
 import Participants from "./components/Participants.tsx";
+import ValueSet from "./components/ValueSet.tsx";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -141,6 +142,11 @@ const RoomScreen: React.FC = () => {
         currentUser={currentUser}
         changeValueSet={handleChangeValueSet}
       >
+        <ValueSet
+          currentValueSet={room.valueSet}
+          changeValueSet={handleChangeValueSet}
+          isModerator={currentUser.isModerator}
+        />
         <Participants
           participants={room.participants}
           currentUserId={currentUserId!}
