@@ -9,6 +9,7 @@ import VoteControls from "./components/VoteControls.tsx";
 import VotingCards from "./components/VotingCards.tsx";
 import { votingValueSets } from "../../shared/constants/voting-value-sets.ts";
 import Votes from "./components/Votes.tsx";
+import Participants from "./components/Participants.tsx";
 
 const RoomScreen: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -138,14 +139,14 @@ const RoomScreen: React.FC = () => {
       <Play
         room={room}
         currentUser={currentUser}
-        kickOut={handleKickOut}
-        delegate={handleDelegate}
-        vote={handleVote}
-        revoke={handleRevoke}
-        reveal={handleReveal}
-        reset={handleReset}
         changeValueSet={handleChangeValueSet}
       >
+        <Participants
+          participants={room.participants}
+          currentUserId={currentUserId!}
+          kickOut={handleKickOut}
+          delegate={handleDelegate}
+        />
         <Votes votes={votes} isRevealed={room.revealed} />
         <VotingCards
           valueSet={votingValueSets[room.valueSet]}

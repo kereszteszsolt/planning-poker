@@ -1,4 +1,4 @@
-import React, { JSX, useMemo } from "react";
+import React, { JSX } from "react";
 import type { Room, Participant } from "../../../shared/types";
 import { votingValueSets } from "../../../shared/constants/voting-value-sets.ts";
 
@@ -6,12 +6,6 @@ type JoinProps = {
   children?: JSX.Element;
   room: Room;
   currentUser: Participant;
-  kickOut: (participantId: string) => void;
-  delegate: (participantId: string) => void;
-  vote: (value: string | number) => void;
-  revoke: () => void;
-  reveal: () => void;
-  reset: () => void;
   changeValueSet: (valueSet: string) => void;
 };
 
@@ -19,23 +13,8 @@ const Play: React.FC<JoinProps> = ({
   children,
   room,
   currentUser,
-  kickOut,
-  delegate,
-  vote,
-  revoke,
-  reveal,
-  reset,
   changeValueSet,
 }) => {
-  const [selectedVote, setSelectedVote] = React.useState<
-    string | number | null
-  >(null);
-
-  const handleVote = (value: string | number) => {
-    setSelectedVote(value);
-    vote(value);
-  };
-
   const handleCopyRoomId = () => {
     navigator.clipboard.writeText(room.id);
     alert("Room ID copied to clipboard!");
@@ -90,42 +69,6 @@ const Play: React.FC<JoinProps> = ({
       </div>
 
       {/* Participants List */}
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Participants</h2>
-      <ul className="mb-6 space-y-2">
-        {Object.values(room.participants).map((p) => (
-          <li
-            key={p.id}
-            className="flex justify-between items-center p-3 border-b border-gray-200"
-          >
-            <div>
-              {p.name}{" "}
-              {p.isModerator && (
-                <span className="text-sm text-gray-500">(Moderator)</span>
-              )}{" "}
-              {p.voted && <span className="text-sm text-green-500">✓</span>}{" "}
-              {p.id === currentUser.id && (
-                <span className="text-sm text-blue-500">(You)</span>
-              )}
-            </div>
-            {currentUser.isModerator && !p.isModerator && (
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => kickOut(p.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                >
-                  Kick Out
-                </button>
-                <button
-                  onClick={() => delegate(p.id)}
-                  className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                >
-                  Delegate
-                </button>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
 
       {/* Votes Section */}
       <h2 className="text-xl font-bold mb-4 text-gray-800">Votes</h2>
