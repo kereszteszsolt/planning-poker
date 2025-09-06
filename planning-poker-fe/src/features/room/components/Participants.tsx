@@ -14,7 +14,7 @@ const Participants: React.FC<ParticipantProps> = ({
   delegate,
 }: ParticipantProps) => {
   return (
-    <>
+    <div className="p-6 bg-white rounded-lg shadow w-full min-w-[300px]">
       <h2 className="text-xl font-bold mb-4 text-gray-800">Participants</h2>
       <ul className="mb-6 space-y-2">
         {Object.values(participants).map((p) => (
@@ -51,7 +51,7 @@ const Participants: React.FC<ParticipantProps> = ({
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 

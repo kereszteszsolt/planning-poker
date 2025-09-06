@@ -1,32 +1,37 @@
 import React from "react";
+import type { Participant } from "../../../shared/types";
 
 type VotesProps = {
-  votes: Record<string, string | number | null>;
+  participants: Record<string, Participant>;
   isRevealed: boolean;
 };
 
-const Votes: React.FC<VotesProps> = ({ votes, isRevealed }) => {
+const Votes: React.FC<VotesProps> = ({ participants, isRevealed }) => {
   return (
-    // <div className="p-4 bg-white rounded-lg shadow-sm">
     <div className="flex flex-col">
       <h2 className="text-xl font-bold mb-4 text-gray-800">Votes</h2>
       <div className="flex flex-wrap gap-4">
-        {Object.entries(votes).map(([name, vote]) => (
-          <div key={name} className="flex flex-col items-center">
+        {Object.entries(participants).map(([id, participant]) => (
+          <div key={id} className="flex flex-col items-center">
             <div
               className={`w-14 h-18 flex items-center justify-center rounded-lg font-bold text-white ${
                 isRevealed
-                  ? vote
+                  ? participant.vote !== undefined && participant.vote !== null
                     ? "bg-blue-500"
                     : "bg-gray-300"
-                  : "bg-gray-400"
+                  : participant.voted
+                    ? "bg-gray-500"
+                    : "bg-gray-300"
               }`}
             >
-              {isRevealed ? (vote ?? "?") : "?"}
+              {isRevealed
+                ? (participant.vote ?? "?")
+                : participant.voted
+                  ? "?"
+                  : "-"}
             </div>
-
             <span className="text-sm text-gray-700 mt-1 truncate w-16 text-center">
-              {name}
+              {participant.name}
             </span>
           </div>
         ))}
