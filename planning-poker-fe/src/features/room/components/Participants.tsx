@@ -43,7 +43,7 @@ const Participants: React.FC<ParticipantProps> = ({
                     onClick={() => takeOver()}
                     className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                   >
-                    Take moderator role
+                    Take over moderator role
                   </button>
                 </div>
               )}

@@ -18,7 +18,7 @@ const RoomControls: React.FC<RoomHeaderProps> = ({ roomId }) => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow w-full min-w-[300px]">
-      <h1 className="text-lg font-bold mb-4 text-center text-gray-800">
+      <h1 className="text-[16px] font-bold mb-4 text-center text-gray-800">
         Room: <span className="text-blue-600">{roomId}</span>
       </h1>
       <div className="flex flex-row w-full gap-4 px-2">

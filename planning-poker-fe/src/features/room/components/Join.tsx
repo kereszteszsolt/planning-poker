@@ -16,7 +16,7 @@ const Join: React.FC<JoinProps> = ({ roomId, onJoin, error }) => {
 
   return (
     <div className="w-[657px] mx-auto mt-10 p-6 bg-white rounded shadow flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Join Room: {roomId}</h2>
+      <h2 className="text-xl font-bold mb-4">Join Room: {roomId}</h2>
       <input
         type="text"
         placeholder="Enter your name"
