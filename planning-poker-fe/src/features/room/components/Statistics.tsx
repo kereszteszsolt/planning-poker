@@ -54,7 +54,7 @@ const Statistics: React.FC<StatisticsProps> = ({
   return (
     <>
       {isRevealed && (
-        <>
+        <div className="flex flex-col">
           <h2 className="text-xl font-bold mb-4 text-gray-800">Statistics</h2>
           <div className="space-y-4">
             {hasNumericVotes && (
@@ -88,7 +88,11 @@ const Statistics: React.FC<StatisticsProps> = ({
                     className="flex justify-between p-2 bg-gray-100 rounded-lg"
                   >
                     <span className="font-medium">
-                      {isNaN(parseFloat(key)) ? key : parseFloat(key)}
+                      {isNaN(parseFloat(key))
+                        ? key === "undefined"
+                          ? "Not Voted"
+                          : key
+                        : parseFloat(key)}
                     </span>
                     <span className="text-gray-600">
                       {frequency[key]} vote(s)
@@ -98,7 +102,7 @@ const Statistics: React.FC<StatisticsProps> = ({
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

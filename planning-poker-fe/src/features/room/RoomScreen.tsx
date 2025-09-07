@@ -159,7 +159,7 @@ const RoomScreen: React.FC = () => {
               isModerator={currentUser.isModerator}
             />
           </div>
-          <div className="p-4 md:p-6 bg-white rounded-lg shadow w-full">
+          <div className="flex flex-col p-4 md:p-6 bg-white rounded-lg shadow w-full gap-4">
             <Votes
               participants={room.participants}
               isRevealed={room.revealed}

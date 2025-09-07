@@ -15,7 +15,7 @@ const Join: React.FC<JoinProps> = ({ roomId, onJoin, error }) => {
   };
 
   return (
-    <div>
+    <div className="w-[657px] mx-auto mt-10 p-6 bg-white rounded shadow flex flex-col items-center">
       <h2 className="text-2xl font-bold mb-4">Join Room: {roomId}</h2>
       <input
         type="text"
@@ -27,7 +27,7 @@ const Join: React.FC<JoinProps> = ({ roomId, onJoin, error }) => {
       {error && <p className="text-red-500">{error}</p>}
       <button
         onClick={handleJoin}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded self-start"
       >
         Join
       </button>
