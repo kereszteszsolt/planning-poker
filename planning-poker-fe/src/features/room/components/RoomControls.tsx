@@ -4,7 +4,7 @@ type RoomHeaderProps = {
   roomId: string;
 };
 
-const RoomHeader: React.FC<RoomHeaderProps> = ({ roomId }) => {
+const RoomControls: React.FC<RoomHeaderProps> = ({ roomId }) => {
   const handleCopyRoomId = () => {
     navigator.clipboard.writeText(roomId);
     alert("Room ID copied to clipboard!");
@@ -17,26 +17,26 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({ roomId }) => {
   };
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">
-        Room ID: {roomId}
+    <div className="p-6 bg-white rounded-lg shadow w-full min-w-[300px]">
+      <h1 className="text-lg font-bold mb-4 text-center text-gray-800">
+        Room: <span className="text-blue-600">{roomId}</span>
       </h1>
-      <div className="mb-6 text-center space-x-2">
+      <div className="flex flex-row w-full gap-4 px-2">
         <button
           onClick={handleCopyRoomId}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+          className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 w-full"
         >
           Copy Room ID
         </button>
         <button
           onClick={handleCopyRoomLink}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+          className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 w-full"
         >
           Copy Room Link
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
-export default RoomHeader;
+export default RoomControls;

@@ -10,7 +10,7 @@ import { votingValueSets } from "../../shared/constants/voting-value-sets.ts";
 import Votes from "./components/Votes.tsx";
 import Participants from "./components/Participants.tsx";
 import ValueSet from "./components/ValueSet.tsx";
-import RoomHeader from "./components/RoomHeader.tsx";
+import RoomControls from "./components/RoomControls.tsx";
 import Statistics from "./components/Statistics.tsx";
 
 const RoomScreen: React.FC = () => {
@@ -137,7 +137,6 @@ const RoomScreen: React.FC = () => {
         {/* Middle Column (Main Content) */}
         <div className="flex flex-col w-full md:w-3/4 lg:w-2/3 xl:w-1/2 gap-4">
           <div className="p-4 md:p-6 bg-white rounded-lg shadow w-full">
-            <RoomHeader roomId={room.id} />
             <ValueSet
               currentValueSet={room.valueSet}
               changeValueSet={handleChangeValueSet}
@@ -172,7 +171,8 @@ const RoomScreen: React.FC = () => {
         </div>
 
         {/* Right Column (Participants) */}
-        <div className="flex flex-col w-full md:w-1/4 lg:w-1/3 xl:w-1/4">
+        <div className="flex flex-col w-full md:w-1/4 lg:w-1/3 xl:w-1/4 gap-4">
+          <RoomControls roomId={room.id} />
           <Participants
             participants={room.participants}
             currentUserId={currentUserId!}
