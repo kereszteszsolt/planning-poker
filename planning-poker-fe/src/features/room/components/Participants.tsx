@@ -6,12 +6,14 @@ type ParticipantProps = {
   currentUserId: string;
   kickOut: (participantId: string) => void;
   delegate: (participantId: string) => void;
+  takeOver: () => void;
 };
 const Participants: React.FC<ParticipantProps> = ({
   participants,
   currentUserId,
   kickOut,
   delegate,
+  takeOver,
 }: ParticipantProps) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow w-full min-w-[300px]">
@@ -32,7 +34,20 @@ const Participants: React.FC<ParticipantProps> = ({
                 <span className="text-sm text-blue-500">(You)</span>
               )}
             </div>
-            {participants[currentUserId] && !p.isModerator && (
+            {Object.values(participants).every(
+              (participant) => !participant.isModerator,
+            ) &&
+              p.id === currentUserId && (
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => takeOver()}
+                    className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
+                    Take moderator role
+                  </button>
+                </div>
+              )}
+            {participants[currentUserId].isModerator && !p.isModerator && (
               <div className="flex space-x-2">
                 <button
                   onClick={() => kickOut(p.id)}

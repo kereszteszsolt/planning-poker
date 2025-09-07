@@ -209,11 +209,46 @@ io.on("connection", (socket) => {
 
       if (!valueSets[valueSet]) return;
 
+      // Reset all votes when changing value set
+      for (const participantId in room.participants) {
+        room.participants[participantId].voted = false;
+        delete room.participants[participantId].vote;
+      }
+      room.revealed = false;
+
       room.valueSet = valueSet;
       room.lastUpdated = Date.now();
       io.to(roomId).emit("room-updated", room);
     },
   );
+
+  socket.on("take-over", ({ roomId }: { roomId: string }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    const participant = room.participants[socket.id];
+    if (!participant) return;
+    const hasModerator = Object.values(room.participants).some(
+      (p) => p.isModerator,
+    );
+    if (!hasModerator) {
+      participant.isModerator = true;
+      room.lastUpdated = Date.now();
+      io.to(roomId).emit("room-updated", room);
+    }
+  });
+
+  socket.on("leave-room", ({ roomId }: { roomId: string }) => {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    socket.leave(roomId);
+    if (room.participants[socket.id]) {
+      delete room.participants[socket.id];
+      room.lastUpdated = Date.now();
+      io.to(roomId).emit("room-updated", room);
+    }
+  });
 
   socket.on("disconnect", () => {
     for (const roomId in rooms) {

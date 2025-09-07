@@ -46,13 +46,14 @@ const RoomScreen: React.FC = () => {
       navigate("/message/kicked-out");
     });
     return () => {
+      handleLeaveRoom();
       socket.off("room-updated");
       socket.off("room-closed");
       socket.off("kicked-out");
       socket.off("connect");
       socket.off("disconnect");
     };
-  }, [socket]);
+  }, [socket, roomId]);
 
   const handleJoin = (name: string) => {
     socket.emit(
@@ -98,6 +99,14 @@ const RoomScreen: React.FC = () => {
     socket.emit("change-value-set", { roomId, valueSet });
   };
 
+  const handleTakeOver = () => {
+    socket.emit("take-over", { roomId });
+  };
+
+  const handleLeaveRoom = () => {
+    socket.emit("leave-room", { roomId });
+  };
+
   const nrOfVotedParticipants = useMemo(() => {
     return (
       (room &&
@@ -105,18 +114,6 @@ const RoomScreen: React.FC = () => {
         Object.values(room.participants).filter((p) => p.voted).length) ||
       0
     );
-  }, [room]);
-
-  const votes = useMemo(() => {
-    if (!room) return {};
-    const voteMap: Record<string, string | number> = {};
-    Object.values(room.participants).forEach((participant) => {
-      const vote = participant.vote;
-      if (typeof vote === "string" || typeof vote === "number") {
-        voteMap[participant.name] = vote;
-      }
-    });
-    return voteMap;
   }, [room]);
 
   const currentUser = useMemo(() => {
@@ -178,6 +175,7 @@ const RoomScreen: React.FC = () => {
             currentUserId={currentUserId!}
             kickOut={handleKickOut}
             delegate={handleDelegate}
+            takeOver={handleTakeOver}
           />
         </div>
       </div>
