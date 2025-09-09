@@ -20,7 +20,7 @@ estimation sessions.
 
 ## Screenshots
 
-![Screenshot 1](readme-assets/Capture1.png)
+<img src="readme-assets/Capture1.png" alt="Screenshot 1" width="800"/>
 
 npm run dev-concurrently (in the planning-poker-be folder) – this will run both the frontend and the backend
 simultaneously.  
