@@ -30,7 +30,7 @@ Linktree:
 https://linktr.ee/kereszteszsolt
 
 
-<p>Found this helpful? You can support me on BuyMeACoffee.</p>
+<p>Found this helpful? You can support me on BuyMeACoffee. Contributions are optional and are simply a way to show appreciation for this work, not a payment for services.</p>
 <a href="https://www.buymeacoffee.com/kereszteszsolt" target="_blank">
   <img src="readme-assets/orange-button.png" alt="Buy Me A Coffee" width="180"/>
 </a>
