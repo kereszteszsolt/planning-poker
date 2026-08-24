@@ -1,0 +1,26 @@
+{
+  "name": "planning-poker",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@10.9.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "screenshots": "turbo run screenshots"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.6"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "Apache-2.0"
+}

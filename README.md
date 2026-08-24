@@ -54,7 +54,7 @@ The server is authoritative for room membership, moderation, votes, reveal state
 
 ### Prerequisites
 
-- Node.js `20.19+` or `22.12+`
+- Node.js `22.12+`
 - npm
 
 ### Install and run both applications
@@ -63,12 +63,8 @@ The server is authoritative for room membership, moderation, votes, reveal state
 git clone https://github.com/kereszteszsolt/example-planning-poker-react-express-socket-io.git
 cd example-planning-poker-react-express-socket-io
 
-cd planning-poker-fe
 npm ci
-
-cd ../planning-poker-be
-npm ci
-npm run dev-concurrently
+npm run dev
 ```
 
 Open `http://localhost:5173`. The Socket.IO server listens on `http://localhost:3000`.
@@ -78,13 +74,10 @@ The safe local defaults work without environment variables. Backend host, port, 
 ### Build verification
 
 ```bash
-cd planning-poker-fe
 npm run lint
-npm test
+npm run typecheck
+npm run test
 npm run build
-
-cd ../planning-poker-be
-npm test
 ```
 
 See [testing and verification](docs/testing.md) for the manual room matrix and current automation gaps.
@@ -114,8 +107,9 @@ See [testing and verification](docs/testing.md) for the manual room matrix and c
 | Descriptor | `Real-time team estimation` |
 | Tagline | `Estimate. Discuss. Align.` |
 | Repository | `example-planning-poker-react-express-socket-io` |
-| Frontend package | `planning-poker-fe` |
-| Backend package | `planning-poker-be` |
+| Frontend package | `@planning-poker/web` (`apps/web`) |
+| Backend package | `@planning-poker/server` (`apps/server`) |
+| Shared contracts | `@planning-poker/contracts` (`packages/contracts`) |
 | Story prefix | `PP-` |
 | Maintainer | Keresztes Zsolt — [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
 

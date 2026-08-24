@@ -2,31 +2,28 @@
 
 ## Current automated baseline
 
-PP-004 adds focused server integration tests and React transport/session/component tests. CI, deterministic Playwright automation, visual baselines, and the root workspace gate remain planned for later Release 0.2 stories.
-
-### Frontend
+PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. CI, deterministic Playwright automation, and visual baselines remain planned for later Release 0.2 stories.
 
 ```bash
-cd planning-poker-fe
 npm ci
 npm run lint
+npm run typecheck
 npm test
 npm run build
 ```
 
-### Backend
+### Focused package checks
 
 ```bash
-cd planning-poker-be
-npm ci
-npm test
+npm run test -- --filter=@planning-poker/server
+npm run test -- --filter=@planning-poker/web
+npm run test -- --filter=@planning-poker/contracts
 ```
 
 ### Combined development smoke
 
 ```bash
-cd planning-poker-be
-npm run dev-concurrently
+npm run dev
 ```
 
 Open `http://localhost:5173` in at least three isolated browser contexts.

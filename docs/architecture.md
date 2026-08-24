@@ -117,9 +117,9 @@ sequenceDiagram
 6. Environment variables control endpoints, origins, participant/payload limits, recovery, and cleanup. Production refuses missing or wildcard origins.
 7. Numeric statistics exclude special cards while the distribution includes them; clipboard feedback is non-blocking and room links honor the Vite base path.
 
-Focused PP-004 server and React tests protect these rules. PP-005 will move the duplicated client/server contract types into one workspace package without changing event semantics.
+Focused PP-004 server and React tests protect these rules. PP-005 places the client and server in one Turborepo workspace and makes `@planning-poker/contracts` the shared source for room models, events, acknowledgements, public errors, value sets, and runtime validation schemas without changing event semantics.
 
-## Planned Release 0.2 target
+## Release 0.2 workspace and target boundaries
 
 ```mermaid
 flowchart LR
@@ -148,8 +148,8 @@ flowchart LR
 
 ### Target boundaries
 
-- **Turborepo** orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and `screenshots`; it does not change runtime behavior by itself.
-- **Shared contracts** define event payloads, acknowledgements, room types, and validation schemas once for both applications.
+- **Turborepo** currently orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and the reserved `screenshots` task; it does not change runtime behavior by itself.
+- **Shared contracts** currently define event payloads, acknowledgements, room types, public errors, value sets, and Zod validation schemas once for both applications.
 - **Zustand** owns serializable connection, session, and room state. The live Socket.IO instance stays in a transport service and is never persisted.
 - **Design tokens** are the shared language between Penpot and code. Global, semantic, and component tokens are separated.
 - **Penpot** documents current screens, target responsive behavior, reusable components, states, and the agreed token hierarchy.

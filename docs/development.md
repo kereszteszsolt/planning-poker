@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js `20.19+` or `22.12+`
+- Node.js `22.12+`
 - npm
 - Two browser profiles, private windows, or separate browsers for realistic multi-participant smoke tests
 
@@ -10,8 +10,12 @@
 
 ```text
 .
-├── planning-poker-fe/        React, Vite, Tailwind CSS, React Router, Socket.IO client
-├── planning-poker-be/        Express, HTTP server, Socket.IO server, in-memory rooms
+├── apps/
+│   ├── web/                  React, Vite, Tailwind CSS, React Router, Socket.IO client
+│   └── server/               Express, HTTP server, Socket.IO server, in-memory rooms
+├── packages/
+│   ├── contracts/            shared event types, room models, errors, and Zod schemas
+│   └── config/               shared TypeScript and ESLint foundations
 ├── readme-assets/            Repository mark, legacy screenshot, support image
 ├── docs/                     User, architecture, design, testing, and release documentation
 ├── LICENSE                   Apache-2.0 license text
@@ -20,22 +24,18 @@
 
 ## Install and run
 
-Install both lockfiles before using the combined development command:
+Install the single root lockfile, then start both applications through Turbo:
 
 ```bash
-cd planning-poker-fe
 npm ci
-
-cd ../planning-poker-be
-npm ci
-npm run dev-concurrently
+npm run dev
 ```
 
 The frontend starts at `http://localhost:5173`; the backend listens at `http://localhost:3000`.
 
 ## Runtime configuration
 
-The defaults below are safe for local development. Set backend variables in the shell that starts `npm run dev-be`; Vite reads frontend values from the shell or `planning-poker-fe/.env`. The checked `.env.example` files contain the same defaults.
+The defaults below are safe for local development. Set backend variables in the shell that starts `npm run dev`; Vite reads frontend values from the shell or `apps/web/.env`. The checked `apps/server/.env.example` and `apps/web/.env.example` files contain the same defaults.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -55,16 +55,22 @@ The defaults below are safe for local development. Set backend variables in the 
 Example production startup:
 
 ```bash
+npm run build
+
 NODE_ENV=production \
 PP_HOST=0.0.0.0 \
 PP_PORT=3000 \
 PP_ALLOWED_ORIGINS=https://poker.example.com \
-npm run build && npm start
+npm start --workspace @planning-poker/server
+
+npm start --workspace @planning-poker/web
 ```
+
+The frontend preview listens on port `4173` by default; set the production allowlist to its real deployed origin rather than the local example.
 
 Production startup fails when `PP_ALLOWED_ORIGINS` is missing or contains `*`. HTTPS/WSS termination remains the deployment reverse proxy's responsibility.
 
-The Release 0.1 package fixed three metadata defects:
+The Release 0.1 package fixed three legacy metadata defects before the workspace move:
 
 - `dev-be` no longer contains an accidental trailing quote;
 - `main` points to `./dist/index.js` instead of the misspelled `/dis/index.js`;
@@ -73,16 +79,20 @@ The Release 0.1 package fixed three metadata defects:
 ## Build and lint
 
 ```bash
-cd planning-poker-fe
 npm run lint
-npm test
+npm run typecheck
+npm run test
 npm run build
-
-cd ../planning-poker-be
-npm test
 ```
 
-The repository currently has separate lockfiles and no root task runner. Do not claim a one-command root build until [PP-005](releases/release-0.2-experience-foundation/stories/PP-005-turborepo-workspace-and-shared-contracts.md) is implemented.
+Use Turbo filters for focused work, including dependency builds when required:
+
+```bash
+npm run test -- --filter=@planning-poker/server
+npm run build -- --filter=@planning-poker/web
+```
+
+The root `screenshots` task is reserved in the task graph; deterministic generation remains part of [PP-009](releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md).
 
 ## Current code boundaries
 
@@ -92,7 +102,7 @@ The repository currently has separate lockfiles and no root task runner. Do not 
 - Keep the singleton transport in `socket-client.ts`, connection lifecycle in `SocketProvider`, and serializable context values in `socket-context.ts`.
 - Treat server `room-updated` payloads as canonical room state.
 - Keep ephemeral form and disclosure state local unless it must coordinate across room components.
-- Do not add a second copy of room or event types when the shared-contract package is introduced.
+- Import room and event types from `@planning-poker/contracts`; do not add an application-local copy.
 
 ### Backend
 
@@ -102,25 +112,26 @@ The repository currently has separate lockfiles and no root task runner. Do not 
 - Keep room lookup in `Map`, validate UUID/name/payload data before lookup or mutation, and return the shared acknowledgement envelope for every event.
 - Keep persistence, authentication, and horizontal scaling out of scope unless a release explicitly introduces them.
 
-## Planned Turborepo layout
+## Turborepo layout
 
-Release 0.2 proposes the following migration:
+PP-005 establishes the following current layout:
 
 ```text
 .
 ├── apps/
-│   ├── web/                   current planning-poker-fe
-│   └── server/                current planning-poker-be
+│   ├── web/                   @planning-poker/web
+│   └── server/                @planning-poker/server
 ├── packages/
 │   ├── contracts/             event payloads, acknowledgements, schemas, room types
-│   ├── design-tokens/         DTCG source and generated CSS variables
 │   └── config/                shared TypeScript and lint configuration
 ├── package.json               root scripts and workspaces
 ├── package-lock.json          one workspace lockfile
 └── turbo.json                 task graph, inputs, outputs, and cache policy
 ```
 
-Migration is complete only when clean-install, development, lint, typecheck, test, build, and screenshot commands run from the repository root and the old duplicate lockfiles are removed in the same reviewed change.
+`apps/*` depend on `packages/contracts`; the contract package depends only on the shared configuration package. Application-specific Vite, Socket.IO, and runtime settings remain inside their applications, preventing circular dependencies.
+
+Turbo caches reproducible builds and checks locally in `.turbo`, which is ignored. Remote caching is optional. Runtime and Vite variables that affect tasks are declared in `turbo.json`; development is persistent and uncached so `Ctrl+C` stops both application processes through the root task runner.
 
 ## Planned Zustand boundary
 

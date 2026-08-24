@@ -1,0 +1,55 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["package-lock.json"],
+  "tasks": {
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "env": [
+        "NODE_ENV",
+        "VITE_BASE_PATH",
+        "VITE_SOCKET_URL",
+        "VITE_SOCKET_PROXY_TARGET"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["build", "^build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "env": [
+        "NODE_ENV",
+        "PP_ALLOWED_ORIGINS",
+        "PP_HOST",
+        "PP_PORT",
+        "PP_MAX_PARTICIPANTS",
+        "PP_MAX_HTTP_BUFFER_BYTES",
+        "PP_ROOM_TTL_MS",
+        "PP_CLEANUP_INTERVAL_MS",
+        "PP_SESSION_TTL_MS",
+        "PP_RECOVERY_MAX_DISCONNECTION_MS"
+      ],
+      "outputs": []
+    },
+    "screenshots": {
+      "dependsOn": ["build", "^build"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", "../../docs/screenshots/**"],
+      "outputs": []
+    }
+  }
+}

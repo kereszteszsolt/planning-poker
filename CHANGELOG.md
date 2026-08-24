@@ -10,9 +10,10 @@ All notable repository-level changes are documented here. Product behavior that 
 - Typed acknowledgements, UUID/name validation, safe room maps, stable participant sessions, reconnect fallback, and deterministic lifecycle/moderation behavior.
 - Singleton frontend transport ownership, explicit connection states, accessible clipboard feedback, mixed-vote copy, and responsive join controls.
 - Focused Socket.IO server integration tests and React transport/session/component tests.
+- One root npm workspace with `apps/web`, `apps/server`, Turborepo tasks, one lockfile, and filterable root commands.
+- Shared room, event, acknowledgement, error, value-set, and runtime-validation contracts consumed by both applications.
 
 ### Planned for 0.2
-- Turborepo workspace and shared TypeScript contracts.
 - Zustand-based client state boundaries.
 - Design tokens and focused responsive UI polish.
 - Penpot design handoff and repository exports.

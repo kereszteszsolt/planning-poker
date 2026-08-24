@@ -79,7 +79,7 @@ Environment:
 
 - Automated checks: `node:22.22.0-bookworm-slim`.
 - Browser smoke: `mcr.microsoft.com/playwright:v1.62.1-noble`, headless Chromium, three isolated browser contexts.
-- Runtime defaults and every supported override are recorded in `planning-poker-be/.env.example`, `planning-poker-fe/.env.example`, and `docs/development.md`.
+- Runtime defaults and every supported override are recorded in `apps/server/.env.example`, `apps/web/.env.example`, and `docs/development.md` after the PP-005 workspace move.
 
 Commands and results:
 

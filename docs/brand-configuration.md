@@ -8,8 +8,9 @@
 | Descriptor | `Real-time team estimation` |
 | Tagline | `Estimate. Discuss. Align.` |
 | Repository | `example-planning-poker-react-express-socket-io` |
-| Frontend package | `planning-poker-fe` |
-| Backend package | `planning-poker-be` |
+| Frontend package | `@planning-poker/web` |
+| Backend package | `@planning-poker/server` |
+| Contracts package | `@planning-poker/contracts` |
 | Story prefix | `PP-` |
 | Maintainer | Keresztes Zsolt |
 | Public website | `https://kereszteszsolt.hu/` |
@@ -34,7 +35,7 @@ Do not imply that the mark is a trademark registration or that the generic Plann
 
 The current frontend uses React, Vite, Tailwind CSS, React Router, and Socket.IO Client. The backend uses Express, Socket.IO, TypeScript, and an in-memory room map. Do not describe the UI as Material UI unless MUI is actually introduced and used.
 
-Zustand, Turborepo, design-token runtime generation, Penpot synchronization, Playwright screenshots, and automated tests remain Release 0.2 plans until their stories contain implementation evidence.
+Turborepo and shared runtime-validated contracts are implemented by PP-005. Zustand, design-token runtime generation, Penpot synchronization, deterministic Playwright screenshots, and CI remain later Release 0.2 plans until their stories contain implementation evidence.
 
 ## Support and contact
 

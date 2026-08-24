@@ -1,71 +1,59 @@
-# Planning Poker package verification
+# Planning Poker verification
 
-## Verification status
+## PP-005 workspace verification
 
-**Static package verification passed. Dependency-backed build and runtime verification remain pending in a network-enabled environment.**
+PP-005 was verified on 2026-08-24 in `node:22.22.0-bookworm-slim` with npm `10.9.4` and Turborepo `2.10.11`. The clean-install gate ran from a separate `/tmp` copy that excluded `.git`, `.env`, `node_modules`, `dist`, `.turbo`, and `.vite` content.
 
-This report records what was actually checked for the Release 0.1 documentation package. It does not convert planned Release 0.2 work into implemented functionality.
+### Root quality gate
 
-## Environment
-
-| Property | Value |
-| --- | --- |
-| Verification date | 2026-08-24 |
-| Node.js | `v22.16.0` |
-| npm | `10.9.2` |
-| TypeScript CLI | `5.8.3` |
-| Package source | Supplied Planning Poker ZIP |
-
-## Source-change boundary
-
-The completed package was compared with the supplied archive before packaging.
-
-- Existing React, Express, and Socket.IO runtime source files are unchanged.
-- The root and frontend READMEs are replaced with project documentation.
-- New documentation, release stories, diagrams, screenshots, support material, and design-planning assets are added.
-- Runtime-adjacent changes are limited to `planning-poker-be/package.json` and `planning-poker-be/tsconfig.json`:
-  - remove the unmatched quote from `dev-be`;
-  - correct the package entry point to `./dist/index.js`;
-  - pair `module: NodeNext` with `moduleResolution: NodeNext`.
-
-## Passed checks
+```bash
+npm ci
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run screenshots
+npm audit --omit=dev
+```
 
 | Check | Result |
 | --- | --- |
-| Markdown files parsed for local references | 29 files checked |
-| Relative Markdown/HTML links and assets | 87 references resolved inside the package |
-| JSON and JSON-with-comments documents | 10 files parsed |
-| Package manifest/lock dependency metadata | Consistent |
-| SVG XML | 4 files well formed |
-| PNG/JPG/WebP integrity | 5 files verified |
-| JavaScript syntax | 1 configuration file checked with `node --check` |
-| TypeScript/TSX parser diagnostics | 24 source/configuration files checked without syntax errors |
-| Backend TypeScript configuration | `tsc --showConfig` accepts the corrected NodeNext pairing |
-| README final section order | `License`, `Support`, `Made with love` |
-| Public documentation email boundary | No email address found |
-| Documentation code fences and whitespace | Balanced and clean |
-| Package hygiene | No `node_modules`, `dist`, `.git`, or cache directory included |
+| Clean root install | One root lockfile installed 373 packages; no nested lockfiles were present |
+| Lint | Contracts, server, and web tasks passed |
+| Typecheck | Contracts build/typecheck plus server and web typechecks passed |
+| Contract tests | 4 passed: normalization, malformed payload rejection, forward-compatible metadata filtering, and supported value sets |
+| Server integration tests | 5 passed with the PP-004 room, validation, moderation, reconnect, and cleanup matrix unchanged |
+| Web tests | 3 files and 5 tests passed |
+| Production builds | Contracts, server, and web builds passed; the repeated root build was 3/3 cache hits |
+| Screenshot task | Root task and declared build dependencies passed; capture generation remains reserved for PP-009 |
+| Production dependency audit | 0 vulnerabilities reported |
 
-The design-board PNG was also visually inspected after rendering from its SVG source.
+The final gate used ESLint `10.9.1`, retained all 14 passing tests, and reported 0 vulnerabilities.
 
-## Checks not completed in this environment
+### Focused and runtime checks
 
-An npm registry probe failed with DNS error `EAI_AGAIN`. The dependency cache was not populated, so the following commands could not be rerun reliably:
+The documented filters were exercised successfully:
 
 ```bash
-cd planning-poker-fe
-npm ci
-npm run lint
-npm run build
-
-cd ../planning-poker-be
-npm ci
-npm run build
-npm run dev-concurrently
+npm run test -- --filter=@planning-poker/server
+npm run build -- --filter=@planning-poker/web
 ```
 
-This is an environment limitation, not evidence that these commands pass or fail. Run them from a clean checkout with registry access before publishing a tag. Then execute the multi-browser scenarios in the [testing matrix](testing.md).
+The filtered server test included the contracts and server builds, then passed all five server tests. The filtered web build included the contracts dependency and completed from cache.
 
-## Release decision
+`npm run dev` built the contracts package, started Vite on `http://localhost:5173` and the server on `http://127.0.0.1:3000`, then reported `Shutting down Turborepo tasks...` when the time-limited harness sent `SIGINT`.
 
-The package is suitable for documentation review and for importing into a development branch. A production or tagged application release should remain blocked until dependency installation, lint, frontend build, backend build, and the relevant room smoke scenarios pass in a network-enabled environment.
+After a clean root build, both generated applications were started from package output. Local HTTP probes returned:
+
+```json
+[
+  { "status": 200, "body": { "service": "planning-poker", "status": "ok" } },
+  { "status": 200, "html": true }
+]
+```
+
+The package graph contained only the intended direction: both apps depend on `@planning-poker/contracts` and `@planning-poker/config`; contracts depend on config; config has no dependency on an app or contracts.
+
+## Remaining release checks
+
+PP-005 preserves the PP-004 automated behavior matrix and does not change the documented ports, UI layout, or Socket.IO event names. A fresh interactive multi-browser run was not repeated for this directory-only boundary change. Deterministic browser, accessibility, and screenshot evidence remains scoped to PP-009 and PP-010.
