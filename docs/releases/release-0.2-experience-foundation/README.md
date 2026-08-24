@@ -22,7 +22,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 
 | Story | Focus | Status |
 | --- | --- | --- |
-| [PP-004](stories/PP-004-runtime-and-room-lifecycle-hardening.md) | Runtime configuration, validation, reconnect, lifecycle, moderation, and current defects | Planned |
+| [PP-004](stories/PP-004-runtime-and-room-lifecycle-hardening.md) | Runtime configuration, validation, reconnect, lifecycle, moderation, and current defects | Implemented |
 | [PP-005](stories/PP-005-turborepo-workspace-and-shared-contracts.md) | npm workspaces, Turborepo, one lockfile, shared events/types/schemas | Planned |
 | [PP-006](stories/PP-006-zustand-room-state-boundary.md) | Connection/session/room store slices and transport lifecycle | Planned |
 | [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Planned |
@@ -55,7 +55,7 @@ The order is directional, not a reason to postpone regression tests. PP-004 must
 
 ### Phase A: Stabilize behavior
 
-Implement PP-004 with focused server/client tests. Freeze event semantics before moving directories.
+PP-004 is implemented with focused server/client tests and frozen event semantics for the later directory move.
 
 ### Phase B: Establish repository boundaries
 
@@ -77,8 +77,8 @@ Complete PP-010, update all story evidence, run the full root pipeline on a clea
 
 - [ ] A clean checkout installs with one root `npm ci` and one lockfile.
 - [ ] Root `dev`, `lint`, `typecheck`, `test`, `build`, and `screenshots` commands are documented and pass.
-- [ ] No known duplicate socket creation, stale reconnect closure, ghost kicked participant, empty-room leak, arbitrary room-key, or fixed-width join defect remains.
-- [ ] Recoverable and unrecoverable reconnects have explicit, tested UI behavior.
+- [x] No known duplicate socket creation, stale reconnect closure, ghost kicked participant, empty-room leak, arbitrary room-key, or fixed-width join defect remains.
+- [x] Recoverable and unrecoverable reconnects have explicit, tested UI behavior.
 - [ ] Event payloads and acknowledgements are shared and runtime-validated.
 - [ ] Zustand contains serializable state only and resets safely on leave, kick, close, and unrecoverable session loss.
 - [ ] Approved DTCG tokens generate application variables and are imported into Penpot.

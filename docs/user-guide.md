@@ -21,7 +21,7 @@ There are two supported paths:
 - Open a shared `/room/<room-id>` link, enter a name, and join.
 - Paste the room UUID on the home screen, select **Join Room**, then enter a name.
 
-Names must be unique inside the room. The current server does not enforce a documented maximum length, so use a short, recognizable display name and avoid sensitive information.
+Names are trimmed, must contain 2-40 characters, cannot contain control characters, and are compared case-insensitively for duplicates. A room accepts at most 20 active participants by default.
 
 ## Select a value set
 
@@ -56,13 +56,13 @@ The moderator can:
 - remove another participant;
 - delegate moderator status to another participant.
 
-When no current participant has the moderator flag, a participant sees **Take over moderator role**. Release 0.2 plans to make disconnect, reconnection, removal, and moderator handoff behavior deterministic and covered by integration tests.
+When the moderator leaves, disconnects, or is removed, the longest-present eligible participant becomes moderator. Delegation always leaves exactly one moderator and cannot target the requester or a missing participant.
 
 ## Connection states
 
-The application shows a connecting card when it believes the local Socket.IO server is unavailable. The current reconnect path is best-effort and has known state-identity limitations. After a long interruption, return to the room link and join again if the room still exists.
+The application distinguishes initial connection, connected, reconnecting, recoverable error, lost session, and unavailable server states. A participant UUID is independent of the current socket ID. A short-lived token in `sessionStorage` lets the client request the canonical room snapshot and resume the same identity after a temporary disconnect when the room still exists. No room snapshot or vote is persisted in browser storage.
 
-Rooms are in memory only. Restarting the backend deletes every room. Inactivity cleanup deletes a room after roughly one hour without updates, checked every ten minutes.
+Rooms are in memory only. Restarting the backend deletes every room. Explicit leave and final disconnect delete an empty room immediately. Inactivity cleanup closes a room after one hour without updates, checked every minute by default.
 
 ## Privacy and safe use
 
@@ -81,11 +81,11 @@ For public deployment, review [privacy and contact boundaries](privacy-and-conta
 
 ### A name is already taken
 
-Choose a different name. A disconnected participant can remain visible briefly or until the server processes the disconnect. Reconnection identity is part of the Release 0.2 hardening plan.
+Choose a different name. A recovering participant uses their session token and therefore does not collide with their own previous name.
 
 ### Copy buttons fail
 
-Clipboard access depends on browser permissions and secure-context rules. Copy the room ID or URL manually from the page or address bar. Release 0.2 will replace blocking alerts with accessible success and error feedback.
+Clipboard access depends on browser permissions and secure-context rules. The page reports success or failure without a blocking dialog; if access fails, copy the room ID or URL manually.
 
 ### The room vanished
 

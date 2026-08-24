@@ -8,10 +8,10 @@ type VotesProps = {
 
 const Votes: React.FC<VotesProps> = ({ participants, isRevealed }) => {
   const votedParticipants = Object.entries(participants).filter(
-    ([_, participant]) => participant.voted,
+    ([, participant]) => participant.voted,
   );
   const notVotedParticipants = Object.entries(participants).filter(
-    ([_, participant]) => !participant.voted,
+    ([, participant]) => !participant.voted,
   );
 
   return (

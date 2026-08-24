@@ -25,18 +25,20 @@ const AboutScreen: React.FC = () => {
             How to Use This App
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            1. **Create or Join a Room**: Enter a room ID or create a new one.
+            1. <strong>Create or Join a Room:</strong> Enter a room ID or create
+            a new one.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            2. **Invite Participants**: Share the room link with your team.
+            2. <strong>Invite Participants:</strong> Share the room link with
+            your team.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            3. **Vote**: Select a card representing your estimate and reveal
-            your vote.
+            3. <strong>Vote:</strong> Select a card representing your estimate
+            and reveal your vote.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            4. **Discuss and Repeat**: Discuss estimates and vote again if
-            needed.
+            4. <strong>Discuss and Repeat:</strong> Discuss estimates and vote
+            again if needed.
           </p>
         </section>
 
@@ -55,9 +57,10 @@ const AboutScreen: React.FC = () => {
             the room.
           </p>
           <p className="text-gray-600 leading-relaxed font-medium">
-            <strong>No Encryption:</strong> Data transmitted during your session
-            is not encrypted. Do not use this app for sensitive or confidential
-            information.
+            <strong>Transport Security Depends on Deployment:</strong> Local
+            development uses HTTP and does not encrypt traffic. A deployment
+            using HTTPS/WSS can protect traffic in transit, but room links still
+            act as access credentials. Do not share sensitive information.
           </p>
           <p className="text-gray-600 leading-relaxed font-medium">
             <strong>Use at Your Own Risk:</strong> You are solely responsible

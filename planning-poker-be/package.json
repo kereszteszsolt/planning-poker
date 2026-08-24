@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node ./dist/index.js",
-    "dev-be": "nodemon ./src/index.ts",
+    "dev-be": "tsx watch ./src/index.ts",
     "dev-concurrently": "concurrently \"npm run dev-be\" \"npm run dev-fe --prefix ./../planning-poker-fe\" ",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "npm run build && node --test tests/*.test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -21,11 +22,12 @@
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
-    "@types/socket.io": "^3.0.1",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "socket.io-client": "^4.8.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
 }

@@ -1,40 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../SocketProvider.tsx";
+import { SocketContext } from "../socket-context.ts";
 import Connecting from "../shared/components/Connecting.tsx";
 
 const HomeScreen: React.FC = () => {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [joinRoomId, setJoinRoomId] = useState("");
-  const [serverIsDown, setServerIsDown] = useState(false);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    if (!socket.connected) {
-      setServerIsDown(true);
-    }
-
-    socket.on("connect", () => {
-      setServerIsDown(false);
-    });
-
-    socket.on("disconnect", () => {
-      setServerIsDown(true);
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-    };
-  }, [socket]);
+  const [error, setError] = useState("");
 
   const handleCreateRoom = () => {
-    socket &&
-      socket.emit("create-room", {}, (response: { roomId: string }) => {
-        navigate(`/room/${response.roomId}`);
-      });
+    if (!socket) return;
+    setError("");
+    socket.socket.emit("create-room", {}, (response) => {
+      if (response.ok) navigate(`/room/${response.data.roomId}`);
+      else setError(response.error.message);
+    });
   };
 
   const handleJoinRoom = () => {
@@ -45,8 +26,9 @@ const HomeScreen: React.FC = () => {
 
   const isJoinDisabled = !joinRoomId.trim();
 
-  if (serverIsDown) {
-    return <Connecting />;
+  if (!socket) return null;
+  if (socket.status !== "connected") {
+    return <Connecting status={socket.status} onRetry={socket.retry} />;
   }
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
@@ -60,6 +42,11 @@ const HomeScreen: React.FC = () => {
       <p className="mb-6 text-gray-600 text-center">
         Get started by creating or joining a room!
       </p>
+      {error && (
+        <p className="mb-4 text-red-700 text-center" role="alert">
+          {error}
+        </p>
+      )}
       <div className="flex flex-row gap-4">
         <button
           className="w-1/2 p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"

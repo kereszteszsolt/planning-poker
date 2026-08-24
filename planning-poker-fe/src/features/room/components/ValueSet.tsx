@@ -1,13 +1,14 @@
 import { votingValueSets } from "../../../shared/constants/voting-value-sets.ts";
+import type { ValueSet } from "../../../shared/types";
 import React from "react";
 
 type ValueSetProps = {
-  currentValueSet: string;
-  changeValueSet: (newValueSet: string) => void;
+  currentValueSet: ValueSet;
+  changeValueSet: (newValueSet: ValueSet) => void;
   isModerator: boolean;
 };
 
-const ValueSet: React.FC<ValueSetProps> = ({
+const ValueSetControl: React.FC<ValueSetProps> = ({
   currentValueSet,
   changeValueSet,
   isModerator,
@@ -19,7 +20,7 @@ const ValueSet: React.FC<ValueSetProps> = ({
       </h2>
       {isModerator && (
         <div className="mb-6 flex flex-wrap gap-4">
-          {Object.keys(votingValueSets).map((set) => (
+          {(Object.keys(votingValueSets) as ValueSet[]).map((set) => (
             <label key={set} className="flex items-center space-x-2">
               <input
                 type="radio"
@@ -39,4 +40,4 @@ const ValueSet: React.FC<ValueSetProps> = ({
   );
 };
 
-export default ValueSet;
+export default ValueSetControl;

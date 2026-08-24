@@ -4,9 +4,14 @@ All notable repository-level changes are documented here. Product behavior that 
 
 ## [Unreleased]
 
-### Planned for 0.2
+### Implemented for 0.2
 
-- Runtime and room lifecycle hardening.
+- Environment-driven runtime endpoints, exact production CORS allowlists, payload and participant limits.
+- Typed acknowledgements, UUID/name validation, safe room maps, stable participant sessions, reconnect fallback, and deterministic lifecycle/moderation behavior.
+- Singleton frontend transport ownership, explicit connection states, accessible clipboard feedback, mixed-vote copy, and responsive join controls.
+- Focused Socket.IO server integration tests and React transport/session/component tests.
+
+### Planned for 0.2
 - Turborepo workspace and shared TypeScript contracts.
 - Zustand-based client state boundaries.
 - Design tokens and focused responsive UI polish.

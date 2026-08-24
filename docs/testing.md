@@ -2,7 +2,7 @@
 
 ## Current automated baseline
 
-The supplied project has lint and build scripts but no committed unit, integration, end-to-end, or CI suite. Release 0.1 therefore documents the repeatable baseline without inventing passing tests.
+PP-004 adds focused server integration tests and React transport/session/component tests. CI, deterministic Playwright automation, visual baselines, and the root workspace gate remain planned for later Release 0.2 stories.
 
 ### Frontend
 
@@ -10,6 +10,7 @@ The supplied project has lint and build scripts but no committed unit, integrati
 cd planning-poker-fe
 npm ci
 npm run lint
+npm test
 npm run build
 ```
 
@@ -18,7 +19,7 @@ npm run build
 ```bash
 cd planning-poker-be
 npm ci
-npm run build
+npm test
 ```
 
 ### Combined development smoke
@@ -28,7 +29,7 @@ cd planning-poker-be
 npm run dev-concurrently
 ```
 
-Open `http://localhost:5173` in at least two isolated browser contexts.
+Open `http://localhost:5173` in at least three isolated browser contexts.
 
 ## Manual smoke matrix
 
@@ -47,15 +48,15 @@ Open `http://localhost:5173` in at least two isolated browser contexts.
 | SM-11 | Numeric result | Average, minimum, maximum or consensus, and distribution are correct |
 | SM-12 | Mixed numeric and special cards | Distribution includes all cards; numeric calculation excludes special cards |
 | SM-13 | Delegate moderation | Old moderator loses controls; new moderator gains them |
-| SM-14 | Moderator disconnects | No participant is moderator and takeover is offered |
-| SM-15 | Take over moderation | Exactly one current participant becomes moderator |
+| SM-14 | Moderator disconnects | The longest-present eligible participant becomes the sole moderator |
+| SM-15 | Reconnect moderator identity | A recoverable session returns with the same participant ID and a fresh canonical snapshot without duplicating the name |
 | SM-16 | Kick participant | Removed client sees the kicked message and no longer affects room state |
 | SM-17 | Copy room ID and link | Clipboard receives the intended value or an actionable failure is shown |
 | SM-18 | Narrow viewport | Home, join, room controls, cards, and participants remain usable without horizontal page overflow |
 | SM-19 | Backend interruption and restart | UI reports connection loss; recovery behavior matches documented limitations |
 | SM-20 | One-hour inactivity cleanup in accelerated test | Clients receive room closure and the room cannot be mutated afterwards |
 
-SM-16, SM-18, and SM-19 are expected to expose known issues in the current implementation. They become release gates in Release 0.2 rather than being marked as currently passing.
+The focused automated PP-004 suite covers the contract and lifecycle portions of this matrix. Browser smoke evidence must still record the exact browser/container version and three-context result; PP-009 and PP-010 will make that flow deterministic in the release pipeline.
 
 ## Release 0.2 automation target
 

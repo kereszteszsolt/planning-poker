@@ -10,6 +10,11 @@ const messages: Record<string, { title: string; description: string }> = {
     description:
       "You were removed from the room. Please contact the moderator if you have questions.",
   },
+  "session-replaced": {
+    title: "Session Moved",
+    description:
+      "This room session was resumed in another browser connection. Rejoin with a new name if that was not intentional.",
+  },
 };
 
 const MessageScreen: React.FC = () => {

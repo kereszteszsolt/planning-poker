@@ -19,7 +19,7 @@ const Statistics: React.FC<StatisticsProps> = ({
   // Calculate frequency for all votes (numeric and non-numeric)
   const frequency = votes.reduce(
     (acc, vote) => {
-      const key = typeof vote === "number" ? vote.toString() : vote;
+      const key = vote === undefined ? "undefined" : vote.toString();
       acc[key] = (acc[key] || 0) + 1;
       return acc;
     },
@@ -30,7 +30,7 @@ const Statistics: React.FC<StatisticsProps> = ({
   const numericVotes = votes.filter((v): v is number => typeof v === "number");
   const hasNumericVotes = numericVotes.length > 0;
 
-  // Calculate average, min, max only if all votes are numeric
+  // Special votes remain in the distribution and are excluded from numeric calculations.
   const average = hasNumericVotes
     ? (numericVotes.reduce((a, b) => a + b, 0) / numericVotes.length).toFixed(2)
     : null;
@@ -77,6 +77,12 @@ const Statistics: React.FC<StatisticsProps> = ({
                   </>
                 )}
               </div>
+            )}
+            {hasNumericVotes && numericVotes.length < votes.length && (
+              <p className="text-sm text-gray-600">
+                Special cards are shown in the distribution and excluded from
+                numeric statistics.
+              </p>
             )}
 
             <div className="space-y-2">

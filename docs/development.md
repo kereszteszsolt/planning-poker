@@ -33,7 +33,38 @@ npm run dev-concurrently
 
 The frontend starts at `http://localhost:5173`; the backend listens at `http://localhost:3000`.
 
-The Release 0.1 package fixes two package metadata defects only:
+## Runtime configuration
+
+The defaults below are safe for local development. Set backend variables in the shell that starts `npm run dev-be`; Vite reads frontend values from the shell or `planning-poker-fe/.env`. The checked `.env.example` files contain the same defaults.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PP_HOST` | `127.0.0.1` | Backend bind host |
+| `PP_PORT` | `3000` | Backend HTTP/Socket.IO port |
+| `PP_ALLOWED_ORIGINS` | local `localhost` and `127.0.0.1` port `5173` | Comma-separated browser origin allowlist; required and non-wildcard in production |
+| `PP_MAX_PARTICIPANTS` | `20` | Maximum active participants per room |
+| `PP_MAX_HTTP_BUFFER_BYTES` | `100000` | Socket.IO payload-size ceiling |
+| `PP_ROOM_TTL_MS` | `3600000` | Inactivity lifetime before room closure |
+| `PP_CLEANUP_INTERVAL_MS` | `60000` | Cleanup check interval |
+| `PP_SESSION_TTL_MS` | `120000` | Disconnect fallback-token lifetime |
+| `PP_RECOVERY_MAX_DISCONNECTION_MS` | `120000` | Socket.IO connection-state recovery window |
+| `VITE_SOCKET_URL` | empty | Explicit browser Socket.IO endpoint; empty uses same origin |
+| `VITE_SOCKET_PROXY_TARGET` | `http://127.0.0.1:3000` | Local Vite `/socket.io` WebSocket proxy target |
+| `VITE_BASE_PATH` | `/` | Deployment base path used by Vite and copied room links |
+
+Example production startup:
+
+```bash
+NODE_ENV=production \
+PP_HOST=0.0.0.0 \
+PP_PORT=3000 \
+PP_ALLOWED_ORIGINS=https://poker.example.com \
+npm run build && npm start
+```
+
+Production startup fails when `PP_ALLOWED_ORIGINS` is missing or contains `*`. HTTPS/WSS termination remains the deployment reverse proxy's responsibility.
+
+The Release 0.1 package fixed three metadata defects:
 
 - `dev-be` no longer contains an accidental trailing quote;
 - `main` points to `./dist/index.js` instead of the misspelled `/dis/index.js`;
@@ -44,10 +75,11 @@ The Release 0.1 package fixes two package metadata defects only:
 ```bash
 cd planning-poker-fe
 npm run lint
+npm test
 npm run build
 
 cd ../planning-poker-be
-npm run build
+npm test
 ```
 
 The repository currently has separate lockfiles and no root task runner. Do not claim a one-command root build until [PP-005](releases/release-0.2-experience-foundation/stories/PP-005-turborepo-workspace-and-shared-contracts.md) is implemented.
@@ -57,7 +89,7 @@ The repository currently has separate lockfiles and no root task runner. Do not 
 ### Frontend
 
 - Keep route composition in `App.tsx`.
-- Keep transport construction and cleanup in one explicit boundary; the current `SocketProvider` needs hardening before more socket-dependent features are added.
+- Keep the singleton transport in `socket-client.ts`, connection lifecycle in `SocketProvider`, and serializable context values in `socket-context.ts`.
 - Treat server `room-updated` payloads as canonical room state.
 - Keep ephemeral form and disclosure state local unless it must coordinate across room components.
 - Do not add a second copy of room or event types when the shared-contract package is introduced.
@@ -67,7 +99,7 @@ The repository currently has separate lockfiles and no root task runner. Do not 
 - Every mutating event must verify room existence, participant membership, authorization, and payload validity.
 - Broadcast only after the state transition succeeds.
 - Keep room cleanup and moderator handoff rules explicit and testable.
-- Avoid using unvalidated user input as a key on a normal JavaScript object; Release 0.2 should move room storage to a `Map` or another safe abstraction.
+- Keep room lookup in `Map`, validate UUID/name/payload data before lookup or mutation, and return the shared acknowledgement envelope for every event.
 - Keep persistence, authentication, and horizontal scaling out of scope unless a release explicitly introduces them.
 
 ## Planned Turborepo layout

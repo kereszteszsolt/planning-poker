@@ -15,8 +15,9 @@ flowchart LR
 
     A <-->|HTTP + Socket.IO| S[Express HTTP server\nSocket.IO event handlers]
     B <-->|HTTP + Socket.IO| S
-    S --> M[(rooms object\nin process memory)]
-    S --> C[10-minute cleanup interval]
+    S --> M[(rooms Map\nin process memory)]
+    S --> T[(short-lived session Map)]
+    S --> C[configurable cleanup interval]
     C --> M
 ```
 
@@ -25,42 +26,44 @@ flowchart LR
 | Boundary | Current responsibility |
 | --- | --- |
 | React Router | Home, room, message, and about routes |
-| `SocketProvider` | Constructs the Socket.IO client and exposes it through React context |
+| `socket-client` | Owns the single Socket.IO client and environment-selected endpoint |
+| `SocketProvider` | Owns connection listeners, status transitions, retry, and final disconnect cleanup |
 | `HomeScreen` | Creates rooms, accepts room IDs, and reports connection state |
-| `RoomScreen` | Joins a room, subscribes to room events, derives the current participant, and wires all room actions |
+| `RoomScreen` | Resumes the session-scoped participant identity, subscribes once to room events, and applies canonical snapshots/acknowledgements |
 | Room components | Voting cards, controls, participants, results, statistics, and room sharing |
-| Socket.IO server | Validates a limited set of actions, mutates room state, and broadcasts full snapshots |
-| `rooms` object | In-memory room lookup keyed by room ID |
-| Cleanup interval | Deletes rooms inactive for more than one hour |
+| Socket.IO server | Validates every action, acknowledges success/error, mutates authoritative state, and broadcasts full snapshots |
+| `rooms` Map | UUID-keyed in-memory room lookup immune to special object keys |
+| `sessions` Map | Short-lived token-to-participant recovery records; never exposed in room snapshots |
+| Cleanup interval | Emits closure, removes expired rooms/sessions, and can use an injected clock in tests |
 
 The current client has no global application store. Most room and connection state lives in `RoomScreen`; join input and other small concerns stay in local component state.
 
 ## Current room model
 
 ```text
-Room
+Public Room snapshot
 ├── id: string
 ├── valueSet: "scrum" | "fibonacci" | "tshirt" | "days"
-├── participants: Record<socketId, Participant>
+├── participants: Record<participantUuid, Participant>
 ├── revealed: boolean
-└── lastUpdated?: number
+└── lastUpdated: number
 
 Participant
-├── id: socketId
+├── id: stable participant UUID
 ├── name: string
 ├── voted: boolean
 ├── vote?: number | string
 └── isModerator: boolean
 ```
 
-The socket ID is currently both transport identity and participant identity. That makes reconnection behavior fragile because a new unrecovered Socket.IO session may receive a new ID.
+Internal participant records additionally contain the current socket ID, an unguessable short-lived session token, and join order. The token is returned only to its participant and stored in browser `sessionStorage`; it is not included in `room-updated`. A recovered or fallback connection binds a new socket ID to the stable participant UUID and always receives a fresh canonical snapshot.
 
 ## Event contract
 
 | Client event | Payload | Server effect | Authorization |
 | --- | --- | --- | --- |
 | `create-room` | empty object | Creates a UUID room with the Scrum value set | Any connected socket |
-| `join-room` | `roomId`, `name` | Creates missing room, rejects duplicate name, adds participant | Any connected socket |
+| `join-room` | `roomId`, `name`, optional `sessionToken` | Joins an existing room or resumes a valid short-lived session | Any connected socket |
 | `vote` | `roomId`, `vote` | Stores vote and reveals automatically when everyone voted | Room participant |
 | `revoke` | `roomId` | Deletes caller's vote and hides results | Room participant |
 | `reveal` | `roomId` | Reveals current votes | Moderator |
@@ -68,10 +71,10 @@ The socket ID is currently both transport identity and participant identity. Tha
 | `change-value-set` | `roomId`, `valueSet` | Changes set and clears votes | Moderator |
 | `kick-out` | `roomId`, `participantId` | Removes participant record and emits `kicked-out` | Moderator |
 | `delegate` | `roomId`, `participantId` | Transfers moderator flag | Moderator |
-| `take-over` | `roomId` | Claims moderation when no moderator exists | Room participant |
+| `take-over` | `roomId` | Defensive fallback only when no moderator exists | Room participant |
 | `leave-room` | `roomId` | Removes caller from the participant record | Room participant |
 
-The server broadcasts `room-updated` with the complete room snapshot after successful mutations. It also emits `room-closed` after inactivity and `kicked-out` to a removed participant.
+Every client event receives `{ ok: true, data }` or `{ ok: false, error: { code, message, recoverable } }`. The server broadcasts `room-updated` only after successful mutations. It emits `room-closed` before inactivity teardown, `kicked-out` before forcing a removed socket to leave, and `session-replaced` when the same token moves to another connection.
 
 ## Core interaction sequence
 
@@ -104,22 +107,17 @@ sequenceDiagram
     S-->>PW: room-updated(revealed=true when all voted)
 ```
 
-## Current lifecycle findings
+## Current lifecycle rules
 
-The supplied implementation is intentionally small, but the following findings should be treated as product defects or hardening work rather than documentation-only concerns:
+1. Only `create-room` creates rooms; join validates the UUID and returns `ROOM_NOT_FOUND` for unknown or expired rooms.
+2. Display names are trimmed, 2-40 characters, control-character free, and duplicate-compared after Unicode normalization and case folding.
+3. Explicit leave, kick, and disconnect remove both application membership and Socket.IO room membership. An empty room is deleted immediately.
+4. Moderator departure transfers deterministically to the longest-present eligible participant, and each emitted snapshot has at most one moderator.
+5. Disconnect retains a short-lived recovery record only while the room remains alive. Rejoin restores the stable identity and compatible vote, then applies the latest room snapshot.
+6. Environment variables control endpoints, origins, participant/payload limits, recovery, and cleanup. Production refuses missing or wildcard origins.
+7. Numeric statistics exclude special cards while the distribution includes them; clipboard feedback is non-blocking and room links honor the Vite base path.
 
-1. `SocketProvider` creates a client during render and does not own an explicit disconnect cleanup. React rerenders or Strict Mode can therefore produce avoidable connection churn.
-2. The reconnect listener in `RoomScreen` closes over state that is not part of the effect dependency list, so the intended automatic rejoin can miss the current participant.
-3. Participant identity is the ephemeral socket ID, while the server does not enable Socket.IO connection-state recovery or maintain a separate session token.
-4. `join-room` accepts arbitrary room IDs and creates a room when none exists. It has no UUID, name-length, or payload-shape validation. A plain object is used as the room map.
-5. `leave-room` removes the participant but does not delete an empty room. The README must therefore not claim that every explicit last leave immediately closes the room.
-6. `kick-out` deletes the participant record but does not force the socket to leave the Socket.IO room, because that line is currently commented out.
-7. CORS accepts every origin and both frontend and server endpoints are hardcoded for localhost.
-8. The About page says Markdown-style `**text**` inside JSX and makes an absolute no-encryption statement that is inaccurate for HTTPS/WSS deployments.
-9. The join card has a fixed `657px` width, which can overflow narrow screens.
-10. The original README claimed Material UI and median statistics, neither of which exists in the supplied code.
-
-These items are converted into acceptance criteria in [PP-004](releases/release-0.2-experience-foundation/stories/PP-004-runtime-and-room-lifecycle-hardening.md), [PP-007](releases/release-0.2-experience-foundation/stories/PP-007-design-tokens-and-ui-polish.md), and [PP-010](releases/release-0.2-experience-foundation/stories/PP-010-test-and-ci-foundation.md).
+Focused PP-004 server and React tests protect these rules. PP-005 will move the duplicated client/server contract types into one workspace package without changing event semantics.
 
 ## Planned Release 0.2 target
 

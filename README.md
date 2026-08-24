@@ -48,7 +48,7 @@ flowchart LR
     SERVER --> TIMER[Inactive-room cleanup]
 ```
 
-The server is authoritative for room membership, moderation, votes, reveal state, and value-set selection. The browser renders the latest `room-updated` snapshot. There is no database, authentication service, or durable room recovery in the current implementation. Read the [architecture guide](docs/architecture.md) before changing event names or room lifecycle behavior.
+The server is authoritative for room membership, moderation, votes, reveal state, and value-set selection. The browser renders the latest `room-updated` snapshot and keeps only a short-lived participant token in `sessionStorage` for reconnect fallback. There is no database, account service, or durable room history. Read the [architecture guide](docs/architecture.md) before changing event names or room lifecycle behavior.
 
 ## Quick start
 
@@ -73,17 +73,18 @@ npm run dev-concurrently
 
 Open `http://localhost:5173`. The Socket.IO server listens on `http://localhost:3000`.
 
-The documentation release corrects the backend development script's accidental trailing quote, its `dist` entry-point typo, and the TypeScript `NodeNext` module mismatch that prevented compilation. Environment-based endpoints, a root workspace command, and Turborepo are planned for Release 0.2 rather than silently introduced here.
+The safe local defaults work without environment variables. Backend host, port, allowed origins, limits, cleanup/recovery timing, the frontend Socket.IO URL, local proxy target, and deployment base path can be configured as documented in the [development guide](docs/development.md#runtime-configuration). Production requires an explicit non-wildcard origin allowlist.
 
 ### Build verification
 
 ```bash
 cd planning-poker-fe
 npm run lint
+npm test
 npm run build
 
 cd ../planning-poker-be
-npm run build
+npm test
 ```
 
 See [testing and verification](docs/testing.md) for the manual room matrix and current automation gaps.
@@ -124,7 +125,7 @@ The product name remains intentionally descriptive. A future repository rename s
 
 Rooms and votes exist only in the server process memory. They disappear when the process restarts, when the disconnect path removes the last participant, or when the inactivity cleanup expires the room. A room link acts as the only access boundary; do not use the current application for confidential story titles, customer data, credentials, or regulated information.
 
-Transport encryption depends on deployment. Local development uses plain HTTP. A public deployment should terminate HTTPS/WSS at a trusted reverse proxy, restrict allowed origins, and apply the validation and lifecycle hardening planned in [PP-004](docs/releases/release-0.2-experience-foundation/stories/PP-004-runtime-and-room-lifecycle-hardening.md).
+Transport encryption depends on deployment. Local development uses plain HTTP. A public deployment should terminate HTTPS/WSS at a trusted reverse proxy and set `PP_ALLOWED_ORIGINS` to the exact frontend origins; production startup rejects a missing or wildcard allowlist.
 
 ## Support and contact
 
