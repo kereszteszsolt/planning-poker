@@ -2,11 +2,11 @@
   "name": "planning-poker-be",
   "version": "1.0.0",
   "description": "planning-poker-backend",
-  "main": "/dis/index.js",
+  "main": "./dist/index.js",
   "type": "module",
   "scripts": {
     "start": "node ./dist/index.js",
-    "dev-be": "nodemon ./src/index.ts\"",
+    "dev-be": "nodemon ./src/index.ts",
     "dev-concurrently": "concurrently \"npm run dev-be\" \"npm run dev-fe --prefix ./../planning-poker-fe\" ",
     "build": "tsc"
   },

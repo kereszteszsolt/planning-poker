@@ -1,38 +1,161 @@
-# Planning Poker — React + MUI + Express + Socket.IO
+<p align="center">
+  <img src="readme-assets/planning-poker-mark.svg" alt="Planning Poker card mark" width="96" height="96">
+</p>
 
-A simple Planning Poker example app built with React, Material UI (MUI), Express.js and Socket.IO for **real-time**
-estimation sessions.
+<h1 align="center">Planning Poker</h1>
 
-## Features
+<p align="center">
+  <strong>Real-time team estimation</strong><br>
+  <em>Estimate. Discuss. Align.</em>
+</p>
 
-* Real-time collaboration using Socket.IO
-* Four built-in value sets: **Fibonacci**, **T-shirt sizes**, **Scrum**, **Days**
-* Copy room link or room ID to share with teammates
-* Statistics (mean, median, min, max) for numerical value sets
-* Vote distribution visualization for any value set
-* Clear votes and revoke votes
-* Show participants who haven't voted yet
-* Kick out participants
-* Delegate moderator role and take moderator role when moderator disconnects or is missing
-* Auto-reconnect on connection loss
-* The first user to join a room becomes the moderator
-* Auto-close room after all participants leave or after 1 hour of inactivity
+<p align="center">
+  <a href="docs/releases/release-0.1-repository-foundation/README.md"><img alt="Release 0.1" src="https://img.shields.io/badge/release-0.1-2563eb"></a>
+  <a href="docs/releases/release-0.2-experience-foundation/README.md"><img alt="Release 0.2 planned" src="https://img.shields.io/badge/next-0.2%20planned-f59e0b"></a>
+  <img alt="React 19.1.1" src="https://img.shields.io/badge/React-19.1.1-61dafb?logo=react&logoColor=111827">
+  <img alt="Tailwind CSS 4.1.12" src="https://img.shields.io/badge/Tailwind%20CSS-4.1.12-06b6d4?logo=tailwindcss&logoColor=white">
+  <img alt="Socket.IO 4.8.1" src="https://img.shields.io/badge/Socket.IO-4.8.1-010101?logo=socketdotio&logoColor=white">
+  <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-0b6e99"></a>
+</p>
 
-## Screenshots
+**Planning Poker** is a small React, Tailwind CSS, Express, and Socket.IO application for collaborative estimation sessions. A moderator creates a room, teammates join through a shared room link, everyone votes privately, and the result can be revealed and discussed in real time.
 
-<img src="readme-assets/Capture1.png" alt="Screenshot 1" width="800"/>
+[User guide](docs/user-guide.md) · [Architecture](docs/architecture.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release plan](docs/releases/README.md) · [All documentation](docs/README.md)
 
-npm run dev-concurrently (in the planning-poker-be folder) – this will run both the frontend and the backend
-simultaneously.  
-Open in your browser: http://localhost:5173
+## Highlights
 
-Linktree:  
-https://linktr.ee/kereszteszsolt
+- Real-time room updates over Socket.IO.
+- Scrum, Fibonacci, T-shirt-size, and day-based value sets.
+- Private voting until automatic or moderator-controlled reveal.
+- Vote distribution plus numeric average, minimum, maximum, and consensus.
+- Moderator controls for reset, reveal, participant removal, and delegation.
+- In-memory rooms with no account, database, analytics, or tracking dependency.
 
+## Screenshot
 
-<p>Found this helpful? You can support me on BuyMeACoffee. Contributions are optional and are simply a way to show appreciation for this work, not a payment for services.</p>
-<a href="https://www.buymeacoffee.com/kereszteszsolt" target="_blank">
-  <img src="readme-assets/orange-button.png" alt="Buy Me A Coffee" width="180"/>
-</a>
+[![Planning Poker room workspace](docs/screenshots/planning-poker-room-desktop.png)](docs/screenshots/README.md)
 
+The checked image is the current desktop baseline. Release 0.2 plans deterministic desktop and mobile captures with invented fixture data; see [PP-009](docs/releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md).
 
+## Architecture
+
+```mermaid
+flowchart LR
+    USER[Browser users] --> WEB[React + React Router]
+    WEB --> LOCAL[Component-local room and UI state]
+    WEB <-->|Socket.IO events| SERVER[Express + Socket.IO server]
+    SERVER --> ROOMS[(In-memory rooms)]
+    SERVER --> TIMER[Inactive-room cleanup]
+```
+
+The server is authoritative for room membership, moderation, votes, reveal state, and value-set selection. The browser renders the latest `room-updated` snapshot. There is no database, authentication service, or durable room recovery in the current implementation. Read the [architecture guide](docs/architecture.md) before changing event names or room lifecycle behavior.
+
+## Quick start
+
+### Prerequisites
+
+- Node.js `20.19+` or `22.12+`
+- npm
+
+### Install and run both applications
+
+```bash
+git clone https://github.com/kereszteszsolt/example-planning-poker-react-express-socket-io.git
+cd example-planning-poker-react-express-socket-io
+
+cd planning-poker-fe
+npm ci
+
+cd ../planning-poker-be
+npm ci
+npm run dev-concurrently
+```
+
+Open `http://localhost:5173`. The Socket.IO server listens on `http://localhost:3000`.
+
+The documentation release corrects the backend development script's accidental trailing quote, its `dist` entry-point typo, and the TypeScript `NodeNext` module mismatch that prevented compilation. Environment-based endpoints, a root workspace command, and Turborepo are planned for Release 0.2 rather than silently introduced here.
+
+### Build verification
+
+```bash
+cd planning-poker-fe
+npm run lint
+npm run build
+
+cd ../planning-poker-be
+npm run build
+```
+
+See [testing and verification](docs/testing.md) for the manual room matrix and current automation gaps.
+
+## Documentation and releases
+
+- [Documentation index](docs/README.md)
+- [User guide](docs/user-guide.md)
+- [Architecture and event flows](docs/architecture.md)
+- [Development guide](docs/development.md)
+- [Testing and verification](docs/testing.md)
+- [Package verification report](docs/verification.md)
+- [Brand configuration](docs/brand-configuration.md)
+- [Design-system and token plan](docs/design-system.md)
+- [Penpot handoff plan](docs/design/README.md)
+- [Screenshot gallery and capture policy](docs/screenshots/README.md)
+- [Privacy and contact boundaries](docs/privacy-and-contact.md)
+- [Release index](docs/releases/README.md)
+- [Release 0.1: Repository foundation](docs/releases/release-0.1-repository-foundation/README.md)
+- [Release 0.2: Experience foundation](docs/releases/release-0.2-experience-foundation/README.md) — planned
+
+## Project identity
+
+| Property | Canonical value |
+| --- | --- |
+| Product | `Planning Poker` |
+| Descriptor | `Real-time team estimation` |
+| Tagline | `Estimate. Discuss. Align.` |
+| Repository | `example-planning-poker-react-express-socket-io` |
+| Frontend package | `planning-poker-fe` |
+| Backend package | `planning-poker-be` |
+| Story prefix | `PP-` |
+| Maintainer | Keresztes Zsolt — [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
+
+The product name remains intentionally descriptive. A future repository rename should update clone URLs, support links, deployment configuration, badges, and documentation in the same change.
+
+## Privacy and deployment boundary
+
+Rooms and votes exist only in the server process memory. They disappear when the process restarts, when the disconnect path removes the last participant, or when the inactivity cleanup expires the room. A room link acts as the only access boundary; do not use the current application for confidential story titles, customer data, credentials, or regulated information.
+
+Transport encryption depends on deployment. Local development uses plain HTTP. A public deployment should terminate HTTPS/WSS at a trusted reverse proxy, restrict allowed origins, and apply the validation and lifecycle hardening planned in [PP-004](docs/releases/release-0.2-experience-foundation/stories/PP-004-runtime-and-room-lifecycle-hardening.md).
+
+## Support and contact
+
+**Project maintainer: Keresztes Zsolt**
+
+| Platform | Link |
+| --- | --- |
+| Website | [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
+| GitHub | [@kereszteszsolt](https://github.com/kereszteszsolt) |
+| User guide | [Planning Poker user guide](docs/user-guide.md) |
+
+> The maintainer's website is available in Hungarian (HU), English (EN), Romanian (RO), and German (DE).
+
+## License
+
+Apache License 2.0. See [`LICENSE`](LICENSE).
+
+## ☕ Ways to support
+
+**Explore ways to support the maintainer and their projects.**
+
+[kereszteszsolt.hu/ways-to-support](https://kereszteszsolt.hu/ways-to-support/)
+
+<p align="center">
+  <a href="https://buymeacoffee.com/kereszteszsolt"><img src="docs/assets/buy-me-a-coffee-orange.png" alt="Buy Me a Coffee" width="360"></a><br>
+  <strong>Every coffee counts! ☕❤️</strong>
+</p>
+
+## Made with love
+
+<p align="center">
+  <strong>Made with ❤️ by <a href="https://kereszteszsolt.hu/">Keresztes Zsolt</a></strong><br>
+  ⭐ Star this repository if it helped your team estimate more clearly.
+</p>
