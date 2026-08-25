@@ -27,7 +27,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 | [PP-006](stories/PP-006-zustand-room-state-boundary.md) | Connection/session/room store slices and transport lifecycle | In verification |
 | [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Implementation and browser review complete |
 | [PP-008](stories/PP-008-penpot-design-handoff.md) | Real Penpot file, components, states, responsive boards, exports | Implemented |
-| [PP-009](stories/PP-009-privacy-safe-screenshot-workflow.md) | Deterministic Playwright captures and documentation gallery | Planned |
+| [PP-009](stories/PP-009-privacy-safe-screenshot-workflow.md) | Deterministic Playwright captures and documentation gallery | Implemented |
 | [PP-010](stories/PP-010-test-and-ci-foundation.md) | Unit, integration, E2E, accessibility, CI, and release evidence | Planned |
 
 ## Dependency flow

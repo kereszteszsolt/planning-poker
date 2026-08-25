@@ -33,9 +33,9 @@
 
 ## Screenshot
 
-[![Planning Poker room workspace](docs/screenshots/planning-poker-room-desktop.png)](docs/screenshots/README.md)
+[![Planning Poker desktop room with invented participants submitting hidden estimates](docs/screenshots/planning-poker-room-voting-desktop.png)](docs/screenshots/README.md)
 
-The checked image is the current desktop baseline. Release 0.2 plans deterministic desktop and mobile captures with invented fixture data; see [PP-009](docs/releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md).
+The image is generated from the real built React interface and an isolated deterministic Socket.IO fixture. See the [full privacy-safe desktop and mobile gallery](docs/screenshots/README.md).
 
 ## Architecture
 

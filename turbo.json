@@ -49,6 +49,14 @@
       "dependsOn": ["build", "^build"],
       "cache": false,
       "inputs": ["$TURBO_DEFAULT$", "../../docs/screenshots/**"],
+      "env": ["CI", "PLAYWRIGHT_BROWSERS_PATH", "TZ"],
+      "outputs": []
+    },
+    "screenshots:update": {
+      "dependsOn": ["build", "^build"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", "../../docs/screenshots/**"],
+      "env": ["CI", "PLAYWRIGHT_BROWSERS_PATH", "TZ"],
       "outputs": []
     }
   }

@@ -99,6 +99,26 @@ Fresh production output was also started for both packages. Local probes returne
 
 The interactive multi-browser convergence criterion remains unchecked. No Playwright dependency or temporary browser harness was added ahead of PP-009/PP-010, and no claim is made for vote, reveal, reset, delegation, reconnect, and kick convergence in real browser contexts during this verification run.
 
+## PP-009 deterministic screenshot verification
+
+PP-009 was verified on 2026-08-25 in `mcr.microsoft.com/playwright:v1.62.1-noble`, matched to exact `@playwright/test` `1.62.1`. The repository was copied read-only into an ephemeral workspace excluding `.git`, `.env`, host dependencies, build output, caches, and prior browser results. Corepack activated pnpm `11.23.0`; the frozen install passed supply-chain policy verification for 444 lockfile entries.
+
+### Clean root quality gate
+
+| Check | Result |
+| --- | --- |
+| New-source formatting | Prettier check passed for the screenshot package and root JSON task definitions |
+| Lint | 5 tasks passed, including screenshot fixture/config syntax checks |
+| Typecheck | 8 tasks passed, including all application and shared-package dependency builds |
+| Root tests | 31 passed: 4 contracts, 4 design-token, 5 server, 16 web, and 2 deterministic screenshot-fixture tests |
+| Production build | Contracts, design tokens, server, and web passed |
+| Visual comparison | 6/6 Playwright full-page comparisons passed with zero differing pixels |
+| Browser environment | Chromium supplied by the pinned Playwright `1.62.1` Noble image, UTC, `en-US`, light scheme, reduced motion |
+
+The root update and comparison paths were both exercised. `pnpm screenshots:update` created exactly the six documented gallery files in the ephemeral workspace; only those files were copied back. A subsequent normal `pnpm screenshots` run compared the real built React UI against all six baselines without rewriting them.
+
+Every PNG was decoded and visually inspected at original resolution for clipping, horizontal overflow, focus, state meaning, stale UI, and sensitive data. A source and link search confirmed that the README/gallery use the new deterministic voting image before the duplicate legacy `Capture1.png` and `planning-poker-room-desktop.png` files were removed.
+
 ## Remaining release checks
 
-PP-005 preserves the PP-004 automated behavior matrix and does not change the documented ports, UI layout, or Socket.IO event names. A fresh interactive multi-browser run was not repeated for this directory-only boundary change. Deterministic browser, accessibility, and screenshot evidence remains scoped to PP-009 and PP-010.
+PP-009 covers deterministic gallery and visual-regression evidence. The broader multi-browser behavior, automated accessibility, CI, and final clean-checkout release gate remain PP-010 scope.

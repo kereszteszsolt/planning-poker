@@ -140,8 +140,8 @@ flowchart LR
     WEB --> CONTRACTS
     API --> CONTRACTS
     WEB --> TOKENS
-    PLAYWRIGHT[Playwright screenshots and smoke tests] --> WEB
-    PLAYWRIGHT --> API
+    PLAYWRIGHT[Playwright screenshots and visual checks] --> WEB
+    PLAYWRIGHT --> FIXTURE[Dev-only deterministic Socket.IO fixture]
     TURBO[turbo tasks and cache] --> WEB
     TURBO --> API
     TURBO --> CONTRACTS
@@ -150,7 +150,7 @@ flowchart LR
 
 ### Current and planned boundaries
 
-- **Turborepo** currently orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and the reserved `screenshots` task; it does not change runtime behavior by itself.
+- **Turborepo** orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and the PP-009 screenshot comparison/update tasks; it does not change runtime behavior by itself.
 - **Shared contracts** currently define event payloads, acknowledgements, room types, public errors, value sets, and Zod validation schemas once for both applications.
 - **Zustand** owns serializable connection, session, room, normalized error, and forced-exit state. The live Socket.IO instance stays in an injected transport service and is never persisted. No Redux DevTools or persistence middleware is enabled.
 - **Design tokens** are the shared language between Penpot and code. Global, semantic, and component tokens are separated.

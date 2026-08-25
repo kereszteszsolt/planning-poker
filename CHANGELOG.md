@@ -13,11 +13,10 @@ All notable repository-level changes are documented here. Product behavior that 
 - One root pnpm workspace with `apps/web`, `apps/server`, Turborepo tasks, one lockfile, `workspace:*` internal links, and filterable root commands.
 - Shared room, event, acknowledgement, error, value-set, and runtime-validation contracts consumed by both applications.
 - Serializable Zustand connection, session, room, and limited UI slices behind an injected Socket.IO transport, with canonical snapshot replacement and privacy-safe reset paths.
+- DTCG design tokens, generated application CSS, focused responsive UI polish, and a synchronized Penpot design handoff with portable exports.
+- A pinned Playwright/Chromium workflow with an isolated deterministic Socket.IO fixture, six privacy-safe desktop/mobile gallery images, and reviewed visual baselines.
 
 ### Planned for 0.2
-- Design tokens and focused responsive UI polish.
-- Penpot design handoff and repository exports.
-- Privacy-safe automated screenshots.
 - Automated tests and CI evidence.
 
 See [Release 0.2: Experience foundation](docs/releases/release-0.2-experience-foundation/README.md).

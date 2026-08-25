@@ -1,0 +1,19 @@
+{
+  "name": "@planning-poker/screenshots",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "node --check ./src/fixtures.mjs && node --check ./src/fixture-server.mjs && node --check ./tests/gallery.spec.mjs && node --check ./playwright.config.mjs",
+    "typecheck": "pnpm lint",
+    "test": "node --test ./tests/fixtures.test.mjs",
+    "screenshots": "playwright test",
+    "screenshots:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@planning-poker/web": "workspace:*",
+    "@playwright/test": "1.62.1",
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}

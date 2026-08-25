@@ -2,7 +2,7 @@
 
 ## Current automated baseline
 
-PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. CI, deterministic Playwright automation, and visual baselines remain planned for later Release 0.2 stories.
+PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. PP-009 adds deterministic Playwright gallery and visual-baseline checks; the broader CI and browser behavior matrix remains PP-010 scope.
 
 PP-006 adds pure Zustand transition/selector tests, transport listener and acknowledgement tests, reset/privacy checks, and a React selector-isolation test. A real multi-browser convergence smoke remains a manual story check until the deterministic PP-009/PP-010 browser harness exists.
 
@@ -82,7 +82,9 @@ flowchart LR
 
 ## Screenshot determinism
 
-Playwright visual output can vary across operating systems, browser versions, fonts, and rendering settings. Generate and compare the checked screenshots in one pinned container or CI image, with fixed locale, timezone, viewport, color scheme, animations, and invented data. Review every baseline update rather than accepting bulk image changes blindly.
+Playwright visual output can vary across operating systems, browser versions, fonts, and rendering settings. PP-009 pins Playwright and its container to `1.62.1`, fixes locale, timezone, viewport, color scheme, clock/randomness, animations, fonts readiness, network boundary, and invented fixture data, then compares the real built React UI with the six committed gallery images.
+
+Run `pnpm screenshots:container` for comparison and `pnpm screenshots:update:container` only after explicitly deciding to replace reviewed baselines. On failure, compare the expected PNG in `docs/screenshots/` with Playwright's `*-actual.png` and `*-diff.png` under `apps/screenshots/test-results/`. Inspect all three before changing the expected image; test output is ignored and must not be committed.
 
 See [PP-009](releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md) and the [screenshot gallery](screenshots/README.md).
 

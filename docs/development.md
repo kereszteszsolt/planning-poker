@@ -12,11 +12,13 @@
 .
 ├── apps/
 │   ├── web/                  React, Vite, Tailwind CSS, React Router, Socket.IO client
-│   └── server/               Express, HTTP server, Socket.IO server, in-memory rooms
+│   ├── server/               Express, HTTP server, Socket.IO server, in-memory rooms
+│   └── screenshots/          Dev-only deterministic fixture and Playwright gallery checks
 ├── packages/
 │   ├── contracts/            shared event types, room models, errors, and Zod schemas
+│   ├── design-tokens/         DTCG source, validation, and generated application CSS
 │   └── config/               shared TypeScript and ESLint foundations
-├── readme-assets/            Repository mark, legacy screenshot, support image
+├── readme-assets/            Repository mark and support image
 ├── docs/                     User, architecture, design, testing, and release documentation
 ├── LICENSE                   Apache-2.0 license text
 └── README.md                 Product and repository entry point
@@ -93,7 +95,7 @@ pnpm turbo run test --filter=@planning-poker/server
 pnpm turbo run build --filter=@planning-poker/web
 ```
 
-The root `screenshots` task is reserved in the task graph; deterministic generation remains part of [PP-009](releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md).
+The root `screenshots` task builds the real web application and compares the six PP-009 gallery baselines against an isolated deterministic Socket.IO fixture. Use `pnpm screenshots:container` for the pinned environment and review [the screenshot guide](screenshots/README.md) before running the separate update command.
 
 ## Current code boundaries
 

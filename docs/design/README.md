@@ -94,7 +94,7 @@ Export filenames above are stable. Their exact board IDs, dimensions, SHA-256 ha
 
 ## Implementation comparison
 
-The existing [`planning-poker-room-desktop.png`](../screenshots/planning-poker-room-desktop.png) is an archived pre-PP-007 baseline. It uses a saturated full-width header, a generated UUID, dense inline moderator actions, and lacks the connected design's explicit reconnect/error/focus/responsive states. PP-008 therefore does not treat that image as current visual truth. The Penpot hierarchy follows the shipped PP-007 semantic tokens and interaction states; PP-009 must capture deterministic current implementation images and perform the pixel-level comparison before Release 0.2 closes.
+The current [PP-009 screenshot gallery](../screenshots/README.md) captures the shipped PP-007 hierarchy with deterministic desktop/mobile home, join, voting, results, and connection-loss states. The fresh images were reviewed against the Penpot hierarchy for voting priority, bounded participant content, focus/state cues, responsive stacking, and invented data. Pixel comparisons use those same committed gallery files as Playwright baselines; the former pre-PP-007 manual screenshot is no longer current evidence.
 
 ## Handoff update procedure
 

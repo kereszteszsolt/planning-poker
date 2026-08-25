@@ -35,7 +35,7 @@ Do not imply that the mark is a trademark registration or that the generic Plann
 
 The current frontend uses React, Vite, Tailwind CSS, React Router, and Socket.IO Client. The backend uses Express, Socket.IO, TypeScript, and an in-memory room map. Do not describe the UI as Material UI unless MUI is actually introduced and used.
 
-Turborepo and shared runtime-validated contracts are implemented by PP-005, Zustand by PP-006, and design-token runtime generation by PP-007. Penpot synchronization, deterministic Playwright screenshots, and CI remain later Release 0.2 plans until their stories contain implementation evidence.
+Turborepo and shared runtime-validated contracts are implemented by PP-005, Zustand by PP-006, design-token runtime generation by PP-007, Penpot synchronization by PP-008, and deterministic Playwright screenshots by PP-009. CI remains PP-010 scope until that story contains implementation evidence.
 
 ## Support and contact
 
