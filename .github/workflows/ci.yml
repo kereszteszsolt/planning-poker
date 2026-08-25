@@ -69,7 +69,7 @@ jobs:
         run: pnpm e2e
 
       - name: Compare deterministic visual baselines
-        run: pnpm screenshots
+        run: pnpm screenshots:container
 
       - name: Audit production dependencies
         run: pnpm audit --prod
