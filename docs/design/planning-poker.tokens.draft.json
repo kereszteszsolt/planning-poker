@@ -1,0 +1,114 @@
+{
+  "Global": {
+    "color": {
+      "base": {
+        "blue": {
+          "50": { "$value": "#eff6ff", "$type": "color", "$description": "Light blue surface" },
+          "500": { "$value": "#3b82f6", "$type": "color", "$description": "Voting-card blue" },
+          "600": { "$value": "#2563eb", "$type": "color", "$description": "Primary action blue" },
+          "700": { "$value": "#1d4ed8", "$type": "color", "$description": "Primary hover and selected blue" }
+        },
+        "gray": {
+          "50": { "$value": "#f9fafb", "$type": "color" },
+          "100": { "$value": "#f3f4f6", "$type": "color" },
+          "300": { "$value": "#d1d5db", "$type": "color" },
+          "600": { "$value": "#4b5563", "$type": "color" },
+          "800": { "$value": "#1f2937", "$type": "color" },
+          "950": { "$value": "#030712", "$type": "color" }
+        },
+        "green": {
+          "600": { "$value": "#16a34a", "$type": "color" }
+        },
+        "amber": {
+          "600": { "$value": "#d97706", "$type": "color" }
+        },
+        "red": {
+          "600": { "$value": "#dc2626", "$type": "color" }
+        },
+        "white": { "$value": "#ffffff", "$type": "color" }
+      }
+    },
+    "spacing": {
+      "base": {
+        "1": { "$value": 4, "$type": "spacing" },
+        "2": { "$value": 8, "$type": "spacing" },
+        "3": { "$value": 12, "$type": "spacing" },
+        "4": { "$value": 16, "$type": "spacing" },
+        "6": { "$value": 24, "$type": "spacing" },
+        "8": { "$value": 32, "$type": "spacing" }
+      }
+    },
+    "radius": {
+      "base": {
+        "sm": { "$value": 6, "$type": "borderRadius" },
+        "md": { "$value": 8, "$type": "borderRadius" },
+        "lg": { "$value": 12, "$type": "borderRadius" },
+        "pill": { "$value": 999, "$type": "borderRadius" }
+      }
+    },
+    "font": {
+      "size": {
+        "body": { "$value": 16, "$type": "fontSize" },
+        "small": { "$value": 14, "$type": "fontSize" },
+        "heading": { "$value": 24, "$type": "fontSize" }
+      },
+      "weight": {
+        "regular": { "$value": 400, "$type": "fontWeight" },
+        "semibold": { "$value": 600, "$type": "fontWeight" },
+        "bold": { "$value": 700, "$type": "fontWeight" }
+      }
+    }
+  },
+  "Semantic": {
+    "color": {
+      "bg": {
+        "page": { "$value": "#f8fbff", "$type": "color" },
+        "surface": { "$value": "{color.base.white}", "$type": "color" },
+        "subtle": { "$value": "{color.base.gray.50}", "$type": "color" }
+      },
+      "text": {
+        "primary": { "$value": "{color.base.gray.950}", "$type": "color" },
+        "secondary": { "$value": "{color.base.gray.600}", "$type": "color" },
+        "inverse": { "$value": "{color.base.white}", "$type": "color" }
+      },
+      "border": {
+        "default": { "$value": "{color.base.gray.300}", "$type": "color" },
+        "focus": { "$value": "{color.base.blue.600}", "$type": "color" }
+      },
+      "action": {
+        "primary": { "$value": "{color.base.blue.600}", "$type": "color" },
+        "primaryHover": { "$value": "{color.base.blue.700}", "$type": "color" }
+      },
+      "status": {
+        "success": { "$value": "{color.base.green.600}", "$type": "color" },
+        "warning": { "$value": "{color.base.amber.600}", "$type": "color" },
+        "danger": { "$value": "{color.base.red.600}", "$type": "color" }
+      }
+    }
+  },
+  "Components": {
+    "color": {
+      "button": {
+        "primary": {
+          "background": { "$value": "{color.action.primary}", "$type": "color" },
+          "backgroundHover": { "$value": "{color.action.primaryHover}", "$type": "color" },
+          "text": { "$value": "{color.text.inverse}", "$type": "color" }
+        }
+      },
+      "voteCard": {
+        "default": { "$value": "{color.base.blue.500}", "$type": "color" },
+        "selected": { "$value": "{color.base.blue.700}", "$type": "color" },
+        "hidden": { "$value": "{color.base.gray.600}", "$type": "color" }
+      },
+      "panel": {
+        "background": { "$value": "{color.bg.surface}", "$type": "color" },
+        "border": { "$value": "{color.border.default}", "$type": "color" }
+      }
+    },
+    "radius": {
+      "panel": { "$value": "{radius.base.lg}", "$type": "borderRadius" },
+      "button": { "$value": "{radius.base.md}", "$type": "borderRadius" },
+      "voteCard": { "$value": "{radius.base.md}", "$type": "borderRadius" }
+    }
+  }
+}

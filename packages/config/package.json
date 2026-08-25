@@ -1,0 +1,17 @@
+{
+  "name": "@planning-poker/config",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint/base": "./eslint/base.js",
+    "./tsconfig/base.json": "./tsconfig/base.json"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "typescript-eslint": "^8.68.0"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0"
+  }
+}
