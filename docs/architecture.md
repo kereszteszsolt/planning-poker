@@ -27,16 +27,18 @@ flowchart LR
 | --- | --- |
 | React Router | Home, room, message, and about routes |
 | `socket-client` | Owns the single Socket.IO client and environment-selected endpoint |
-| `SocketProvider` | Owns connection listeners, status transitions, retry, and final disconnect cleanup |
-| `HomeScreen` | Creates rooms, accepts room IDs, and reports connection state |
-| `RoomScreen` | Resumes the session-scoped participant identity, subscribes once to room events, and applies canonical snapshots/acknowledgements |
+| `SocketProvider` | Injects the singleton socket into the transport adapter and owns adapter startup/final cleanup |
+| Zustand store | Holds serializable connection, session, canonical room, normalized error, and forced-exit state; actions are kept outside the stored data |
+| Socket transport | Registers typed listeners once, normalizes acknowledgements, resumes sessions, and dispatches pure state transitions |
+| `HomeScreen` | Creates rooms, accepts room IDs, and reads connection/error selectors while retaining its input locally |
+| `RoomScreen` | Activates the route room, reacts to connection/exit selectors, and composes selector-driven room panels |
 | Room components | Voting cards, controls, participants, results, statistics, and room sharing |
 | Socket.IO server | Validates every action, acknowledges success/error, mutates authoritative state, and broadcasts full snapshots |
 | `rooms` Map | UUID-keyed in-memory room lookup immune to special object keys |
 | `sessions` Map | Short-lived token-to-participant recovery records; never exposed in room snapshots |
 | Cleanup interval | Emits closure, removes expired rooms/sessions, and can use an injected clock in tests |
 
-The current client has no global application store. Most room and connection state lives in `RoomScreen`; join input and other small concerns stay in local component state.
+The client has one provider-scoped Zustand store composed from connection, session, room, and limited UI slices. Store data is serializable and changed through a pure reducer. The live Socket.IO object, subscriptions, storage calls, and network exceptions stay in the transport adapter. Join/room-ID inputs, clipboard feedback, and other one-component concerns remain local React state.
 
 ## Current room model
 
@@ -119,7 +121,7 @@ sequenceDiagram
 
 Focused PP-004 server and React tests protect these rules. PP-005 places the client and server in one Turborepo workspace and makes `@planning-poker/contracts` the shared source for room models, events, acknowledgements, public errors, value sets, and runtime validation schemas without changing event semantics.
 
-## Release 0.2 workspace and target boundaries
+## Release 0.2 workspace and current boundaries
 
 ```mermaid
 flowchart LR
@@ -146,11 +148,11 @@ flowchart LR
     TURBO --> TOKENS
 ```
 
-### Target boundaries
+### Current and planned boundaries
 
 - **Turborepo** currently orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and the reserved `screenshots` task; it does not change runtime behavior by itself.
 - **Shared contracts** currently define event payloads, acknowledgements, room types, public errors, value sets, and Zod validation schemas once for both applications.
-- **Zustand** owns serializable connection, session, and room state. The live Socket.IO instance stays in a transport service and is never persisted.
+- **Zustand** owns serializable connection, session, room, normalized error, and forced-exit state. The live Socket.IO instance stays in an injected transport service and is never persisted. No Redux DevTools or persistence middleware is enabled.
 - **Design tokens** are the shared language between Penpot and code. Global, semantic, and component tokens are separated.
 - **Penpot** documents current screens, target responsive behavior, reusable components, states, and the agreed token hierarchy.
 - **Playwright** captures invented, deterministic room states and validates critical desktop/mobile flows in a pinned environment.

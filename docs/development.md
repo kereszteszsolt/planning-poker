@@ -100,7 +100,8 @@ The root `screenshots` task is reserved in the task graph; deterministic generat
 ### Frontend
 
 - Keep route composition in `App.tsx`.
-- Keep the singleton transport in `socket-client.ts`, connection lifecycle in `SocketProvider`, and serializable context values in `socket-context.ts`.
+- Keep the singleton socket creation in `socket-client.ts`, injection/lifecycle in `SocketProvider`, typed event mapping in `transport/planning-poker-transport.ts`, and serializable data in the Zustand store.
+- Keep state transitions pure and actions outside the stored data; components should use the narrow selectors in `state/planning-poker-store.ts` rather than subscribe to the whole store.
 - Treat server `room-updated` payloads as canonical room state.
 - Keep ephemeral form and disclosure state local unless it must coordinate across room components.
 - Import room and event types from `@planning-poker/contracts`; do not add an application-local copy.
@@ -137,16 +138,16 @@ Corepack selects the exact pnpm version from the root `packageManager` field. Th
 
 Turbo caches reproducible builds and checks locally in `.turbo`, which is ignored. Remote caching is optional. Runtime and Vite variables that affect tasks are declared in `turbo.json`; development is persistent and uncached so `Ctrl+C` stops both application processes through the root task runner.
 
-## Planned Zustand boundary
+## Zustand boundary
 
-The store should contain serializable state and actions, not a persisted Socket.IO object:
+The implemented store contains serializable state only. A separate controller dispatches pure transitions, and the transport owns all Socket.IO and session-storage effects:
 
 ```text
-usePlanningPokerStore
-├── connectionSlice           status, last error, recovery state
-├── sessionSlice              room ID, participant identity, display name
+PlanningPokerState
+├── connectionSlice           connection/recovery status
+├── sessionSlice              room ID, participant identity, display name, short-lived token
 ├── roomSlice                 canonical room snapshot and derived selectors
-└── uiSlice                   non-sensitive cross-component UI state only
+└── uiSlice                   normalized public error and forced-exit reason
 
 socketTransport
 ├── connect / disconnect
@@ -155,7 +156,7 @@ socketTransport
 └── dispatch normalized events into store actions
 ```
 
-Local input values, temporary menus, and one-component dialog state should remain in React state. Room state must not be persisted to `localStorage` by default.
+Local input values, temporary menus, clipboard feedback, and one-component dialog state remain in React state. No Zustand persistence or Redux DevTools middleware is enabled. The reconnect identity uses existing tab-scoped `sessionStorage`; no room snapshot, vote, participant list, token, or display name is written to `localStorage`. No user preference is currently persisted, so a future allowed preference needs a separately versioned key and privacy review.
 
 ## Design and screenshot workflow
 

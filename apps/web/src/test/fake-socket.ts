@@ -1,4 +1,4 @@
-import type { ApplicationSocket } from "../socket-context";
+import type { ApplicationSocket } from "../socket-types";
 
 type Listener = (...arguments_: unknown[]) => void;
 type OutgoingHandler = (
@@ -35,6 +35,7 @@ export class FakeSocket {
   connected = false;
   connectCalls = 0;
   disconnectCalls = 0;
+  readonly emissions: { event: string; payload: unknown }[] = [];
   readonly manager = new FakeManager();
   readonly io = this.manager;
   private listeners = new Map<string, Set<Listener>>();
@@ -66,6 +67,7 @@ export class FakeSocket {
   }
 
   emit(event: string, payload: unknown, callback: (response: unknown) => void) {
+    this.emissions.push({ event, payload });
     this.outgoingHandlers.get(event)?.(payload, callback);
     return this;
   }

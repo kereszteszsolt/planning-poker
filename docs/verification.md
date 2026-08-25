@@ -59,6 +59,46 @@ The package graph contained only the intended direction: both apps depend on `@p
 
 The initial npm-based PP-005 verification from 2026-08-24 was superseded by this pnpm supplement. `package-lock.json` is no longer part of the supported installation path.
 
+## PP-006 Zustand state-boundary verification
+
+PP-006 was verified on 2026-08-25 in a fresh `node:22.22.0-bookworm-slim` workspace copied from a read-only source mount. The copy excluded host dependencies, build output, environment files, local stores, and Turbo caches.
+
+### Automated state and transport evidence
+
+The clean root gate passed with pnpm `11.23.0` and Turborepo `2.10.11`:
+
+| Check | Result |
+| --- | --- |
+| Frozen install | 364 packages across five workspace projects; 439 lockfile entries passed pnpm's supply-chain policies; no build scripts were automatically ignored |
+| Lint | Contracts, server, and web tasks passed without cache |
+| Typecheck | Four tasks passed without cache |
+| Contract tests | 4 passed |
+| Server integration tests | 5 passed |
+| Web tests | 5 files and 12 tests passed |
+| Total tests | 21 passed |
+| Build | Contracts, server, and web production builds passed |
+| Screenshot task | The reserved root task and its build dependencies passed; deterministic capture remains PP-009 scope |
+| Production audit | No known vulnerabilities reported |
+
+The web suite proves pure store transitions, every exported selector, stale/wrong-room transition rejection, leave/return-home/forced-exit/session-loss resets, no `localStorage` writes, listener registration and cleanup, acknowledgement normalization, one resume per connection generation, Strict Mode socket ownership, route recovery, and selector render isolation. A source search confirmed that application components do not import or call the Socket.IO client; only `socket-client`, socket types, the provider, and the injected transport boundary do so.
+
+### Runtime evidence
+
+`pnpm dev` rebuilt contracts, started Vite at `http://localhost:5173` and the server at `http://127.0.0.1:3000`, then shut down its Turbo tasks when the time-limited harness sent `SIGINT`.
+
+Fresh production output was also started for both packages. Local probes returned HTTP 200 with the expected backend health body and frontend application root:
+
+```json
+[
+  { "status": 200, "body": { "service": "planning-poker", "status": "ok" } },
+  { "status": 200, "appRoot": true }
+]
+```
+
+### Remaining manual evidence
+
+The interactive multi-browser convergence criterion remains unchecked. No Playwright dependency or temporary browser harness was added ahead of PP-009/PP-010, and no claim is made for vote, reveal, reset, delegation, reconnect, and kick convergence in real browser contexts during this verification run.
+
 ## Remaining release checks
 
 PP-005 preserves the PP-004 automated behavior matrix and does not change the documented ports, UI layout, or Socket.IO event names. A fresh interactive multi-browser run was not repeated for this directory-only boundary change. Deterministic browser, accessibility, and screenshot evidence remains scoped to PP-009 and PP-010.

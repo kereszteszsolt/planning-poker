@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { usePlanningPokerTransport } from "../transport/transport-context";
 
 const messages: Record<string, { title: string; description: string }> = {
   closed: {
@@ -20,6 +21,7 @@ const messages: Record<string, { title: string; description: string }> = {
 const MessageScreen: React.FC = () => {
   const { messageType } = useParams<{ messageType: string }>();
   const navigate = useNavigate();
+  const transport = usePlanningPokerTransport();
 
   const message =
     messageType && messages[messageType]
@@ -36,7 +38,10 @@ const MessageScreen: React.FC = () => {
       <p className="mb-6 text-gray-700">{message.description}</p>
       <button
         className="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-        onClick={() => navigate("/")}
+        onClick={() => {
+          transport.returnHome();
+          navigate("/");
+        }}
       >
         Go to Home
       </button>

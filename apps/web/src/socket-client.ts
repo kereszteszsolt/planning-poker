@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { ApplicationSocket } from "./socket-context";
+import type { ApplicationSocket } from "./socket-types";
 
 export type SocketFactory = () => ApplicationSocket;
 let applicationSocket: ApplicationSocket | undefined;

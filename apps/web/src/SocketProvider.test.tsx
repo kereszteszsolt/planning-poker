@@ -1,14 +1,16 @@
-import { StrictMode, useContext } from "react";
+import { StrictMode } from "react";
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SocketProvider } from "./SocketProvider";
 import { resetApplicationSocketForTests } from "./socket-client";
-import { SocketContext } from "./socket-context";
+import { PlanningPokerStoreProvider } from "./state/PlanningPokerStoreProvider";
+import { selectConnectionStatus } from "./state/planning-poker-store";
+import { usePlanningPokerSelector } from "./state/planning-poker-store-context";
 import { FakeSocket } from "./test/fake-socket";
 
 const StatusProbe = () => {
-  const context = useContext(SocketContext);
-  return <span>{context?.status}</span>;
+  const status = usePlanningPokerSelector(selectConnectionStatus);
+  return <span>{status}</span>;
 };
 
 afterEach(() => resetApplicationSocketForTests());
@@ -19,9 +21,11 @@ describe("SocketProvider", () => {
     const factory = vi.fn(() => fake.asApplicationSocket());
     const view = render(
       <StrictMode>
-        <SocketProvider socketFactory={factory}>
-          <StatusProbe />
-        </SocketProvider>
+        <PlanningPokerStoreProvider>
+          <SocketProvider socketFactory={factory}>
+            <StatusProbe />
+          </SocketProvider>
+        </PlanningPokerStoreProvider>
       </StrictMode>,
     );
 

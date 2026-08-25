@@ -4,6 +4,8 @@
 
 PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. CI, deterministic Playwright automation, and visual baselines remain planned for later Release 0.2 stories.
 
+PP-006 adds pure Zustand transition/selector tests, transport listener and acknowledgement tests, reset/privacy checks, and a React selector-isolation test. A real multi-browser convergence smoke remains a manual story check until the deterministic PP-009/PP-010 browser harness exists.
+
 ```bash
 corepack enable
 pnpm install --frozen-lockfile

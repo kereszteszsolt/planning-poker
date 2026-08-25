@@ -42,13 +42,15 @@ The checked image is the current desktop baseline. Release 0.2 plans determinist
 ```mermaid
 flowchart LR
     USER[Browser users] --> WEB[React + React Router]
-    WEB --> LOCAL[Component-local room and UI state]
-    WEB <-->|Socket.IO events| SERVER[Express + Socket.IO server]
+    WEB --> STORE[Zustand serializable state]
+    WEB --> LOCAL[Component-local form and disclosure state]
+    STORE <--> TRANSPORT[Injected Socket.IO transport]
+    TRANSPORT <-->|Typed Socket.IO events| SERVER[Express + Socket.IO server]
     SERVER --> ROOMS[(In-memory rooms)]
     SERVER --> TIMER[Inactive-room cleanup]
 ```
 
-The server is authoritative for room membership, moderation, votes, reveal state, and value-set selection. The browser renders the latest `room-updated` snapshot and keeps only a short-lived participant token in `sessionStorage` for reconnect fallback. There is no database, account service, or durable room history. Read the [architecture guide](docs/architecture.md) before changing event names or room lifecycle behavior.
+The server is authoritative for room membership, moderation, votes, reveal state, and value-set selection. A small Zustand store holds the latest canonical snapshot and transient connection/session state; the live socket remains in an injected transport adapter. The browser keeps only a short-lived participant token in `sessionStorage` for reconnect fallback, with no room data in `localStorage`. There is no database, account service, or durable room history. Read the [architecture guide](docs/architecture.md) before changing event names or room lifecycle behavior.
 
 ## Quick start
 

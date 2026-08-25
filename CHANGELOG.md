@@ -12,9 +12,9 @@ All notable repository-level changes are documented here. Product behavior that 
 - Focused Socket.IO server integration tests and React transport/session/component tests.
 - One root pnpm workspace with `apps/web`, `apps/server`, Turborepo tasks, one lockfile, `workspace:*` internal links, and filterable root commands.
 - Shared room, event, acknowledgement, error, value-set, and runtime-validation contracts consumed by both applications.
+- Serializable Zustand connection, session, room, and limited UI slices behind an injected Socket.IO transport, with canonical snapshot replacement and privacy-safe reset paths.
 
 ### Planned for 0.2
-- Zustand-based client state boundaries.
 - Design tokens and focused responsive UI polish.
 - Penpot design handoff and repository exports.
 - Privacy-safe automated screenshots.

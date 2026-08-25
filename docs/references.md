@@ -7,8 +7,8 @@ Release 0.2 decisions should be checked against primary project documentation ra
 | Vite Node.js support | https://vite.dev/guide/ | Defines the runtime floor for the current Vite-based frontend |
 | Socket.IO connection recovery | https://socket.io/docs/v4/connection-state-recovery | Explains recoverable versus unrecoverable reconnects and required server configuration |
 | Socket.IO server-side socket identity | https://socket.io/docs/v4/server-socket-instance/ | Documents why `socket.id` is not a durable application identity by default |
-| Zustand introduction | https://zustand.docs.pmnd.rs/ | Defines the store/hook model proposed for serializable client state |
-| Zustand slices pattern | https://zustand.docs.pmnd.rs/learn/guides/slices-pattern | Supports separating connection, session, room, and UI concerns |
+| Zustand introduction | https://zustand.docs.pmnd.rs/ | Defines the store/hook model used for serializable client state |
+| Zustand slices pattern | https://zustand.docs.pmnd.rs/learn/guides/slices-pattern | Supports the implemented connection, session, room, and UI ownership boundaries |
 | Turborepo configuration | https://turborepo.com/docs/reference/configuration | Defines root tasks, dependencies, inputs, outputs, and cache behavior |
 | Turborepo task design | https://turborepo.com/docs/crafting-your-repository/configuring-tasks | Helps avoid caching long-running development tasks or missing build outputs |
 | pnpm workspace | https://pnpm.io/workspaces | Defines the canonical workspace file and `workspace:` dependency protocol |

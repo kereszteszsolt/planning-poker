@@ -6,6 +6,7 @@ import MessageScreen from "./features/MessageScreen.tsx";
 import Navbar from "./shared/Navbar.tsx";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SocketProvider } from "./SocketProvider.tsx";
+import { PlanningPokerStoreProvider } from "./state/PlanningPokerStoreProvider.tsx";
 
 function Layout() {
   return (
@@ -32,9 +33,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <SocketProvider>
-      <RouterProvider router={router} />
-    </SocketProvider>
+    <PlanningPokerStoreProvider>
+      <SocketProvider>
+        <RouterProvider router={router} />
+      </SocketProvider>
+    </PlanningPokerStoreProvider>
   );
 }
 

@@ -1,21 +1,25 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../socket-context.ts";
 import Connecting from "../shared/components/Connecting.tsx";
+import {
+  selectConnectionStatus,
+  selectErrorMessage,
+} from "../state/planning-poker-store.ts";
+import { usePlanningPokerSelector } from "../state/planning-poker-store-context.ts";
+import { usePlanningPokerTransport } from "../transport/transport-context.ts";
 
 const HomeScreen: React.FC = () => {
-  const socket = useContext(SocketContext);
+  const transport = usePlanningPokerTransport();
+  const status = usePlanningPokerSelector(selectConnectionStatus);
+  const error = usePlanningPokerSelector(selectErrorMessage);
   const navigate = useNavigate();
   const [joinRoomId, setJoinRoomId] = useState("");
-  const [error, setError] = useState("");
 
-  const handleCreateRoom = () => {
-    if (!socket) return;
-    setError("");
-    socket.socket.emit("create-room", {}, (response) => {
-      if (response.ok) navigate(`/room/${response.data.roomId}`);
-      else setError(response.error.message);
-    });
+  useEffect(() => transport.returnHome(), [transport]);
+
+  const handleCreateRoom = async () => {
+    const roomId = await transport.createRoom();
+    if (roomId) navigate(`/room/${roomId}`);
   };
 
   const handleJoinRoom = () => {
@@ -26,9 +30,8 @@ const HomeScreen: React.FC = () => {
 
   const isJoinDisabled = !joinRoomId.trim();
 
-  if (!socket) return null;
-  if (socket.status !== "connected") {
-    return <Connecting status={socket.status} onRetry={socket.retry} />;
+  if (status !== "connected") {
+    return <Connecting status={status} onRetry={transport.retryConnection} />;
   }
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
