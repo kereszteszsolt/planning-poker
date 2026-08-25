@@ -8,6 +8,7 @@ dist/
 dist-ssr/
 .turbo/
 .pnpm-store/
+.playwright-browsers/
 .vite/
 .cache/
 *.tsbuildinfo
@@ -15,7 +16,9 @@ dist-ssr/
 # Test output
 coverage/
 test-results/
+e2e-results/
 playwright-report/
+e2e-report/
 blob-report/
 
 # Local environment files

@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation complete; manual multi-browser smoke pending
+Implemented and verified
 
 ## User story
 
@@ -46,7 +46,7 @@ As a frontend maintainer, I want shared connection, session, and room state mana
 - [x] Store unit tests cover every action, selector, reset path, and invalid transition.
 - [x] Transport tests prove listener registration/cleanup and acknowledgement normalization.
 - [x] React tests prove that unrelated components do not rerender for irrelevant state changes where selectors are expected to isolate them.
-- [ ] Multi-browser smoke confirms both clients converge on the same canonical room state after vote, reveal, reset, delegation, reconnect, and kick.
+- [x] Multi-browser smoke confirms both clients converge on the same canonical room state after vote, reveal, reset, delegation, reconnect, and kick.
 
 ## Out of scope
 
@@ -69,4 +69,4 @@ type PlanningPokerState = {
 
 ## Verification evidence
 
-Targeted frontend typecheck and lint pass. The frontend suite currently passes 5 files and 12 tests, including transition/selector/reset/privacy coverage, transport listener and acknowledgement coverage, Strict Mode ownership, route-session recovery, and an explicit selector render-isolation assertion. The full root gate and development runtime smoke are recorded in [the verification report](../../../verification.md#pp-006-zustand-state-boundary-verification). A real multi-browser convergence smoke is still required before the final verification criterion can be checked.
+Targeted frontend typecheck and lint pass. The PP-010-expanded frontend suite passes 6 files and 23 tests, including transition/selector/reset/privacy coverage, transport listener and acknowledgement coverage, Strict Mode ownership, route-session recovery, and an explicit selector render-isolation assertion. The real-stack Playwright flow adds three isolated contexts and proves convergence after vote, reveal, reset, delegation, session-backed reload recovery, and kick without console or page errors. The full root gate and runtime evidence are recorded in [the verification report](../../../verification.md#pp-010-test-and-ci-verification).

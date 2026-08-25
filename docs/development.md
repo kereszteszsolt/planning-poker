@@ -13,7 +13,7 @@
 ├── apps/
 │   ├── web/                  React, Vite, Tailwind CSS, React Router, Socket.IO client
 │   ├── server/               Express, HTTP server, Socket.IO server, in-memory rooms
-│   └── screenshots/          Dev-only deterministic fixture and Playwright gallery checks
+│   └── screenshots/          Dev-only deterministic fixture, real-stack E2E, and visual checks
 ├── packages/
 │   ├── contracts/            shared event types, room models, errors, and Zod schemas
 │   ├── design-tokens/         DTCG source, validation, and generated application CSS
@@ -86,6 +86,8 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm e2e
+pnpm screenshots
 ```
 
 Use Turbo filters for focused work, including dependency builds when required:
@@ -95,7 +97,9 @@ pnpm turbo run test --filter=@planning-poker/server
 pnpm turbo run build --filter=@planning-poker/web
 ```
 
-The root `screenshots` task builds the real web application and compares the six PP-009 gallery baselines against an isolated deterministic Socket.IO fixture. Use `pnpm screenshots:container` for the pinned environment and review [the screenshot guide](screenshots/README.md) before running the separate update command.
+The root `e2e` task starts the production frontend and real Socket.IO server on loopback, then uses isolated Playwright contexts for multi-user desktop/mobile behavior. The root `screenshots` task compares six PP-009 gallery baselines and renders the portable design SVG against an isolated deterministic fixture. Use `pnpm screenshots:container` for the pinned visual environment and review [the screenshot guide](screenshots/README.md) before running the separate update command.
+
+`pnpm verify:repo` checks whitespace, JSON/JSONC, relative documentation links, and portable SVG sources. `pnpm verify` runs every local quality gate. `pnpm verify:release:container` performs a clean frozen install and runs the full candidate twice, first without Turbo cache and then with normal cache behavior.
 
 ## Current code boundaries
 
@@ -124,9 +128,11 @@ PP-005 establishes the following current layout:
 .
 ├── apps/
 │   ├── web/                   @planning-poker/web
-│   └── server/                @planning-poker/server
+│   ├── server/                @planning-poker/server
+│   └── screenshots/           @planning-poker/screenshots
 ├── packages/
 │   ├── contracts/             event payloads, acknowledgements, schemas, room types
+│   ├── design-tokens/          DTCG source and generated CSS
 │   └── config/                shared TypeScript and lint configuration
 ├── package.json               root scripts and package-manager identity
 ├── pnpm-lock.yaml             one workspace lockfile
@@ -183,5 +189,5 @@ See [design-system plan](design-system.md), [Penpot handoff](design/README.md), 
 - Every story includes status, user story, acceptance criteria, out-of-scope boundaries, implementation notes, and verification evidence.
 - Planned checkboxes remain unchecked until supported by source and test evidence.
 - Documentation must not describe planned behavior as current.
-- Run whitespace and link checks before packaging.
+- Run `pnpm verify:repo` and the complete root gate before packaging.
 - Update `CHANGELOG.md`, badges, release index, and documentation links together.

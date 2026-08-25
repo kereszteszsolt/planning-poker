@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "node --check ./src/fixtures.mjs && node --check ./src/fixture-server.mjs && node --check ./tests/gallery.spec.mjs && node --check ./playwright.config.mjs",
+    "lint": "node --check ./src/fixtures.mjs && node --check ./src/fixture-server.mjs && node --check ./src/e2e-server.mjs && node --check ./tests/gallery.spec.mjs && node --check ./tests/core-flow.spec.mjs && node --check ./playwright.config.mjs && node --check ./playwright.e2e.config.mjs",
     "typecheck": "pnpm lint",
     "test": "node --test ./tests/fixtures.test.mjs",
+    "e2e": "playwright test --config ./playwright.e2e.config.mjs",
     "screenshots": "playwright test",
     "screenshots:update": "playwright test --update-snapshots"
   },
   "devDependencies": {
+    "@planning-poker/server": "workspace:*",
     "@planning-poker/web": "workspace:*",
     "@playwright/test": "1.62.1",
     "express": "^5.1.0",

@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      release_verification:
+        description: Preserve this manually requested release verification run
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: planning-poker-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' && github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 1
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.playwright-browsers
+      TURBO_FORCE: true
+      TURBO_TELEMETRY_DISABLED: 1
+      TZ: UTC
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
+
+      - name: Enable the pinned pnpm version
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.23.0 --activate
+
+      - name: Install the workspace once
+        run: pnpm install --frozen-lockfile
+
+      - name: Install the pinned Chromium browser
+        run: pnpm --filter @planning-poker/screenshots exec playwright install --with-deps chromium
+
+      - name: Verify repository structure
+        run: pnpm verify:repo
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run real-stack browser tests
+        run: pnpm e2e
+
+      - name: Compare deterministic visual baselines
+        run: pnpm screenshots
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod
+
+      - name: Retain privacy-safe browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-diagnostics-${{ github.run_id }}
+          if-no-files-found: ignore
+          retention-days: 7
+          path: |
+            apps/screenshots/e2e-results/
+            apps/screenshots/e2e-report/
+            apps/screenshots/test-results/
+            apps/screenshots/playwright-report/

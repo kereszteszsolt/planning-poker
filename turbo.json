@@ -45,6 +45,13 @@
       ],
       "outputs": []
     },
+    "e2e": {
+      "dependsOn": ["build", "^build"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "env": ["CI", "PLAYWRIGHT_BROWSERS_PATH", "TZ"],
+      "outputs": []
+    },
     "screenshots": {
       "dependsOn": ["build", "^build"],
       "cache": false,

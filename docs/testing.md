@@ -2,9 +2,17 @@
 
 ## Current automated baseline
 
-PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. PP-009 adds deterministic Playwright gallery and visual-baseline checks; the broader CI and browser behavior matrix remains PP-010 scope.
+PP-010 consolidates the earlier story tests into one root gate. The current suite has 40 unit/integration tests, 2 real-stack Playwright tests, 6 pixel baselines, and 1 portable SVG browser-render check.
 
-PP-006 adds pure Zustand transition/selector tests, transport listener and acknowledgement tests, reset/privacy checks, and a React selector-isolation test. A real multi-browser convergence smoke remains a manual story check until the deterministic PP-009/PP-010 browser harness exists.
+| Package/gate                       | Coverage                                                                               | Current count |
+| ---------------------------------- | -------------------------------------------------------------------------------------- | ------------: |
+| `@planning-poker/contracts`        | Runtime schemas, normalization, metadata filtering, value sets                         |             4 |
+| `@planning-poker/design-tokens`    | Generation drift, references, values, duplicate paths, contrast                        |             4 |
+| `@planning-poker/server`           | Random-port real Socket.IO clients, full lifecycle, validation, authorization, cleanup |             7 |
+| `@planning-poker/web`              | Routes, composition, Zustand, transport, Strict Mode, recovery, accessibility          |            23 |
+| `@planning-poker/screenshots` unit | Deterministic privacy-safe fixture isolation                                           |             2 |
+| Playwright E2E                     | Three-context desktop/mobile real-server flow and keyboard/error smoke                 |             2 |
+| Playwright visual/SVG              | Six reviewed images plus portable SVG render                                           |             7 |
 
 ```bash
 corepack enable
@@ -13,7 +21,12 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm e2e
+pnpm screenshots
+pnpm verify:repo
 ```
+
+Use `pnpm verify` for the complete local sequence. Use `pnpm verify:release:container` for an isolated frozen install followed by a forced no-cache pass and a normal-cache pass in exact Playwright image `1.62.1-noble`.
 
 ### Focused package checks
 
@@ -21,6 +34,7 @@ pnpm build
 pnpm turbo run test --filter=@planning-poker/server
 pnpm turbo run test --filter=@planning-poker/web
 pnpm turbo run test --filter=@planning-poker/contracts
+pnpm --filter @planning-poker/screenshots e2e
 ```
 
 ### Combined development smoke
@@ -56,9 +70,9 @@ Open `http://localhost:5173` in at least three isolated browser contexts.
 | SM-19 | Backend interruption and restart | UI reports connection loss; recovery behavior matches documented limitations |
 | SM-20 | One-hour inactivity cleanup in accelerated test | Clients receive room closure and the room cannot be mutated afterwards |
 
-The focused automated PP-004 suite covers the contract and lifecycle portions of this matrix. Browser smoke evidence must still record the exact browser/container version and three-context result; PP-009 and PP-010 will make that flow deterministic in the release pipeline.
+The server suite automates SM-02 through SM-16 and SM-20 at the protocol/state boundary. Playwright automates a representative three-context create/join/vote/reveal/reset/delegate/kick/recovery flow plus mobile keyboard/error behavior. The remaining matrix is useful for exploratory review, not a substitute for the automated gate.
 
-## Release 0.2 automation target
+## Release 0.2 automation
 
 ```mermaid
 flowchart LR
@@ -70,7 +84,7 @@ flowchart LR
     TURBO --> CI[GitHub Actions]
 ```
 
-### Minimum automated coverage
+### Implemented automated coverage
 
 - Room creation, join validation, duplicate names, vote/revoke/reveal/reset, value-set change, delegation, removal, leave, disconnect, moderator handoff, and inactivity cleanup.
 - Unauthorized moderation attempts and malformed payloads.
@@ -87,6 +101,14 @@ Playwright visual output can vary across operating systems, browser versions, fo
 Run `pnpm screenshots:container` for comparison and `pnpm screenshots:update:container` only after explicitly deciding to replace reviewed baselines. On failure, compare the expected PNG in `docs/screenshots/` with Playwright's `*-actual.png` and `*-diff.png` under `apps/screenshots/test-results/`. Inspect all three before changing the expected image; test output is ignored and must not be committed.
 
 See [PP-009](releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md) and the [screenshot gallery](screenshots/README.md).
+
+## Troubleshooting
+
+- If host Node.js is unavailable or `node_modules` was created for another platform, use `pnpm verify:release:container`; it copies only source into a clean Linux workspace.
+- If a visual comparison fails, inspect the expected, actual, and diff PNGs under `apps/screenshots/test-results/`. Never update baselines before reviewing the semantic state and pixel diff.
+- If E2E fails, inspect `apps/screenshots/e2e-results/` and `apps/screenshots/e2e-report/`. Traces, screenshots, and videos contain invented test identities only and are ignored by Git.
+- If Turbo appears to reuse stale output, run `pnpm turbo run lint typecheck test build --force`; the release-container script always performs this pass first.
+- `pnpm verify:repo` reports broken local documentation links, invalid JSON/JSONC, non-portable SVG sources, and whitespace errors when Git metadata is available.
 
 The checks completed for this documentation package and the registry limitation are recorded in the [package verification report](verification.md).
 

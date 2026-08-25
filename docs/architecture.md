@@ -142,20 +142,24 @@ flowchart LR
     WEB --> TOKENS
     PLAYWRIGHT[Playwright screenshots and visual checks] --> WEB
     PLAYWRIGHT --> FIXTURE[Dev-only deterministic Socket.IO fixture]
+    E2E[Isolated browser contexts] --> WEB
+    E2E --> API
+    CI[GitHub Actions quality gate] --> TURBO
     TURBO[turbo tasks and cache] --> WEB
     TURBO --> API
     TURBO --> CONTRACTS
     TURBO --> TOKENS
 ```
 
-### Current and planned boundaries
+### Current boundaries
 
-- **Turborepo** orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, and the PP-009 screenshot comparison/update tasks; it does not change runtime behavior by itself.
+- **Turborepo** orchestrates `dev`, `lint`, `typecheck`, `test`, `build`, real-stack `e2e`, and PP-009 screenshot comparison/update tasks; it does not change runtime behavior by itself.
 - **Shared contracts** currently define event payloads, acknowledgements, room types, public errors, value sets, and Zod validation schemas once for both applications.
 - **Zustand** owns serializable connection, session, room, normalized error, and forced-exit state. The live Socket.IO instance stays in an injected transport service and is never persisted. No Redux DevTools or persistence middleware is enabled.
 - **Design tokens** are the shared language between Penpot and code. Global, semantic, and component tokens are separated.
 - **Penpot** documents current screens, target responsive behavior, reusable components, states, and the agreed token hierarchy.
-- **Playwright** captures invented, deterministic room states and validates critical desktop/mobile flows in a pinned environment.
+- **Playwright** captures invented deterministic room states, renders portable design SVGs, and validates real-server multi-user desktop/mobile flows in a pinned environment.
+- **GitHub Actions** performs one frozen root install, forces uncached quality tasks, retains privacy-safe diagnostics only on failure, and uses the same root scripts as local development.
 
 ## Non-goals for Release 0.2
 

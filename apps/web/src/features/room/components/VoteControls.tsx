@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 type VoteControlsProps = {
   onReveal?: () => void;
@@ -20,6 +20,12 @@ const VoteControls: React.FC<VoteControlsProps> = ({
   isModerator,
 }) => {
   const [isResetConfirmationOpen, setIsResetConfirmationOpen] = useState(false);
+  const resetTrigger = useRef<HTMLButtonElement>(null);
+
+  const cancelReset = () => {
+    setIsResetConfirmationOpen(false);
+    queueMicrotask(() => resetTrigger.current?.focus());
+  };
 
   const resetVotes = () => {
     onReset?.();
@@ -42,6 +48,7 @@ const VoteControls: React.FC<VoteControlsProps> = ({
         {isModerator && (
           <button
             type="button"
+            ref={resetTrigger}
             onClick={() => setIsResetConfirmationOpen(true)}
             className="pp-button pp-button-warning"
             disabled={!canReset}
@@ -69,7 +76,8 @@ const VoteControls: React.FC<VoteControlsProps> = ({
             <button
               type="button"
               className="pp-button pp-button-secondary"
-              onClick={() => setIsResetConfirmationOpen(false)}
+              onClick={cancelReset}
+              autoFocus
             >
               Cancel
             </button>

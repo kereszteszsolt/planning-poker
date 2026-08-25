@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import type { Participant } from "@planning-poker/contracts";
 
 type ParticipantProps = {
@@ -15,6 +15,13 @@ const Participants: React.FC<ParticipantProps> = ({
 }: ParticipantProps) => {
   const currentUser = participants[currentUserId];
   const [participantToRemove, setParticipantToRemove] = useState<string>();
+  const removalTrigger = useRef<HTMLButtonElement | null>(null);
+
+  const cancelRemoval = () => {
+    const trigger = removalTrigger.current;
+    setParticipantToRemove(undefined);
+    queueMicrotask(() => trigger?.focus());
+  };
 
   const confirmRemoval = () => {
     if (!participantToRemove) return;
@@ -44,7 +51,13 @@ const Participants: React.FC<ParticipantProps> = ({
               <div className="pp-control-row">
                 <button
                   type="button"
-                  onClick={() => setParticipantToRemove(p.id)}
+                  ref={
+                    participantToRemove === p.id ? removalTrigger : undefined
+                  }
+                  onClick={(event) => {
+                    removalTrigger.current = event.currentTarget;
+                    setParticipantToRemove(p.id);
+                  }}
                   className="pp-button pp-button-danger"
                   aria-label={`Remove ${p.name} from the room`}
                 >
@@ -73,7 +86,8 @@ const Participants: React.FC<ParticipantProps> = ({
                   <button
                     type="button"
                     className="pp-button pp-button-secondary"
-                    onClick={() => setParticipantToRemove(undefined)}
+                    onClick={cancelRemoval}
+                    autoFocus
                   >
                     Cancel
                   </button>

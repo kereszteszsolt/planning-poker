@@ -95,9 +95,9 @@ Fresh production output was also started for both packages. Local probes returne
 ]
 ```
 
-### Remaining manual evidence
+### PP-006 evidence boundary
 
-The interactive multi-browser convergence criterion remains unchecked. No Playwright dependency or temporary browser harness was added ahead of PP-009/PP-010, and no claim is made for vote, reveal, reset, delegation, reconnect, and kick convergence in real browser contexts during this verification run.
+The earlier PP-006-only run did not claim interactive multi-browser evidence. PP-010 now supplies that separate real-stack browser evidence below.
 
 ## PP-009 deterministic screenshot verification
 
@@ -119,6 +119,21 @@ The root update and comparison paths were both exercised. `pnpm screenshots:upda
 
 Every PNG was decoded and visually inspected at original resolution for clipping, horizontal overflow, focus, state meaning, stale UI, and sensitive data. A source and link search confirmed that the README/gallery use the new deterministic voting image before the duplicate legacy `Capture1.png` and `planning-poker-room-desktop.png` files were removed.
 
-## Remaining release checks
+## PP-010 test and CI verification
 
-PP-009 covers deterministic gallery and visual-regression evidence. The broader multi-browser behavior, automated accessibility, CI, and final clean-checkout release gate remain PP-010 scope.
+PP-010 was locally verified in `mcr.microsoft.com/playwright:v1.62.1-noble` with exact `@playwright/test` `1.62.1`, Corepack, pnpm `11.23.0`, Chromium, UTC, and a source-only workspace without host dependencies, environment files, build output, caches, or previous results.
+
+| Check            | Result                                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Frozen install   | 444 lockfile entries passed pnpm supply-chain policy verification                                                                                                        |
+| Repository gate  | Relative Markdown/HTML links, JSON/JSONC, four portable SVG sources, and whitespace passed; Chromium rendered the 1800×1050 interface-plan SVG without external requests |
+| Lint             | 5 package tasks passed                                                                                                                                                   |
+| Typecheck        | 9 build/typecheck tasks passed                                                                                                                                           |
+| Unit/integration | 40 passed: 4 contracts, 4 design-token, 7 server, 23 web, 2 fixture                                                                                                      |
+| Production build | Contracts, design tokens, server, and web passed                                                                                                                         |
+| Real-stack E2E   | 2 passed: three isolated users through the core room lifecycle, plus mobile keyboard/error/overflow smoke                                                                |
+| Visual/SVG       | 7 passed: six zero-diff baseline comparisons and one portable SVG render                                                                                                 |
+| Browser errors   | No console errors or uncaught page errors; no blocking native dialogs or horizontal overflow                                                                             |
+| Cache behavior   | Full source-only candidate passed once with forced task execution and once with normal Turbo caching                                                                     |
+
+The checked-in GitHub Actions workflow uses Node.js `22.22.0`, Corepack, exact pnpm `11.23.0`, one frozen root install, the documented root commands, forced uncached Turbo execution, production dependency audit, protected manual/main/tag concurrency behavior, and seven-day privacy-safe failure artifacts. No hosted workflow result is claimed in this local report.

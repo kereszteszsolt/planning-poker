@@ -15,6 +15,7 @@ const host = "127.0.0.1";
 const port = 4173;
 const sourceDirectory = path.dirname(fileURLToPath(import.meta.url));
 const webDistDirectory = path.resolve(sourceDirectory, "../../web/dist");
+const docsDirectory = path.resolve(sourceDirectory, "../../../docs");
 const indexPath = path.join(webDistDirectory, "index.html");
 const app = express();
 const httpServer = createServer(app);
@@ -198,6 +199,7 @@ app.post("/__pp_screenshots__/disconnect", (_request, response) => {
   io.disconnectSockets(true);
   response.status(204).end();
 });
+app.use("/__pp_docs__", express.static(docsDirectory, { index: false }));
 app.use(express.static(webDistDirectory, { index: false }));
 app.use((_request, response) => response.sendFile(indexPath));
 

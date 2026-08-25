@@ -15,9 +15,7 @@ All notable repository-level changes are documented here. Product behavior that 
 - Serializable Zustand connection, session, room, and limited UI slices behind an injected Socket.IO transport, with canonical snapshot replacement and privacy-safe reset paths.
 - DTCG design tokens, generated application CSS, focused responsive UI polish, and a synchronized Penpot design handoff with portable exports.
 - A pinned Playwright/Chromium workflow with an isolated deterministic Socket.IO fixture, six privacy-safe desktop/mobile gallery images, and reviewed visual baselines.
-
-### Planned for 0.2
-- Automated tests and CI evidence.
+- A 40-test root suite, real-server multi-context Playwright flows, portable repository checks, a two-pass clean release gate, and an actionable GitHub Actions workflow with privacy-safe failure artifacts.
 
 See [Release 0.2: Experience foundation](docs/releases/release-0.2-experience-foundation/README.md).
 

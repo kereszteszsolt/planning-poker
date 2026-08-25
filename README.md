@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="docs/releases/release-0.1-repository-foundation/README.md"><img alt="Release 0.1" src="https://img.shields.io/badge/release-0.1-2563eb"></a>
-  <a href="docs/releases/release-0.2-experience-foundation/README.md"><img alt="Release 0.2 planned" src="https://img.shields.io/badge/next-0.2%20planned-f59e0b"></a>
+  <a href="docs/releases/release-0.2-experience-foundation/README.md"><img alt="Release 0.2 candidate" src="https://img.shields.io/badge/release-0.2%20candidate-2563eb"></a>
   <img alt="React 19.1.1" src="https://img.shields.io/badge/React-19.1.1-61dafb?logo=react&logoColor=111827">
   <img alt="Tailwind CSS 4.1.12" src="https://img.shields.io/badge/Tailwind%20CSS-4.1.12-06b6d4?logo=tailwindcss&logoColor=white">
   <img alt="Socket.IO 4.8.1" src="https://img.shields.io/badge/Socket.IO-4.8.1-010101?logo=socketdotio&logoColor=white">
@@ -81,9 +81,11 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm e2e
+pnpm screenshots
 ```
 
-See [testing and verification](docs/testing.md) for the manual room matrix and current automation gaps.
+Run `pnpm verify` for the complete local gate or `pnpm verify:release:container` for two clean pinned-container passes. See [testing and verification](docs/testing.md) for the suite map and troubleshooting.
 
 ## Documentation and releases
 
@@ -100,7 +102,7 @@ See [testing and verification](docs/testing.md) for the manual room matrix and c
 - [Privacy and contact boundaries](docs/privacy-and-contact.md)
 - [Release index](docs/releases/README.md)
 - [Release 0.1: Repository foundation](docs/releases/release-0.1-repository-foundation/README.md)
-- [Release 0.2: Experience foundation](docs/releases/release-0.2-experience-foundation/README.md) — planned
+- [Release 0.2: Experience foundation](docs/releases/release-0.2-experience-foundation/README.md) — release candidate
 
 ## Project identity
 

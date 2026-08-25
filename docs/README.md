@@ -3,7 +3,7 @@
 | Release | Status | Purpose |
 | --- | --- | --- |
 | [0.1 · Repository foundation](releases/release-0.1-repository-foundation/README.md) | Implemented in this package | Accurate README, support surface, architecture and user documentation, diagrams, design handoff assets, screenshot gallery, and release evidence |
-| [0.2 · Experience foundation](releases/release-0.2-experience-foundation/README.md) | Planned | Runtime hardening, Turborepo, shared contracts, Zustand, design tokens, UI polish, Penpot, screenshots, tests, and CI |
+| [0.2 · Experience foundation](releases/release-0.2-experience-foundation/README.md) | Release candidate | Runtime hardening, Turborepo, shared contracts, Zustand, design tokens, UI polish, Penpot, screenshots, tests, and CI |
 
 ## Design and verification
 

@@ -10,10 +10,14 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "e2e": "turbo run e2e",
     "screenshots": "turbo run screenshots",
     "screenshots:update": "turbo run screenshots:update",
     "screenshots:container": "bash ./scripts/screenshots-container.sh",
-    "screenshots:update:container": "bash ./scripts/screenshots-container.sh --update"
+    "screenshots:update:container": "bash ./scripts/screenshots-container.sh --update",
+    "verify:repo": "node ./scripts/verify-repository.mjs",
+    "verify": "pnpm verify:repo && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm e2e && pnpm screenshots",
+    "verify:release:container": "bash ./scripts/release-candidate-container.sh"
   },
   "devDependencies": {
     "turbo": "^2.5.6"

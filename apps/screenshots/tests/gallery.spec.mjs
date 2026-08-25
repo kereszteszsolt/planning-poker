@@ -144,3 +144,19 @@ test("captures actionable connection loss on mobile", async ({ page }) => {
   await preparePage(page, mobile);
   await capture(page, "planning-poker-disconnected-mobile.png");
 });
+
+test("renders the portable interface-plan SVG without external resources", async ({
+  page,
+}) => {
+  const externalRequests = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).hostname !== localHost)
+      externalRequests.push(request.url());
+  });
+  await page.goto("/__pp_docs__/design/planning-poker-interface-plan.svg");
+  const svg = page.locator("svg");
+  await expect(svg).toBeVisible();
+  await expect(svg).toHaveAttribute("viewBox", "0 0 1800 1050");
+  expect(await svg.boundingBox()).toMatchObject({ width: 1800, height: 1050 });
+  expect(externalRequests).toEqual([]);
+});

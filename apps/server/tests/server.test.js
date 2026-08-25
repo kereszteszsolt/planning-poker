@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test, { afterEach } from "node:test";
 import { io as createClient } from "socket.io-client";
+import { valueSets } from "@planning-poker/contracts";
 import { loadRuntimeConfig } from "../dist/config.js";
 import { createPlanningPokerServer } from "../dist/server.js";
 
@@ -190,6 +191,17 @@ test("acknowledges authorization failures and keeps moderation and removal deter
     (await emitAck(bob, "reveal", { roomId })).error.code,
     "NOT_AUTHORIZED",
   );
+  for (const [event, payload] of [
+    ["reset", { roomId }],
+    ["change-value-set", { roomId, valueSet: "fibonacci" }],
+    ["delegate", { roomId, participantId: carolJoin.participant.id }],
+    ["kick-out", { roomId, participantId: carolJoin.participant.id }],
+  ]) {
+    assert.equal(
+      (await emitAck(bob, event, payload)).error.code,
+      "NOT_AUTHORIZED",
+    );
+  }
   assert.equal(
     (await emitAck(alice, "vote", { roomId, vote: "invalid" })).error.code,
     "INVALID_VOTE",
@@ -277,6 +289,114 @@ test("acknowledges authorization failures and keeps moderation and removal deter
   assert.equal(Object.keys(afterDisconnect.participants).length, 1);
   assert.equal((await emitAck(alice, "leave-room", { roomId })).ok, true);
   assert.equal(activeServer.rooms.size, 0);
+});
+
+test("supports every value set, automatic and early reveal, and round reset", async () => {
+  const url = await startServer();
+  const moderator = await connect(url);
+  const participant = await connect(url);
+  const roomId = await createRoom(moderator);
+  const moderatorJoin = await joinRoom(moderator, roomId, "Moderator");
+  const participantJoin = await joinRoom(participant, roomId, "Participant");
+
+  for (const [valueSet, values] of Object.entries(valueSets)) {
+    const changed = await emitAck(moderator, "change-value-set", {
+      roomId,
+      valueSet,
+    });
+    assert.equal(changed.ok, true);
+    assert.equal(changed.data.room.valueSet, valueSet);
+    assert.equal(
+      Object.values(changed.data.room.participants).every(
+        (candidate) => !candidate.voted,
+      ),
+      true,
+    );
+
+    const moderatorVote = await emitAck(moderator, "vote", {
+      roomId,
+      vote: values[0],
+    });
+    assert.equal(moderatorVote.data.room.revealed, false);
+    const automaticReveal = await emitAck(participant, "vote", {
+      roomId,
+      vote: values.at(-1),
+    });
+    assert.equal(automaticReveal.data.room.revealed, true);
+    assert.equal(
+      Object.values(automaticReveal.data.room.participants).filter(
+        (candidate) => candidate.isModerator,
+      ).length,
+      1,
+    );
+    assert.equal(
+      automaticReveal.data.room.participants[moderatorJoin.participant.id]
+        .isModerator,
+      true,
+    );
+
+    const reset = await emitAck(moderator, "reset", { roomId });
+    assert.equal(reset.data.room.revealed, false);
+    assert.equal(
+      Object.values(reset.data.room.participants).every(
+        (candidate) => !candidate.voted && candidate.vote === undefined,
+      ),
+      true,
+    );
+  }
+
+  await emitAck(participant, "vote", { roomId, vote: valueSets.days[0] });
+  const earlyReveal = await emitAck(moderator, "reveal", { roomId });
+  assert.equal(earlyReveal.data.room.revealed, true);
+  assert.equal(
+    earlyReveal.data.room.participants[participantJoin.participant.id].voted,
+    true,
+  );
+});
+
+test("rejects malformed actions and stale sessions without mutating the canonical room", async () => {
+  let clock = 10_000;
+  const url = await startServer({ sessionTtlMs: 1_000 }, () => clock);
+  const moderator = await connect(url);
+  const observer = await connect(url);
+  const roomId = await createRoom(moderator);
+  const moderatorJoin = await joinRoom(moderator, roomId, "Moderator");
+  await joinRoom(observer, roomId, "Observer");
+  const before = structuredClone(activeServer.rooms.get(roomId));
+
+  for (const [event, payload] of [
+    ["vote", { roomId, vote: {} }],
+    ["revoke", { roomId: 42 }],
+    ["reveal", {}],
+    ["reset", null],
+    ["change-value-set", { roomId, valueSet: "unknown" }],
+    ["delegate", { roomId, participantId: 42 }],
+    ["kick-out", { roomId }],
+    ["leave-room", { roomId: "invalid" }],
+  ]) {
+    assert.equal((await emitAck(moderator, event, payload)).ok, false);
+  }
+  assert.equal(activeServer.rooms.get(roomId).valueSet, before.valueSet);
+  assert.equal(activeServer.rooms.get(roomId).revealed, before.revealed);
+  assert.equal(activeServer.rooms.get(roomId).participants.size, 2);
+  assert.equal(
+    [...activeServer.rooms.get(roomId).participants.values()].filter(
+      (candidate) => candidate.isModerator,
+    ).length,
+    1,
+  );
+
+  moderator.disconnect();
+  await waitFor(() => activeServer.rooms.get(roomId).participants.size === 1);
+  clock = 11_001;
+  const staleClient = await connect(url);
+  const stale = await emitAck(staleClient, "join-room", {
+    roomId,
+    name: "Moderator",
+    sessionToken: moderatorJoin.sessionToken,
+  });
+  assert.equal(stale.error.code, "SESSION_EXPIRED");
+  assert.equal(activeServer.rooms.get(roomId).participants.size, 1);
 });
 
 test("resumes a disconnected participant by session token without duplicating identity", async () => {
