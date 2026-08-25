@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-- Node.js `22.12+`
-- npm
+- Node.js `22.13+`
+- Corepack (included with the supported Node.js release)
 - Two browser profiles, private windows, or separate browsers for realistic multi-participant smoke tests
 
 ## Current repository map
@@ -27,15 +27,16 @@
 Install the single root lockfile, then start both applications through Turbo:
 
 ```bash
-npm ci
-npm run dev
+corepack enable
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 The frontend starts at `http://localhost:5173`; the backend listens at `http://localhost:3000`.
 
 ## Runtime configuration
 
-The defaults below are safe for local development. Set backend variables in the shell that starts `npm run dev`; Vite reads frontend values from the shell or `apps/web/.env`. The checked `apps/server/.env.example` and `apps/web/.env.example` files contain the same defaults.
+The defaults below are safe for local development. Set backend variables in the shell that starts `pnpm dev`; Vite reads frontend values from the shell or `apps/web/.env`. The checked `apps/server/.env.example` and `apps/web/.env.example` files contain the same defaults.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -55,15 +56,15 @@ The defaults below are safe for local development. Set backend variables in the 
 Example production startup:
 
 ```bash
-npm run build
+pnpm build
 
 NODE_ENV=production \
 PP_HOST=0.0.0.0 \
 PP_PORT=3000 \
 PP_ALLOWED_ORIGINS=https://poker.example.com \
-npm start --workspace @planning-poker/server
+pnpm --filter @planning-poker/server start
 
-npm start --workspace @planning-poker/web
+pnpm --filter @planning-poker/web start
 ```
 
 The frontend preview listens on port `4173` by default; set the production allowlist to its real deployed origin rather than the local example.
@@ -79,17 +80,17 @@ The Release 0.1 package fixed three legacy metadata defects before the workspace
 ## Build and lint
 
 ```bash
-npm run lint
-npm run typecheck
-npm run test
-npm run build
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
 Use Turbo filters for focused work, including dependency builds when required:
 
 ```bash
-npm run test -- --filter=@planning-poker/server
-npm run build -- --filter=@planning-poker/web
+pnpm turbo run test --filter=@planning-poker/server
+pnpm turbo run build --filter=@planning-poker/web
 ```
 
 The root `screenshots` task is reserved in the task graph; deterministic generation remains part of [PP-009](releases/release-0.2-experience-foundation/stories/PP-009-privacy-safe-screenshot-workflow.md).
@@ -124,12 +125,15 @@ PP-005 establishes the following current layout:
 ├── packages/
 │   ├── contracts/             event payloads, acknowledgements, schemas, room types
 │   └── config/                shared TypeScript and lint configuration
-├── package.json               root scripts and workspaces
-├── package-lock.json          one workspace lockfile
+├── package.json               root scripts and package-manager identity
+├── pnpm-lock.yaml             one workspace lockfile
+├── pnpm-workspace.yaml        workspace membership and install policy
 └── turbo.json                 task graph, inputs, outputs, and cache policy
 ```
 
-`apps/*` depend on `packages/contracts`; the contract package depends only on the shared configuration package. Application-specific Vite, Socket.IO, and runtime settings remain inside their applications, preventing circular dependencies.
+`apps/*` depend on `packages/contracts` through `workspace:*`; the contract package depends only on the shared configuration package. Application-specific Vite, Socket.IO, and runtime settings remain inside their applications, preventing circular dependencies.
+
+Corepack selects the exact pnpm version from the root `packageManager` field. The workspace permits only the required `esbuild` dependency build script, and pnpm's default release-age policy remains active. Do not use npm or generate a `package-lock.json` in this repository.
 
 Turbo caches reproducible builds and checks locally in `.turbo`, which is ignored. Remote caching is optional. Runtime and Vite variables that affect tasks are declared in `turbo.json`; development is persistent and uncached so `Ctrl+C` stops both application processes through the root task runner.
 

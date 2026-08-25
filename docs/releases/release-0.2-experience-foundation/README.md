@@ -11,7 +11,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 ## Outcomes
 
 - Critical local runtime, room lifecycle, validation, reconnection, removal, and moderator defects are fixed.
-- The repository becomes one npm workspace orchestrated by Turborepo, with shared event contracts.
+- The repository becomes one pnpm workspace orchestrated by Turborepo, with shared event contracts.
 - Shared browser state moves to a deliberate Zustand boundary without persisting sensitive room data.
 - A compact design-token package drives a modest, accessible UI polish.
 - A real Penpot file documents foundations, components, responsive flows, and edge states.
@@ -23,7 +23,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 | Story | Focus | Status |
 | --- | --- | --- |
 | [PP-004](stories/PP-004-runtime-and-room-lifecycle-hardening.md) | Runtime configuration, validation, reconnect, lifecycle, moderation, and current defects | Implemented |
-| [PP-005](stories/PP-005-turborepo-workspace-and-shared-contracts.md) | npm workspaces, Turborepo, one lockfile, shared events/types/schemas | Implemented |
+| [PP-005](stories/PP-005-turborepo-workspace-and-shared-contracts.md) | pnpm workspace, Turborepo, one lockfile, shared events/types/schemas | Implemented |
 | [PP-006](stories/PP-006-zustand-room-state-boundary.md) | Connection/session/room store slices and transport lifecycle | Planned |
 | [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Planned |
 | [PP-008](stories/PP-008-penpot-design-handoff.md) | Real Penpot file, components, states, responsive boards, exports | Planned |
@@ -75,7 +75,7 @@ Complete PP-010, update all story evidence, run the full root pipeline on a clea
 
 ## Release exit criteria
 
-- [x] A clean checkout installs with one root `npm ci` and one lockfile.
+- [x] A clean checkout installs with one root `pnpm install --frozen-lockfile` and one lockfile.
 - [ ] Root `dev`, `lint`, `typecheck`, `test`, `build`, and `screenshots` commands are documented and pass.
 - [x] No known duplicate socket creation, stale reconnect closure, ghost kicked participant, empty-room leak, arbitrary room-key, or fixed-width join defect remains.
 - [x] Recoverable and unrecoverable reconnects have explicit, tested UI behavior.

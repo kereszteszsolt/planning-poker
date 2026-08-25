@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalDependencies": ["package-lock.json"],
+  "globalDependencies": ["pnpm-lock.yaml"],
   "tasks": {
     "dev": {
       "dependsOn": ["^build"],

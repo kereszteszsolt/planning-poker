@@ -12,7 +12,7 @@ As a maintainer, I want one root workspace with explicit task and contract bound
 
 ### Workspace structure
 
-- [x] The repository uses npm workspaces from one root `package.json` and one committed root lockfile.
+- [x] The repository uses one root workspace and one committed root lockfile.
 - [x] The frontend moves to `apps/web` and the backend moves to `apps/server`, with history-preserving moves where practical.
 - [x] `packages/contracts` contains shared room, participant, value-set, event payload, acknowledgement, and public error-code definitions.
 - [x] Runtime validation schemas live with or are generated from the shared contracts and are consumed at the server boundary.
@@ -30,13 +30,20 @@ As a maintainer, I want one root workspace with explicit task and contract bound
 
 ### Developer experience
 
-- [x] A clean checkout requires one `npm ci` at the repository root.
-- [x] `npm run dev` starts both applications with documented ports and clean shutdown behavior.
-- [x] `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build` work from the root and can also be filtered to one package.
+- [x] A clean checkout requires one frozen install at the repository root.
+- [x] The root development command starts both applications with documented ports and clean shutdown behavior.
+- [x] Root lint, typecheck, test, and build commands work together and can also be filtered to one package.
 - [x] The frontend imports shared contract types through package exports, not relative paths into the server.
 - [x] The server imports the same event and acknowledgement contracts used by the client.
 - [x] No circular dependency exists among apps and packages.
 - [x] README, architecture, development, testing, and troubleshooting docs reflect the new paths and commands.
+
+### Supplemental pnpm criterion
+
+- [x] Corepack selects the pinned `pnpm@11.23.0`, and the documented Node.js minimum satisfies pnpm's engine requirement.
+- [x] `pnpm-workspace.yaml` is the canonical workspace definition, and internal app/package dependencies use `workspace:*`.
+- [x] `pnpm-lock.yaml` is the only dependency lockfile; `package-lock.json` and local pnpm stores are absent from the commit.
+- [x] A clean `pnpm install --frozen-lockfile` plus root and filtered Turbo commands preserve the original PP-005 quality gate and runtime startup behavior.
 
 ### Behavior preservation
 
@@ -46,7 +53,7 @@ As a maintainer, I want one root workspace with explicit task and contract bound
 
 ## Out of scope
 
-Changing package manager, enabling mandatory hosted remote caching, publishing packages to npm, containerizing the applications, or adding unrelated shared utility packages is out of scope.
+Changing package manager again after the approved pnpm supplement, enabling mandatory hosted remote caching, publishing packages to a registry, containerizing the applications, or adding unrelated shared utility packages is out of scope.
 
 ## Implementation notes
 
@@ -58,7 +65,8 @@ apps/server
 packages/contracts
 packages/config
 package.json
-package-lock.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
 turbo.json
 ```
 
@@ -66,4 +74,4 @@ turbo.json
 
 ## Verification evidence
 
-Verified in `node:22.22.0-bookworm-slim` with one clean root `npm ci`. Root lint, typecheck, 14 tests, build, reserved screenshot task, production dependency audit, package filters, Turbo cache hits, development startup/shutdown, package graph, and generated-output HTTP startup checks passed. See the [verification report](../../../verification.md#pp-005-workspace-verification) for the command transcript and explicit browser-evidence boundary.
+The pnpm supplement was verified in `node:22.22.0-bookworm-slim` with Corepack and pnpm `11.23.0`. The clean frozen install passed pnpm's supply-chain policies, the root gate retained all 14 tests, the documented package filters passed, `pnpm dev` started both applications, and both production outputs returned HTTP 200. See the [verification report](../../../verification.md#pp-005-workspace-verification) for the command-level evidence and explicit browser-evidence boundary.

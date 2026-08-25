@@ -5,25 +5,26 @@
 PP-004 adds focused server integration tests and React transport/session/component tests. PP-005 adds contract-schema tests and the root workspace gate. CI, deterministic Playwright automation, and visual baselines remain planned for later Release 0.2 stories.
 
 ```bash
-npm ci
-npm run lint
-npm run typecheck
-npm test
-npm run build
+corepack enable
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
 ### Focused package checks
 
 ```bash
-npm run test -- --filter=@planning-poker/server
-npm run test -- --filter=@planning-poker/web
-npm run test -- --filter=@planning-poker/contracts
+pnpm turbo run test --filter=@planning-poker/server
+pnpm turbo run test --filter=@planning-poker/web
+pnpm turbo run test --filter=@planning-poker/contracts
 ```
 
 ### Combined development smoke
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open `http://localhost:5173` in at least three isolated browser contexts.
@@ -96,12 +97,12 @@ Environment:
 - Browser/Playwright:
 
 Commands:
-- npm ci
-- npm run lint
-- npm run typecheck
-- npm run test
-- npm run build
-- npm run screenshots
+- pnpm install --frozen-lockfile
+- pnpm lint
+- pnpm typecheck
+- pnpm test
+- pnpm build
+- pnpm screenshots
 
 Results:
 - lint:

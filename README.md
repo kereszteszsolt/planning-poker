@@ -54,8 +54,8 @@ The server is authoritative for room membership, moderation, votes, reveal state
 
 ### Prerequisites
 
-- Node.js `22.12+`
-- npm
+- Node.js `22.13+`
+- Corepack (included with the supported Node.js release)
 
 ### Install and run both applications
 
@@ -63,8 +63,9 @@ The server is authoritative for room membership, moderation, votes, reveal state
 git clone https://github.com/kereszteszsolt/example-planning-poker-react-express-socket-io.git
 cd example-planning-poker-react-express-socket-io
 
-npm ci
-npm run dev
+corepack enable
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Open `http://localhost:5173`. The Socket.IO server listens on `http://localhost:3000`.
@@ -74,10 +75,10 @@ The safe local defaults work without environment variables. Backend host, port, 
 ### Build verification
 
 ```bash
-npm run lint
-npm run typecheck
-npm run test
-npm run build
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
 See [testing and verification](docs/testing.md) for the manual room matrix and current automation gaps.
@@ -110,6 +111,7 @@ See [testing and verification](docs/testing.md) for the manual room matrix and c
 | Frontend package | `@planning-poker/web` (`apps/web`) |
 | Backend package | `@planning-poker/server` (`apps/server`) |
 | Shared contracts | `@planning-poker/contracts` (`packages/contracts`) |
+| Package manager | `pnpm@11.23.0` via Corepack |
 | Story prefix | `PP-` |
 | Maintainer | Keresztes Zsolt — [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
 

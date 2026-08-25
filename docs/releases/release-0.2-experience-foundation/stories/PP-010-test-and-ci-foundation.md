@@ -33,7 +33,7 @@ As a maintainer, I want the critical real-time, state, responsive, and build bou
 
 ### CI and repository gate
 
-- [ ] GitHub Actions installs from a clean checkout with the supported Node.js version and one root `npm ci`.
+- [ ] GitHub Actions enables Corepack and installs from a clean checkout with the supported Node.js version and one root `pnpm install --frozen-lockfile`.
 - [ ] CI runs root `lint`, `typecheck`, `test`, `build`, and deterministic screenshot/visual checks using the same scripts documented locally.
 - [ ] Turbo cache configuration does not mask missing outputs; at least one clean/no-cache verification is part of release evidence.
 - [ ] Workflow concurrency cancels obsolete branch runs without cancelling protected release verification.
