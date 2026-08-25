@@ -154,7 +154,7 @@ Apache License 2.0. See [`LICENSE`](LICENSE).
   <strong>Every coffee counts! ☕❤️</strong>
 </p>
 
-## Made with love
+---
 
 <p align="center">
   <strong>Made with ❤️ by <a href="https://kereszteszsolt.hu/">Keresztes Zsolt</a></strong><br>
