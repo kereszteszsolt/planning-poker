@@ -26,7 +26,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 | [PP-005](stories/PP-005-turborepo-workspace-and-shared-contracts.md) | pnpm workspace, Turborepo, one lockfile, shared events/types/schemas | Implemented |
 | [PP-006](stories/PP-006-zustand-room-state-boundary.md) | Connection/session/room store slices and transport lifecycle | In verification |
 | [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Implementation and browser review complete |
-| [PP-008](stories/PP-008-penpot-design-handoff.md) | Real Penpot file, components, states, responsive boards, exports | Planned |
+| [PP-008](stories/PP-008-penpot-design-handoff.md) | Real Penpot file, components, states, responsive boards, exports | Implemented |
 | [PP-009](stories/PP-009-privacy-safe-screenshot-workflow.md) | Deterministic Playwright captures and documentation gallery | Planned |
 | [PP-010](stories/PP-010-test-and-ci-foundation.md) | Unit, integration, E2E, accessibility, CI, and release evidence | Planned |
 
@@ -81,7 +81,7 @@ Complete PP-010, update all story evidence, run the full root pipeline on a clea
 - [x] Recoverable and unrecoverable reconnects have explicit, tested UI behavior.
 - [x] Event payloads and acknowledgements are shared and runtime-validated.
 - [x] Zustand contains serializable state only and resets safely on leave, kick, close, and unrecoverable session loss.
-- [ ] Approved DTCG tokens generate application variables and are imported into Penpot.
+- [x] Approved DTCG tokens generate application variables and are imported into Penpot.
 - [ ] Core screens and edge states are reviewed at desktop, tablet, and mobile widths.
 - [ ] Fresh Penpot backup/export assets and deterministic screenshots are committed.
 - [ ] CI runs the same root commands documented for developers.

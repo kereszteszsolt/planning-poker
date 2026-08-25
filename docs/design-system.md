@@ -27,35 +27,35 @@ flowchart LR
 Examples:
 
 - `color.base.blue.600`
-- `color.base.gray.950`
-- `spacing.base.4`
-- `radius.base.lg`
-- `shadow.base.card`
+- `color.base.slate.900`
+- `space.4`
+- `radius.lg`
+- `shadow.panel`
 - `font.size.body`
 
 ### Tier 2: semantic
 
 Examples:
 
-- `color.bg.page`
-- `color.bg.surface`
+- `color.background.page`
+- `color.background.surface`
 - `color.text.primary`
-- `color.text.muted`
+- `color.text.secondary`
 - `color.border.default`
 - `color.action.primary`
-- `color.status.danger`
-- `space.layout.section`
+- `color.status.dangerSurface`
+- `focus.width`
 
 ### Tier 3: component
 
 Examples:
 
-- `color.button.primary.bg`
-- `color.button.primary.bgHover`
-- `color.voteCard.selected.bg`
-- `color.voteCard.hidden.bg`
-- `radius.roomPanel`
-- `shadow.roomPanel`
+- `component.button.radius`
+- `component.button.minHeight`
+- `component.voteCard.selected`
+- `component.voteCard.hidden`
+- `component.panel.radius`
+- `component.panel.shadow`
 
 The earlier [`design/planning-poker.tokens.draft.json`](design/planning-poker.tokens.draft.json) remains the planning seed. The approved runtime and PP-008 import source is now [`../packages/design-tokens/tokens/planning-poker.tokens.json`](../packages/design-tokens/tokens/planning-poker.tokens.json). The package validates aliases and values, deterministically generates the committed CSS variables, and rejects source/artifact drift. Components consume semantic variables through [`../packages/design-tokens/dist/tokens.css`](../packages/design-tokens/dist/tokens.css) rather than duplicating the palette in JSX.
 
@@ -105,6 +105,8 @@ The first Penpot library should contain only components required by current beha
 - Connection/status banner.
 - Toast or inline copy feedback.
 - Vote distribution item.
+
+The connected library uses `Planning Poker / <functional group> / <semantic component>` paths. Examples include `Planning Poker / Navigation / Room header`, `Planning Poker / Actions / Primary`, and `Planning Poker / Voting / Default`. Masters use `Master / …`, screen instances use `Instance / …`, and review-only state samples use `State / <component> / <state>`. Names describe product function rather than color or canvas position.
 
 ## Accessibility acceptance boundary
 

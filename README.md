@@ -95,7 +95,7 @@ See [testing and verification](docs/testing.md) for the manual room matrix and c
 - [Package verification report](docs/verification.md)
 - [Brand configuration](docs/brand-configuration.md)
 - [Design-system and token plan](docs/design-system.md)
-- [Penpot handoff plan](docs/design/README.md)
+- [Penpot design handoff](docs/design/README.md)
 - [Screenshot gallery and capture policy](docs/screenshots/README.md)
 - [Privacy and contact boundaries](docs/privacy-and-contact.md)
 - [Release index](docs/releases/README.md)
