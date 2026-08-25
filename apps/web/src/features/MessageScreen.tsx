@@ -33,19 +33,22 @@ const MessageScreen: React.FC = () => {
         };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow text-center">
-      <h1 className="text-2xl font-bold mb-4">{message.title}</h1>
-      <p className="mb-6 text-gray-700">{message.description}</p>
-      <button
-        className="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-        onClick={() => {
-          transport.returnHome();
-          navigate("/");
-        }}
-      >
-        Go to Home
-      </button>
-    </div>
+    <main className="pp-page pp-page-centered">
+      <section className="pp-panel pp-form-panel text-center">
+        <h1 className="pp-title">{message.title}</h1>
+        <p className="pp-copy mb-6">{message.description}</p>
+        <button
+          type="button"
+          className="pp-button pp-button-primary"
+          onClick={() => {
+            transport.returnHome();
+            navigate("/");
+          }}
+        >
+          Go to Home
+        </button>
+      </section>
+    </main>
   );
 };
 

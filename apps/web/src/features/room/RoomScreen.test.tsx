@@ -64,7 +64,7 @@ describe("RoomScreen session recovery", () => {
     });
 
     renderRoom(fake);
-    expect(await screen.findByText("(You)")).toBeInTheDocument();
+    expect(await screen.findByText("You")).toBeInTheDocument();
     expect(requests).toHaveLength(1);
     expect(requests[0]).toMatchObject({
       roomId,
@@ -95,7 +95,7 @@ describe("RoomScreen session recovery", () => {
     fireEvent.change(screen.getByPlaceholderText("Enter your name"), {
       target: { value: "Alice" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+    fireEvent.click(screen.getByRole("button", { name: "Join Room" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "That name is already in use.",
     );

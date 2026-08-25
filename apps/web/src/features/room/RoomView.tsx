@@ -34,7 +34,10 @@ const VotingPanel = memo(() => {
 
   if (!valueSet) return null;
   return (
-    <div className="p-4 md:p-6 bg-white rounded-lg shadow w-full">
+    <section className="pp-panel" aria-labelledby="voting-heading">
+      <h1 id="voting-heading" className="pp-title">
+        Cast your estimate
+      </h1>
       <ValueSetControl
         currentValueSet={valueSet}
         changeValueSet={transport.changeValueSet}
@@ -55,7 +58,7 @@ const VotingPanel = memo(() => {
         canRevoke={canRevoke}
         isModerator={isModerator}
       />
-    </div>
+    </section>
   );
 });
 VotingPanel.displayName = "VotingPanel";
@@ -64,10 +67,13 @@ const ResultsPanel = memo(() => {
   const participants = usePlanningPokerSelector(selectParticipants);
   const revealed = usePlanningPokerSelector(selectRoomRevealed);
   return (
-    <div className="flex flex-col p-4 md:p-6 bg-white rounded-lg shadow w-full gap-4">
+    <section
+      className="pp-panel pp-results-panel pp-stack"
+      aria-label="Voting results"
+    >
       <Votes participants={participants} isRevealed={revealed} />
       <Statistics participants={participants} isRevealed={revealed} />
-    </div>
+    </section>
   );
 });
 ResultsPanel.displayName = "ResultsPanel";
@@ -93,19 +99,18 @@ type RoomViewProps = {
 };
 
 const RoomView = ({ onLeave }: RoomViewProps) => (
-  <div
-    className="flex flex-col md:flex-row justify-center items-start w-full gap-4 p-2 md:p-4"
-    style={{ minHeight: "calc(100vh - 64px)", background: "#f8fbff" }}
-  >
-    <div className="flex flex-col w-full md:w-3/4 lg:w-2/3 xl:w-1/2 gap-4">
-      <VotingPanel />
-      <ResultsPanel />
+  <main className="pp-room-page">
+    <div className="pp-room-layout">
+      <div className="pp-room-column">
+        <VotingPanel />
+        <ResultsPanel />
+      </div>
+      <aside className="pp-room-column" aria-label="Room information">
+        <RoomActionsPanel onLeave={onLeave} />
+        <ParticipantsPanel />
+      </aside>
     </div>
-    <div className="flex flex-col w-full md:w-1/4 lg:w-1/3 xl:w-1/4 gap-4">
-      <RoomActionsPanel onLeave={onLeave} />
-      <ParticipantsPanel />
-    </div>
-  </div>
+  </main>
 );
 
 const RoomActionsPanel = memo(({ onLeave }: RoomViewProps) => {

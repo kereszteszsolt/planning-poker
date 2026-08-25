@@ -15,48 +15,50 @@ const Votes: React.FC<VotesProps> = ({ participants, isRevealed }) => {
   );
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Votes</h2>
+    <section aria-labelledby="votes-heading">
+      <h2 id="votes-heading" className="pp-heading">
+        Votes
+      </h2>
 
-      {/* Main row for participants who have voted */}
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="pp-votes mb-4">
         {votedParticipants.map(([id, participant]) => (
-          <div key={id} className="flex flex-col items-center">
+          <div key={id} className="pp-vote-result">
             <div
-              className={`w-14 h-18 flex items-center justify-center rounded-lg font-bold text-white ${
-                isRevealed
-                  ? participant.vote !== undefined && participant.vote !== null
-                    ? "bg-blue-500"
-                    : "bg-gray-300"
-                  : "bg-gray-500"
+              className={`pp-vote-result-card ${
+                isRevealed &&
+                participant.vote !== undefined &&
+                participant.vote !== null
+                  ? "pp-vote-result-card-revealed"
+                  : ""
               }`}
+              aria-label={
+                isRevealed
+                  ? `${participant.name} voted ${participant.vote ?? "no value"}`
+                  : `${participant.name} submitted a vote`
+              }
             >
               {isRevealed ? (participant.vote ?? "-") : "?"}
             </div>
-            <span className="text-sm text-gray-700 mt-1 truncate w-16 text-center">
+            <span className="pp-name-caption" title={participant.name}>
               {participant.name}
             </span>
           </div>
         ))}
       </div>
 
-      {/* Section for participants who haven't voted yet */}
       {notVotedParticipants.length > 0 && (
-        <div className="mt-2">
-          <h3 className="text-sm font-medium text-gray-500 mb-2">Not Voted</h3>
-          <div className="flex flex-wrap gap-2">
+        <div className="mt-4">
+          <h3 className="pp-label mb-2">Waiting for a vote</h3>
+          <div className="pp-control-row">
             {notVotedParticipants.map(([id, participant]) => (
-              <div
-                key={id}
-                className="px-3 py-1 bg-gray-200 rounded-lg text-xs text-gray-700 font-bold"
-              >
+              <div key={id} className="pp-chip" title={participant.name}>
                 {participant.name}
               </div>
             ))}
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

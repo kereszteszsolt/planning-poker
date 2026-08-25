@@ -57,7 +57,7 @@ Examples:
 - `radius.roomPanel`
 - `shadow.roomPanel`
 
-The repository includes [`design/planning-poker.tokens.draft.json`](design/planning-poker.tokens.draft.json) as a non-runtime DTCG draft. It exists to make naming and Penpot discussion concrete. Release 0.2 must review it, place the approved source in a workspace package, generate CSS variables, and verify imports before calling tokens implemented.
+The earlier [`design/planning-poker.tokens.draft.json`](design/planning-poker.tokens.draft.json) remains the planning seed. The approved runtime and PP-008 import source is now [`../packages/design-tokens/tokens/planning-poker.tokens.json`](../packages/design-tokens/tokens/planning-poker.tokens.json). The package validates aliases and values, deterministically generates the committed CSS variables, and rejects source/artifact drift. Components consume semantic variables through [`../packages/design-tokens/dist/tokens.css`](../packages/design-tokens/dist/tokens.css) rather than duplicating the palette in JSX.
 
 ## Proposed CSS contract
 

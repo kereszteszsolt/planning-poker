@@ -1,0 +1,22 @@
+{
+  "name": "@planning-poker/design-tokens",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./css": "./dist/tokens.css",
+    "./tokens": "./tokens/planning-poker.tokens.json"
+  },
+  "files": [
+    "dist",
+    "tokens"
+  ],
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "check": "node ./scripts/build.mjs --check",
+    "lint": "node --check ./src/token-tools.mjs && node --check ./scripts/build.mjs",
+    "typecheck": "node --check ./src/token-tools.mjs && node --check ./scripts/build.mjs",
+    "test": "node --test ./tests/*.test.mjs"
+  },
+  "license": "Apache-2.0"
+}

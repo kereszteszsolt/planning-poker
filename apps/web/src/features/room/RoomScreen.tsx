@@ -45,7 +45,7 @@ const RoomScreen: React.FC = () => {
     return (
       <>
         {error && (
-          <p className="p-3 rounded bg-red-50 text-red-700" role="alert">
+          <p className="pp-error" role="alert">
             {error}
           </p>
         )}

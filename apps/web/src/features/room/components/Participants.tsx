@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Participant } from "@planning-poker/contracts";
 
 type ParticipantProps = {
@@ -14,45 +14,83 @@ const Participants: React.FC<ParticipantProps> = ({
   delegate,
 }: ParticipantProps) => {
   const currentUser = participants[currentUserId];
+  const [participantToRemove, setParticipantToRemove] = useState<string>();
+
+  const confirmRemoval = () => {
+    if (!participantToRemove) return;
+    kickOut(participantToRemove);
+    setParticipantToRemove(undefined);
+  };
+
   return (
-    <div className="p-6 bg-white rounded-lg shadow w-full min-w-[300px]">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Participants</h2>
-      <ul className="mb-6 space-y-2">
+    <section className="pp-panel" aria-labelledby="participants-heading">
+      <h2 id="participants-heading" className="pp-heading">
+        Participants
+      </h2>
+      <ul className="pp-participant-list">
         {Object.values(participants).map((p) => (
-          <li
-            key={p.id}
-            className="flex justify-between items-center p-3 border-b border-gray-200"
-          >
-            <div>
-              {p.name}{" "}
-              {p.isModerator && (
-                <span className="text-sm text-gray-500">(Moderator)</span>
-              )}{" "}
-              {p.voted && <span className="text-sm text-green-500">✓</span>}{" "}
-              {p.id === currentUserId && (
-                <span className="text-sm text-blue-500">(You)</span>
+          <li key={p.id} className="pp-participant">
+            <div className="pp-participant-name" title={p.name}>
+              {p.name}
+              {p.isModerator && <span className="pp-badge">Moderator</span>}
+              {p.voted && (
+                <span className="pp-badge pp-badge-success">
+                  Vote submitted
+                </span>
               )}
+              {p.id === currentUserId && <span className="pp-badge">You</span>}
             </div>
             {currentUser?.isModerator && !p.isModerator && (
-              <div className="flex space-x-2">
+              <div className="pp-control-row">
                 <button
-                  onClick={() => kickOut(p.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  type="button"
+                  onClick={() => setParticipantToRemove(p.id)}
+                  className="pp-button pp-button-danger"
+                  aria-label={`Remove ${p.name} from the room`}
                 >
-                  Kick Out
+                  Remove
                 </button>
                 <button
+                  type="button"
                   onClick={() => delegate(p.id)}
-                  className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  className="pp-button pp-button-secondary"
+                  aria-label={`Make ${p.name} the moderator`}
                 >
-                  Delegate
+                  Make moderator
                 </button>
+              </div>
+            )}
+            {participantToRemove === p.id && (
+              <div
+                className="pp-confirmation pp-stack"
+                role="alertdialog"
+                aria-label={`Confirm removal of ${p.name}`}
+              >
+                <p className="pp-copy">
+                  Remove <strong>{p.name}</strong> from this room?
+                </p>
+                <div className="pp-control-row">
+                  <button
+                    type="button"
+                    className="pp-button pp-button-secondary"
+                    onClick={() => setParticipantToRemove(undefined)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="pp-button pp-button-danger"
+                    onClick={confirmRemoval}
+                  >
+                    Confirm removal
+                  </button>
+                </div>
               </div>
             )}
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 };
 

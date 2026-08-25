@@ -39,6 +39,11 @@ describe("SocketProvider", () => {
     expect(screen.getByText("reconnecting")).toBeInTheDocument();
     act(() => fake.trigger("connect_error", new Error("temporary")));
     expect(screen.getByText("recoverable-error")).toBeInTheDocument();
+    act(() => fake.trigger("connect"));
+    expect(
+      screen.getByText("Connection restored. Your room is synchronized."),
+    ).toBeInTheDocument();
+    act(() => fake.trigger("connect_error", new Error("temporary")));
     act(() => fake.manager.trigger("reconnect_failed"));
     expect(screen.getByText("server-unavailable")).toBeInTheDocument();
     act(() => fake.trigger("disconnect", "io server disconnect"));

@@ -40,22 +40,26 @@ type ConnectingProps = { status: ConnectionStatus; onRetry?: () => void };
 const Connecting: React.FC<ConnectingProps> = ({ status, onRetry }) => {
   const copy = statusCopy[status];
   return (
-    <div
-      className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow"
-      role="status"
-    >
-      <h1 className="text-2xl font-bold mb-4 text-center">{copy.title}</h1>
-      <p className="mb-2 text-gray-700 text-center">{copy.description}</p>
-      {onRetry && status !== "initial" && status !== "reconnecting" && (
-        <button
-          type="button"
-          className="block mx-auto mt-4 p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-          onClick={onRetry}
-        >
-          Retry connection
-        </button>
-      )}
-    </div>
+    <main className="pp-page pp-page-centered">
+      <section
+        className="pp-panel pp-form-panel text-center"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <h1 className="pp-title">{copy.title}</h1>
+        <p className="pp-copy">{copy.description}</p>
+        {onRetry && status !== "initial" && status !== "reconnecting" && (
+          <button
+            type="button"
+            className="pp-button pp-button-primary mt-4"
+            onClick={onRetry}
+          >
+            Retry connection
+          </button>
+        )}
+      </section>
+    </main>
   );
 };
 

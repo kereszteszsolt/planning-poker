@@ -25,7 +25,7 @@ Make the existing Planning Poker experience dependable, maintainable, responsive
 | [PP-004](stories/PP-004-runtime-and-room-lifecycle-hardening.md) | Runtime configuration, validation, reconnect, lifecycle, moderation, and current defects | Implemented |
 | [PP-005](stories/PP-005-turborepo-workspace-and-shared-contracts.md) | pnpm workspace, Turborepo, one lockfile, shared events/types/schemas | Implemented |
 | [PP-006](stories/PP-006-zustand-room-state-boundary.md) | Connection/session/room store slices and transport lifecycle | In verification |
-| [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Planned |
+| [PP-007](stories/PP-007-design-tokens-and-ui-polish.md) | DTCG tokens, generated CSS, responsive and accessible UI refinement | Implementation and browser review complete |
 | [PP-008](stories/PP-008-penpot-design-handoff.md) | Real Penpot file, components, states, responsive boards, exports | Planned |
 | [PP-009](stories/PP-009-privacy-safe-screenshot-workflow.md) | Deterministic Playwright captures and documentation gallery | Planned |
 | [PP-010](stories/PP-010-test-and-ci-foundation.md) | Unit, integration, E2E, accessibility, CI, and release evidence | Planned |

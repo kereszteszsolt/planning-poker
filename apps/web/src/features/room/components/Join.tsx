@@ -9,37 +9,58 @@ type JoinProps = {
 const Join: React.FC<JoinProps> = ({ roomId, onJoin, error }) => {
   const [name, setName] = useState("");
 
-  const handleJoin = () => {
+  const handleJoin = (event: React.FormEvent) => {
+    event.preventDefault();
     if (!name.trim()) return;
     onJoin(name.trim());
   };
 
+  const errorId = error ? "join-name-error" : undefined;
+
   return (
-    <div className="w-full max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow flex flex-col items-center">
-      <h2 className="text-xl font-bold mb-4 break-all">Join Room: {roomId}</h2>
-      <input
-        type="text"
-        placeholder="Enter your name"
-        className="border p-2 w-full mb-4"
-        value={name}
-        minLength={2}
-        maxLength={40}
-        autoComplete="name"
-        onChange={(e) => setName(e.target.value)}
-      />
-      {error && (
-        <p className="text-red-700 mb-4" role="alert">
-          {error}
+    <main className="pp-page pp-page-centered">
+      <section className="pp-panel pp-form-panel" aria-labelledby="join-title">
+        <h1 id="join-title" className="pp-title">
+          Join Room
+        </h1>
+        <p className="pp-copy">
+          Room: <span className="pp-room-id">{roomId}</span>
         </p>
-      )}
-      <button
-        onClick={handleJoin}
-        className="bg-blue-500 text-white px-4 py-2 rounded self-start"
-        disabled={name.trim().length < 2}
-      >
-        Join
-      </button>
-    </div>
+        <form className="pp-stack mt-6" onSubmit={handleJoin}>
+          <div className="pp-field-group">
+            <label className="pp-label" htmlFor="participant-name">
+              Your name
+            </label>
+            <input
+              id="participant-name"
+              type="text"
+              placeholder="Enter your name"
+              className="pp-field"
+              value={name}
+              minLength={2}
+              maxLength={40}
+              autoComplete="name"
+              autoFocus
+              aria-invalid={Boolean(error)}
+              aria-describedby={errorId}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          {error && (
+            <p id={errorId} className="pp-error" role="alert">
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className="pp-button pp-button-primary"
+            disabled={name.trim().length < 2}
+          >
+            Join Room
+          </button>
+        </form>
+      </section>
+    </main>
   );
 };
 

@@ -14,21 +14,27 @@ const VotingCards: React.FC<VotingCardsProps> = ({
   disabled,
 }) => {
   return (
-    <div className="flex flex-col">
-      {/*<h2 className="text-xl font-bold mb-4 text-gray-800">Vote</h2>*/}
-      <div className="flex flex-wrap gap-2 mb-6">
+    <div>
+      <p className="pp-hint mb-3" aria-live="polite">
+        {disabled
+          ? "Voting is closed while results are revealed."
+          : "Choose one card to submit your estimate."}
+      </p>
+      <div className="pp-vote-grid" aria-label="Voting cards">
         {valueSet.map((value) => (
           <button
             key={value}
+            type="button"
             onClick={() => onVote(value)}
             disabled={disabled}
-            className={`px-4 py-6 rounded-lg font-bold transition-colors ${
-              selectedVote === value
-                ? "bg-blue-700 hover:bg-blue-800 text-white border-2 border-blue-900"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
-            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+            className="pp-vote-card"
+            aria-pressed={selectedVote === value}
+            aria-label={`${value}${selectedVote === value ? ", selected" : ""}`}
           >
             {value}
+            {selectedVote === value && (
+              <span className="pp-vote-card-state">Selected ✓</span>
+            )}
           </button>
         ))}
       </div>

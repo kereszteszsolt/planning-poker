@@ -2,90 +2,67 @@ import React from "react";
 
 const AboutScreen: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          About Planning Poker
-        </h1>
+    <main className="pp-page pp-page-centered">
+      <article className="pp-panel pp-about-panel pp-stack">
+        <h1 className="pp-title text-center">About Planning Poker</h1>
+        <p className="pp-copy text-center">Estimate. Discuss. Align.</p>
 
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">
-            What is Planning Poker?
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            Planning Poker is a consensus-based, gamified technique for
-            estimating the effort or relative size of tasks in software
-            development. It helps teams make more accurate and collaborative
-            estimates by discussing and voting on story points.
+        <section>
+          <h2 className="pp-heading">What is Planning Poker?</h2>
+          <p className="pp-copy">
+            Planning Poker is a consensus-based technique for estimating the
+            relative size of work. Private voting helps a team compare
+            perspectives before discussing an estimate.
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">
-            How to Use This App
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            1. <strong>Create or Join a Room:</strong> Enter a room ID or create
-            a new one.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            2. <strong>Invite Participants:</strong> Share the room link with
-            your team.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            3. <strong>Vote:</strong> Select a card representing your estimate
-            and reveal your vote.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            4. <strong>Discuss and Repeat:</strong> Discuss estimates and vote
-            again if needed.
-          </p>
+        <section>
+          <h2 className="pp-heading">How it works</h2>
+          <ol className="pp-list">
+            <li>Create a room and share its link with your team.</li>
+            <li>Each participant chooses an estimate.</li>
+            <li>The moderator reveals the votes for discussion.</li>
+            <li>Reset and vote again when another round is useful.</li>
+          </ol>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">
-            Data Responsibility and Privacy
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            This app is provided for your convenience and is intended for
-            immediate, collaborative use.
-          </p>
-          <p className="text-gray-600 leading-relaxed font-medium">
-            <strong>No Data Storage:</strong> Your data is not stored
-            permanently. Rooms are accessible to anyone with the link, but all
-            data is immediately deleted as soon as the last participant leaves
-            the room.
-          </p>
-          <p className="text-gray-600 leading-relaxed font-medium">
-            <strong>Transport Security Depends on Deployment:</strong> Local
-            development uses HTTP and does not encrypt traffic. A deployment
-            using HTTPS/WSS can protect traffic in transit, but room links still
-            act as access credentials. Do not share sensitive information.
-          </p>
-          <p className="text-gray-600 leading-relaxed font-medium">
-            <strong>Use at Your Own Risk:</strong> You are solely responsible
-            for how you use this app. The developers are not liable for any
-            misuse or data exposure.
-          </p>
+        <section>
+          <h2 className="pp-heading">Data Responsibility and Privacy</h2>
+          <ul className="pp-list">
+            <li>
+              Rooms live in server memory and are removed after the last
+              participant leaves; no account or room history is provided.
+            </li>
+            <li>
+              A room link grants access to that room. Share it only with the
+              intended participants and do not enter sensitive information.
+            </li>
+            <li>
+              This browser keeps short-lived session details so it can attempt
+              to reconnect to the current room.
+            </li>
+            <li>
+              Traffic protection depends on deployment. Local HTTP is not
+              encrypted; production deployments should use HTTPS and WSS.
+            </li>
+          </ul>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">
-            Open Source
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            This Planning Poker app is open-source. You can contribute, report
+        <section>
+          <h2 className="pp-heading">Open Source</h2>
+          <p className="pp-copy">
+            This Planning Poker app is open source. You can contribute, report
             issues, or deploy your own instance.
           </p>
         </section>
 
-        <div className="text-center mt-10">
-          <p className="text-gray-500 text-sm">
+        <footer className="text-center mt-4">
+          <p className="pp-hint">
             © {new Date().getFullYear()} Keresztes Zsolt
           </p>
-        </div>
-      </div>
-    </div>
+        </footer>
+      </article>
+    </main>
   );
 };
 

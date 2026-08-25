@@ -54,24 +54,24 @@ const Statistics: React.FC<StatisticsProps> = ({
   return (
     <>
       {isRevealed && (
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold mb-4 text-gray-800">Statistics</h2>
-          <div className="space-y-4">
+        <section aria-labelledby="statistics-heading">
+          <h2 id="statistics-heading" className="pp-heading">
+            Statistics
+          </h2>
+          <div className="pp-stack">
             {hasNumericVotes && (
-              <div className="flex flex-wrap gap-4 items-center p-2 bg-gray-50 rounded-lg">
-                <p className="text-gray-600">
+              <div className="pp-stat-summary">
+                <p>
                   Average: <span className="font-semibold">{average}</span>
                 </p>
                 {consensus !== null ? (
-                  <p className="text-green-600 font-semibold">
-                    Consensus: {consensus}
-                  </p>
+                  <p className="font-semibold">Consensus: {consensus}</p>
                 ) : (
                   <>
-                    <p className="text-gray-600">
+                    <p>
                       Min: <span className="font-semibold">{min}</span>
                     </p>
-                    <p className="text-gray-600">
+                    <p>
                       Max: <span className="font-semibold">{max}</span>
                     </p>
                   </>
@@ -79,20 +79,17 @@ const Statistics: React.FC<StatisticsProps> = ({
               </div>
             )}
             {hasNumericVotes && numericVotes.length < votes.length && (
-              <p className="text-sm text-gray-600">
+              <p className="pp-hint">
                 Special cards are shown in the distribution and excluded from
                 numeric statistics.
               </p>
             )}
 
-            <div className="space-y-2">
-              <h3 className="font-medium text-gray-700">Vote Distribution</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            <div className="pp-stack">
+              <h3 className="pp-label">Vote distribution</h3>
+              <div className="pp-distribution-grid">
                 {sortedKeys.map((key) => (
-                  <div
-                    key={key}
-                    className="flex justify-between p-2 bg-gray-100 rounded-lg"
-                  >
+                  <div key={key} className="pp-distribution-item">
                     <span className="font-medium">
                       {isNaN(parseFloat(key))
                         ? key === "undefined"
@@ -100,15 +97,13 @@ const Statistics: React.FC<StatisticsProps> = ({
                           : key
                         : parseFloat(key)}
                     </span>
-                    <span className="text-gray-600">
-                      {frequency[key]} vote(s)
-                    </span>
+                    <span>{frequency[key]} vote(s)</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
     </>
   );

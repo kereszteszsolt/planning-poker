@@ -17,13 +17,12 @@ const ValueSetControl: React.FC<ValueSetProps> = ({
 }: ValueSetProps) => {
   return (
     <>
-      <h2 className="text-xl font-bold mb-4 text-gray-800">
-        Value Set: {currentValueSet}
-      </h2>
+      <h2 className="pp-heading">Value Set: {currentValueSet}</h2>
       {isModerator && (
-        <div className="mb-6 flex flex-wrap gap-4">
+        <fieldset className="pp-radio-group">
+          <legend className="sr-only">Choose the room value set</legend>
           {(Object.keys(votingValueSets) as ValueSet[]).map((set) => (
-            <label key={set} className="flex items-center space-x-2">
+            <label key={set} className="pp-radio-option">
               <input
                 type="radio"
                 name="valueSet"
@@ -31,12 +30,11 @@ const ValueSetControl: React.FC<ValueSetProps> = ({
                 checked={currentValueSet === set}
                 disabled={!isModerator}
                 onChange={() => changeValueSet(set)}
-                className="h-4 w-4 text-blue-500"
               />
-              <span className="text-gray-700">{set}</span>
+              <span>{set}</span>
             </label>
           ))}
-        </div>
+        </fieldset>
       )}
     </>
   );

@@ -3,6 +3,8 @@ node_modules/
 
 # Build output and caches
 dist/
+!packages/design-tokens/dist/
+!packages/design-tokens/dist/tokens.css
 dist-ssr/
 .turbo/
 .pnpm-store/

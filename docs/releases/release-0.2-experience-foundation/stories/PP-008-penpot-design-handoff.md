@@ -13,7 +13,7 @@ As a maintainer and contributor, I want a real Penpot design file synchronized w
 ### File and foundations
 
 - [ ] A Penpot file named `Planning Poker` is created in the approved team/project and its team, project, file, and page identifiers are recorded in `docs/design/README.md`.
-- [ ] The approved DTCG token source from `packages/design-tokens` is imported, with active sets/themes documented.
+- [ ] Penpot imports the same approved DTCG source from `packages/design-tokens`, rather than maintaining an independent color list, with active sets/themes documented.
 - [ ] Foundations boards cover token hierarchy, typography, spacing, radius, focus, status colors, grid, responsive breakpoints, and accessibility notes.
 - [ ] The repository commits a fresh `.penpot` backup/export or the approved portable Penpot export format according to project policy.
 

@@ -14,15 +14,22 @@ const HomeScreen: React.FC = () => {
   const error = usePlanningPokerSelector(selectErrorMessage);
   const navigate = useNavigate();
   const [joinRoomId, setJoinRoomId] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => transport.returnHome(), [transport]);
 
   const handleCreateRoom = async () => {
-    const roomId = await transport.createRoom();
-    if (roomId) navigate(`/room/${roomId}`);
+    setIsCreating(true);
+    try {
+      const roomId = await transport.createRoom();
+      if (roomId) navigate(`/room/${roomId}`);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
-  const handleJoinRoom = () => {
+  const handleJoinRoom = (event: React.FormEvent) => {
+    event.preventDefault();
     if (joinRoomId.trim()) {
       navigate(`/room/${joinRoomId.trim()}`);
     }
@@ -34,51 +41,58 @@ const HomeScreen: React.FC = () => {
     return <Connecting status={status} onRetry={transport.retryConnection} />;
   }
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4 text-center">
-        Welcome to the Planning Poker App
-      </h1>
-      <p className="mb-2 text-gray-700 text-center">
-        This application is designed to facilitate agile planning sessions using
-        the Planning Poker technique.
-      </p>
-      <p className="mb-6 text-gray-600 text-center">
-        Get started by creating or joining a room!
-      </p>
-      {error && (
-        <p className="mb-4 text-red-700 text-center" role="alert">
-          {error}
+    <main className="pp-page pp-page-centered">
+      <section className="pp-panel pp-form-panel" aria-labelledby="home-title">
+        <h1 id="home-title" className="pp-title text-center">
+          Planning Poker
+        </h1>
+        <p className="pp-copy text-center">Estimate. Discuss. Align.</p>
+        <p className="pp-copy text-center">
+          Create a room or join your team with a room ID.
         </p>
-      )}
-      <div className="flex flex-row gap-4">
-        <button
-          className="w-1/2 p-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-          onClick={handleCreateRoom}
-        >
-          Create Room
-        </button>
-        <div className="flex flex-col w-1/2">
-          <input
-            type="text"
-            placeholder="Enter Room UUID"
-            value={joinRoomId}
-            onChange={(e) => setJoinRoomId(e.target.value)}
-            className="w-full p-2 mb-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+        {error && (
+          <p className="pp-error mt-4" role="alert">
+            {error}
+          </p>
+        )}
+        <div className="pp-form-actions">
           <button
-            disabled={isJoinDisabled}
-            className={`w-full p-2 rounded font-semibold transition ${
-              isJoinDisabled
-                ? "bg-blue-200 text-blue-500 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-            }`}
-            onClick={handleJoinRoom}
+            type="button"
+            className="pp-button pp-button-primary pp-button-block"
+            onClick={handleCreateRoom}
+            disabled={isCreating}
+            aria-busy={isCreating}
           >
-            Join Room
+            {isCreating ? "Creating room…" : "Create Room"}
           </button>
+          <form className="pp-field-group" onSubmit={handleJoinRoom}>
+            <label className="pp-label" htmlFor="home-room-id">
+              Room ID
+            </label>
+            <input
+              id="home-room-id"
+              type="text"
+              placeholder="Enter room ID"
+              value={joinRoomId}
+              onChange={(event) => setJoinRoomId(event.target.value)}
+              className="pp-field"
+              autoComplete="off"
+              aria-describedby="home-room-id-hint"
+            />
+            <p id="home-room-id-hint" className="pp-hint">
+              Paste the ID shared by your moderator.
+            </p>
+            <button
+              type="submit"
+              disabled={isJoinDisabled}
+              className="pp-button pp-button-secondary pp-button-block"
+            >
+              Join Room
+            </button>
+          </form>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

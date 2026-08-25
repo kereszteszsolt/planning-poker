@@ -160,10 +160,15 @@ Local input values, temporary menus, clipboard feedback, and one-component dialo
 
 ## Design and screenshot workflow
 
-1. Update the token contract in `packages/design-tokens` after Release 0.2 creates it.
+1. Update the approved token contract in `packages/design-tokens/tokens/planning-poker.tokens.json`.
 2. Import or synchronize the same DTCG token source in Penpot.
 3. Update reusable Penpot components and responsive boards.
 4. Implement the reviewed UI behavior using semantic tokens rather than arbitrary colors.
+
+Run `pnpm --filter @planning-poker/design-tokens build` after changing the JSON
+source and commit the regenerated `dist/tokens.css`. The package `check` task
+rejects generated drift, while its tests reject invalid values, aliases,
+duplicate paths, missing references, and essential color pairs below WCAG AA.
 5. Run unit, integration, accessibility, and Playwright smoke tests.
 6. Regenerate privacy-safe screenshots in the pinned capture environment.
 7. Review image diffs and commit intentional changes with the design export.
