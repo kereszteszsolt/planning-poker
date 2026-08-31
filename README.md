@@ -40,7 +40,7 @@ The image is generated from the real built React interface and an isolated deter
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
     USER[Browser users] --> WEB[React + React Router]
     WEB --> STORE[Zustand serializable state]
     WEB --> LOCAL[Component-local form and disclosure state]
