@@ -18,7 +18,7 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-0b6e99"></a>
 </p>
 
-**Planning Poker** is a small React, Tailwind CSS, Express, and Socket.IO application for collaborative estimation sessions. A moderator creates a room, teammates join through a shared room link, everyone votes privately, and the result can be revealed and discussed in real time.
+**Planning Poker** is a real-time, full-stack application for collaborative Agile/Scrum estimation, built with React, TypeScript, Express, and Socket.IO. A moderator creates a room, teammates join through a shared link and vote privately, then reveal and discuss the results together. Rooms are kept in server memory, without user accounts or a database.
 
 [User guide](docs/user-guide.md) · [Architecture](docs/architecture.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release plan](docs/releases/README.md) · [All documentation](docs/README.md)
 
@@ -30,6 +30,16 @@
 - Vote distribution plus numeric average, minimum, maximum, and consensus.
 - Moderator controls for reset, reveal, participant removal, and delegation.
 - In-memory rooms with no account, database, analytics, or tracking dependency.
+
+## Tech stack
+
+| Area | Technologies |
+| --- | --- |
+| Frontend | React · TypeScript · React Router · Tailwind CSS · Zustand |
+| Backend | Node.js · Express · Socket.IO |
+| Real-time communication | WebSockets via Socket.IO · shared TypeScript event contracts |
+| Monorepo tooling | pnpm workspaces · Turborepo |
+| Testing and CI | Vitest · Node.js test runner · Playwright · GitHub Actions |
 
 ## Screenshot
 
@@ -62,8 +72,8 @@ The server is authoritative for room membership, moderation, votes, reveal state
 ### Install and run both applications
 
 ```bash
-git clone https://github.com/kereszteszsolt/example-planning-poker-react-express-socket-io.git
-cd example-planning-poker-react-express-socket-io
+git clone https://github.com/kereszteszsolt/planning-poker.git
+cd planning-poker
 
 corepack enable
 pnpm install --frozen-lockfile
@@ -111,7 +121,7 @@ Run `pnpm verify` for the complete local gate or `pnpm verify:release:container`
 | Product | `Planning Poker` |
 | Descriptor | `Real-time team estimation` |
 | Tagline | `Estimate. Discuss. Align.` |
-| Repository | `example-planning-poker-react-express-socket-io` |
+| Repository | `planning-poker` |
 | Frontend package | `@planning-poker/web` (`apps/web`) |
 | Backend package | `@planning-poker/server` (`apps/server`) |
 | Shared contracts | `@planning-poker/contracts` (`packages/contracts`) |
@@ -119,7 +129,7 @@ Run `pnpm verify` for the complete local gate or `pnpm verify:release:container`
 | Story prefix | `PP-` |
 | Maintainer | Keresztes Zsolt — [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
 
-The product name remains intentionally descriptive. A future repository rename should update clone URLs, support links, deployment configuration, badges, and documentation in the same change.
+The product name is intentionally descriptive. Repository URLs and commands above refer to the current `planning-poker` repository.
 
 ## Privacy and deployment boundary
 
