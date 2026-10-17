@@ -1,11 +1,11 @@
-# Codex project setup
+# Codex agents and skills
 
-This repository keeps three focused Codex roles:
+`AGENTS.md` and the active `PP-*` story are the source of truth. The main session implements ordinary fixes directly; the three roles below are **optional**, never a mandatory workflow.
 
-- `architect` plans one scoped Planning Poker change and edits nothing;
-- `implementation_worker` implements one change only after the required plan and implementation approvals;
-- `reviewer` checks behavior, protocol boundaries, regressions, privacy, accessibility, tests, and evidence.
+| Role | Use for | Ownership |
+| --- | --- | --- |
+| `architect` | Read-only risk assessment of multi-package event/state changes | No edits |
+| `implementation_worker` | One approved delegated story | Sole writer |
+| `reviewer` | Read-only inspection of risky diffs and evidence | No edits |
 
-`AGENTS.md`, the active `PP-*` story, and the matching release documentation are the source of truth. Plan approval is not implementation approval. Implementation approval is not commit approval. Commit approval is not push or next-story approval.
-
-For UI and design work, checked repository tokens, the connected Penpot handoff, the implemented React interface, and deterministic Playwright evidence must remain aligned. Visual-baseline replacement always requires explicit review and approval.
+Skills are selected **by technology boundary**, not by business goal: React/Express/Turborepo, shared contracts/Zustand, Socket.IO lifecycle, design tokens/Penpot, Playwright screenshots, and release verification. Do not preload all six. Use one writer and scoped tests. Separate plan, implementation, commit and push approvals; never auto-spawn subagents.

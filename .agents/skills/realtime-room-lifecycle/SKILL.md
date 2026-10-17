@@ -1,21 +1,14 @@
 ---
 name: realtime-room-lifecycle
-description: Implement or review one approved Planning Poker room, participant, vote, moderation, Socket.IO, recovery, authorization, or cleanup change.
+description: Use for server-owned Socket.IO membership, authorization, reconnect/recovery sessions, expiration, moderation, cleanup and room lifecycle invariants.
 ---
 
-# Realtime room lifecycle
+# Socket.IO server lifecycle
 
-- Keep the server authoritative for rooms, participants, votes, reveal state, moderation, and timestamps.
-- Validate every incoming event with the shared runtime schemas and boundary-specific checks.
-- Derive authorization from the socket's current server-side membership; never trust a claimed participant ID.
-- Keep vote values hidden before reveal while still exposing whether each participant has voted.
-- Preserve `{ ok: true, data }` and `{ ok: false, error }` acknowledgement semantics.
-- Broadcast a full canonical snapshot only after a successful mutation.
-- Keep socket IDs, session tokens, join order, and internal records out of public snapshots.
-- Keep recovery tokens short-lived and participant-specific; on resume move membership to the new socket, notify and detach the replaced socket, and revoke the token on kick, explicit leave, room deletion, or expiry.
-- Remove both application membership and Socket.IO room membership on every exit path.
-- Keep at most one moderator and use the documented deterministic handoff order.
-- Delete empty and inactive rooms together with their associated sessions.
-- Cover malformed payloads, unauthorized actions, duplicates, participant limits, reconnect races, expiry boundaries, and cleanup with tests.
-
-Run focused server and contracts tests first, then `pnpm e2e` for a changed multi-client flow. Ask for commit approval separately.
+- Follow `docs/architecture.md` for current server state and trust boundary; inspect room handlers and targeted tests.
+- Authorize actions from live socket membership, not a claimed client participant ID; validate names, IDs and payload limits.
+- Keep private vote choices and recovery tokens out of public snapshots and logs; broadcast state after successful validated mutation.
+- Keep application membership and Socket.IO room subscriptions synchronized on kick, leave, disconnect, replace and expiration.
+- Guarantee deterministic moderator state and delete empty/expired rooms and associated sessions.
+- Cover invalid event, concurrent/repeated mutation, reconnect, cleanup and error acknowledgements with focused server tests.
+- Preserve in-memory, single-process behavior unless an explicit architecture story changes it.
