@@ -1,173 +1,42 @@
-# AGENTS.md
+# Planning Poker Codex engineering guide
 
-## Project
+Planning Poker is a **React / TypeScript / Vite + Express / Socket.IO** application in a pnpm/Turborepo monorepo. The server stores live rooms and recovery state **in memory**, not in a database. `packages/contracts` provides typed events and runtime schemas; `packages/design-tokens` owns shared visual tokens.
 
-**Planning Poker** is a real-time team-estimation application built as a pnpm and Turborepo monorepo. The browser uses React, Vite, Tailwind CSS, Zustand, and Socket.IO Client. The server uses Express, Socket.IO, TypeScript, and in-memory room and recovery-session maps.
+## Progressive context loading
 
-The core flow is small: create a room, share its link, join with a display name, vote privately, reveal the result, discuss, and reset. The current application has no account system, database, analytics SDK, or durable room history.
+1. Read this file and **one active `PP-*` story or requested maintenance task**; check its release README only for dependencies/status.
+2. Inspect the changed package/module and focused tests. Consult `docs/architecture.md`, `docs/testing.md`, `docs/design-system.md`, `docs/screenshots/README.md` only for affected boundaries.
+3. Load one relevant technology skill below. Do not load every story, agent, skill, or design artifact upfront.
 
-## Source of truth
+## Technical boundaries
 
-Read the smallest relevant set before changing code:
+- **Shared contracts:** `packages/contracts` defines event names, payloads, acknowledgements, limits, public errors and Zod validation. Change one canonical definition and update the server, transport, store and affected tests together; validate untrusted payloads at the server boundary.
+- **Express / Socket.IO:** server owns authoritative state and authorization. Never trust a client-supplied participant ID for mutations. Preserve stable acknowledgement shape, canonical snapshots, per-session token privacy and cleanup of both application and Socket.IO membership.
+- **React / Zustand:** the transport adapter owns socket creation/listeners and browser session-token access; Zustand stores serializable snapshots and transient session state. UI components render derived state and dispatch typed actions. Clean up listeners on reconnect/unmount.
+- **UI and design:** use canonical DTCG tokens and generated CSS, preserve accessible focus/keyboard/loading/error states and responsive behavior. Treat Penpot as optional design reference, not runtime state or mandatory tooling.
+- **Visual tests:** `apps/screenshots` runs Playwright with deterministic fixtures and real built UI. Never use a live room, private data or personal browser profile for screenshots; baseline replacement needs review/approval.
+- Preserve the current account-free, short-lived in-memory architecture. No new database, analytics, cloud service or cross-process synchronization as incidental refactoring.
 
-- the active `PP-*` story and its release `README.md` for scope and acceptance criteria;
-- `docs/architecture.md` for runtime, event, state, and dependency boundaries;
-- `docs/development.md` for local commands and configuration;
-- `docs/testing.md` for focused and release verification;
-- `docs/design-system.md` and `docs/design/README.md` for tokens and Penpot handoff;
-- `docs/screenshots/README.md` for deterministic visual evidence;
-- `docs/privacy-and-contact.md` for data, transport, screenshot, and public-contact limits;
-- `docs/brand-configuration.md` for product identity and terminology.
+## Skills — use only when relevant
 
-Implemented behavior, tests, and checked evidence outrank a stale prose claim. Do not describe planned authentication, persistence, hosting, or security behavior as implemented.
+| Skill | Technical trigger |
+| --- | --- |
+| `full-stack-delivery` | React/Express/Turborepo integration, package/dependency/build changes |
+| `contracts-and-state` | Shared event schemas, Socket.IO transport, Zustand synchronization |
+| `realtime-room-lifecycle` | Socket.IO server authorization, recoverability, expiry and cleanup |
+| `design-handoff` | Penpot, DTCG tokens, UI/accessibility and responsive styling |
+| `screenshot-evidence` | Playwright E2E, deterministic UI fixtures and visual baseline review |
+| `release-evidence` | Verification, story status, CI parity and release documentation |
 
-## Product principles
+## Optional roles and approvals
 
-- Keep room creation and joining account-free and easy to understand.
-- Keep the server authoritative for membership, votes, moderation, reveal state, and cleanup.
-- Keep submitted vote values private until reveal; expose only voted status beforehand.
-- Treat a room URL as a bearer-style access link and avoid sensitive data in display names.
-- Preserve deterministic moderator handoff and at most one moderator per snapshot.
-- Make connection loss, expired rooms, replaced sessions, kicks, and recovery visible to the user.
-- Keep the current in-memory limitation explicit; never imply durable storage.
-- Do not add tracking, analytics, persistence, or a new external service without an approved story.
+The main Codex session should normally implement the approved scope itself. `architect` is optional read-only planning for risky cross-package changes; `reviewer` is optional read-only risk/diff review; `implementation_worker` is the **sole writer** when delegated. No default architect → worker → reviewer pipeline, no overlapping edits and no parallel test duplication. Two active threads maximum; one writer.
 
-## Repository architecture
+- Follow `docs/story-workflow.md` or the active story's approval gates. Plan approval, implementation approval, commit approval and push/next-story approval remain **separate**.
+- Run focused checks first (package-native `pnpm --filter ...`), then `pnpm verify:repo` and broader lint/typecheck/test/build/E2E checks when scope demands them. `docs/testing.md` defines approved release gates.
+- Record actual results and skipped checks; do not invent screenshots, source privacy guarantees, hosting, test counts or CI success.
+- Review the diff, propose one commit, request approval before commit/push and do not start the next story automatically.
 
-```text
-apps/web                  React and Vite client
-apps/server               Express and Socket.IO server
-apps/screenshots          Playwright E2E and visual-evidence harness
-packages/contracts        shared events, schemas, acknowledgements, and room types
-packages/design-tokens    canonical DTCG token source and generated CSS
-packages/config           shared TypeScript and ESLint configuration
-docs                      product, architecture, design, release, and evidence records
-scripts                   repository and container verification entry points
-```
+## Source comments
 
-Use pnpm for dependency management and Turborepo for root orchestration. Keep package-native scripts usable and do not bypass workspace boundaries with copied source or relative imports between packages.
-
-## Shared contract rules
-
-`@planning-poker/contracts` is the shared source for public room types, event payloads, acknowledgements, errors, value sets, limits, and runtime validation schemas.
-
-- Change a shared event or public model once in the contracts package.
-- Update server, transport, store, tests, and documentation together when semantics change.
-- Validate every client payload at the server boundary even when TypeScript already accepts it.
-- Preserve the acknowledgement shape: success returns data; failure returns a public code, message, and recovery meaning.
-- Never expose socket IDs, recovery tokens, internal join order, or other server-only fields in a room snapshot.
-- Do not introduce a second hand-written copy of an existing event or room type.
-
-## Server and room lifecycle
-
-Keep `createPlanningPokerServer` testable through injected configuration, clock, and HTTP server boundaries.
-
-- Use `Map` for untrusted room, participant, and session keys.
-- Authorize mutations from the socket's current server-side membership, never from a claimed participant ID.
-- Validate UUIDs, display names, event payloads, vote values, participant limits, and moderator-only actions.
-- Broadcast a fresh canonical snapshot only after a successful mutation.
-- Keep session tokens private to their participant and short-lived.
-- Remove Socket.IO room membership together with application membership on leave, kick, disconnect, replacement, or room closure.
-- Delete empty or expired rooms and their associated recovery sessions.
-- Preserve automatic reveal, vote revocation, reset, value-set changes, moderator delegation, and deterministic handoff behavior.
-- Keep production origin configuration explicit; production must not silently accept a wildcard origin.
-- Do not add a database or cross-process synchronization as an incidental refactor.
-
-## Frontend, transport, and state
-
-Keep the live Socket.IO client, listeners, storage access, and network exceptions in the transport boundary. Keep Zustand data serializable.
-
-- Use one provider-scoped store for connection, session, room, normalized error, and forced-exit state.
-- Keep actions outside persisted state and keep one-component form or disclosure state local to the component.
-- Register each socket listener once and remove it during final cleanup.
-- Resume only with a valid stored token and replace local state with the server's canonical snapshot.
-- Keep API and event calls behind the typed transport instead of calling the socket throughout components.
-- Cover connecting, connected, disconnected, retry, expired, kicked, closed, replaced-session, voting, revealed, and empty-result states.
-- Preserve keyboard operation, accessible names, focus visibility, live announcements, reduced motion, and narrow-view usability.
-- Do not add another global state library, event bus, or UI framework without an approved story.
-
-## Design and Penpot rules
-
-The checked token source in `packages/design-tokens/tokens/planning-poker.tokens.json` is the runtime source of truth. Generated CSS must come from the token build rather than hand-edited drift.
-
-- Reuse semantic tokens for color, typography, spacing, radius, elevation, focus, and motion.
-- Keep desktop and mobile states in one coherent component hierarchy where practical.
-- When a story owns Penpot work, inspect the supplied design first and record only verified files, boards, components, token sets, and exports.
-- Make design writes only within the approved story and verify the resulting export and repository implementation.
-- Do not invent Penpot IDs, synchronization results, exports, or visual proof.
-- Keep UI copy consistent with the product voice and use **participant** and **moderator** as defined terms.
-
-## Screenshot and visual-evidence rules
-
-Documentation images and visual baselines must use the isolated fixture in `apps/screenshots` with invented identities, fixed room data, and blocked external network access.
-
-- Never connect screenshot automation to a live room, production service, personal browser profile, clipboard history, or private data.
-- Capture the real built React interface, not a replacement static mock.
-- Keep the pinned Playwright/container path for reviewed pixel comparisons.
-- Inspect expected, actual, and diff images before replacing any baseline.
-- Run `pnpm screenshots:update:container` only after explicit approval to update reviewed images.
-- Keep transient Playwright reports, traces, videos, actual images, and diff images out of commits.
-
-## Story execution
-
-Work on one approved story or one explicitly requested maintenance change at a time.
-
-1. Name the scope, likely files, boundaries, and checks.
-2. Use the `architect` role for a cross-cutting, protocol, lifecycle, state, design, or release change.
-3. Ask for clear plan approval before implementation when a plan gate applies.
-4. Ask separately for clear implementation approval; plan approval is not implementation approval.
-5. Modify only the approved scope and preserve unrelated behavior.
-6. Run focused checks and report exact results, including any skipped gate and its reason.
-7. Use the `reviewer` role for risky or cross-cutting work.
-8. Propose one commit message and ask separately for commit approval.
-9. Commit only after approval, report the hash, and ask before push or the next story.
-
-Do not edit implementation files before implementation approval when the workflow requires that gate. Do not commit, push, reset shared history, force-push, or continue to another story without explicit approval for that action.
-
-## Source comment rules
-
-- Add a comment only when naming and structure cannot make the reason clear.
-- Explain why; do not narrate the code.
-- Prefer one short sentence and keep normal comment blocks to at most three short sentences.
-- Do not paste plans, story text, logs, or change history into source comments.
-- Preserve required tool directives and existing license notices.
-
-## Codex roles
-
-Use the smallest useful role:
-
-- `architect` is read-only and plans one scoped change;
-- `implementation_worker` implements one approved change;
-- `reviewer` is read-only and checks behavior, boundaries, regressions, privacy, tests, and evidence.
-
-Repository skills:
-
-- `full-stack-delivery` for coordinated React, Express, Socket.IO, package, and configuration work;
-- `realtime-room-lifecycle` for room, participant, vote, moderation, recovery, authorization, and cleanup behavior;
-- `contracts-and-state` for shared schemas, event typing, transport, Zustand, and recovery state;
-- `design-handoff` for design tokens, Penpot, responsive UI, accessibility, and copy;
-- `screenshot-evidence` for Playwright E2E, deterministic fixtures, privacy, and reviewed visual baselines;
-- `release-evidence` for story scope, verification commands, CI parity, release claims, and commit gates.
-
-Do not invoke every role or skill for a small documentation-only correction.
-
-## Verification
-
-Start with the repository audit:
-
-```bash
-pnpm verify:repo
-```
-
-For implementation changes, run the smallest relevant checks and expand according to impact:
-
-```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-```
-
-Use focused package commands from `docs/testing.md` while iterating. Run `pnpm e2e` for user-flow, server/client integration, transport, recovery, or routing changes. Run `pnpm screenshots:container` for visual, token, layout, responsive, font, or screenshot-harness changes. Use `pnpm verify:release:container` for a release-candidate claim or when host dependencies are not trustworthy.
-
-A passing command is evidence only for the code and environment it actually exercised. Never claim a release, screenshot, Penpot export, browser flow, or security property without checked evidence.
+Comments explain non-obvious **reasons**, not every line or acceptance criterion. Preserve existing SPDX/third-party notices and the repository's source-comment rules; don't add irrelevant headers or duplicate change histories to code.

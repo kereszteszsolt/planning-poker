@@ -1,21 +1,13 @@
 ---
 name: contracts-and-state
-description: Implement or review one approved Planning Poker shared-contract, Socket transport, Zustand, recovery-state, or client/server event change.
+description: Use for Planning Poker TypeScript event payloads, Zod runtime contracts, Socket.IO acknowledgement/transport boundaries and Zustand state updates.
 ---
 
-# Contracts and state
+# Typed events and state synchronization
 
-- Keep one shared definition for public events, payloads, acknowledgements, errors, value sets, limits, and room snapshots.
-- Pair TypeScript types with runtime schemas for all untrusted client payloads.
-- Treat protocol changes as coordinated server, transport, state, test, and documentation changes.
-- Keep the live Socket.IO object and subscriptions in the injected transport boundary.
-- Keep Zustand data serializable and actions outside the stored data shape.
-- Keep transient form, clipboard, and one-component disclosure state local to components.
-- Register each transport listener once and release it during final provider cleanup.
-- Normalize public failures before they enter UI state.
-- On recovery, use the stored token only through the join contract and replace local room state with the latest canonical snapshot.
-- Clear stale room, session, and forced-exit state on the documented leave, kick, close, expiry, and replacement paths.
-- Test reducer transitions separately from transport side effects and use a fake socket for deterministic client tests.
-- Reject duplicated event names, copied interfaces, persisted sockets, hidden storage writes, and components that call the socket directly.
-
-Run contracts, web-state, transport, and integration checks according to the changed boundary. Ask for commit approval separately.
+- Read `packages/contracts`, server emit/ack handlers, the client socket adapter and impacted Zustand slices only as needed.
+- Keep **one** public event/type/schema declaration; runtime-validate untrusted data server-side regardless of static TypeScript types.
+- Preserve stable acknowledgement response/error contracts, canonical public snapshots, and server-only privacy fields.
+- Keep live socket/listener logic outside React components and raw socket objects out of serializable store state.
+- Test event order, malformed payloads, replay/reconnect, optimistic update rollback where applicable, and listener cleanup.
+- Update both client and server tests for a shared contract change; avoid parallel copies of schemas.
