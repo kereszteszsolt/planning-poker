@@ -2,7 +2,7 @@
   <img src="readme-assets/planning-poker-mark.svg" alt="Planning Poker card mark" width="96" height="96">
 </p>
 
-<h1 align="center">Planning Poker</h1>
+<h1 align="center">PointFlip</h1>
 
 <p align="center">
   <strong>Real-time team estimation</strong><br>
@@ -18,7 +18,7 @@
   <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-0b6e99"></a>
 </p>
 
-**Planning Poker** is a real-time, full-stack application for collaborative Agile/Scrum estimation, built with React, TypeScript, Express, and Socket.IO. A moderator creates a room, teammates join through a shared link and vote privately, then reveal and discuss the results together. Rooms are kept in server memory, without user accounts or a database.
+**PointFlip** is a real-time, full-stack application for collaborative Agile/Scrum estimation, built with React, TypeScript, Express, and Socket.IO. A moderator creates a room, teammates join through a shared link and vote privately, then reveal and discuss the results together. Rooms are kept in server memory, without user accounts or a database.
 
 [User guide](docs/user-guide.md) · [Architecture](docs/architecture.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release plan](docs/releases/README.md) · [All documentation](docs/README.md)
 
