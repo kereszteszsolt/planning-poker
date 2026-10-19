@@ -1,4 +1,6 @@
 import "./App.css";
+import "./shared/about.css";
+import { AuthorAttribution } from "./shared/AuthorAttribution";
 import HomeScreen from "./features/HomeScreen.tsx";
 import AboutScreen from "./features/AboutScreen.tsx";
 import RoomScreen from "./features/room/RoomScreen.tsx";
@@ -10,10 +12,11 @@ import { PlanningPokerStoreProvider } from "./state/PlanningPokerStoreProvider.t
 
 function Layout() {
   return (
-    <>
+    <div className="pp-app-shell">
       <Navbar />
       <Outlet />
-    </>
+      <footer className="app-footer"><AuthorAttribution /></footer>
+    </div>
   );
 }
 

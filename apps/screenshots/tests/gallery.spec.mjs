@@ -1,3 +1,4 @@
+import appInfo from '../../../brand/branding.json' with { type: 'json' };
 import { expect, test } from "@playwright/test";
 import { fixedTime, roomIds } from "../src/fixtures.mjs";
 
@@ -84,7 +85,7 @@ test("captures the connected desktop home", async ({ page }) => {
   await page.setViewportSize(desktop);
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Planning Poker" }),
+    page.getByRole("heading", { name: appInfo.appName }),
   ).toBeVisible();
   await preparePage(page, desktop);
   await capture(page, "planning-poker-home-desktop.png");
@@ -131,7 +132,7 @@ test("captures actionable connection loss on mobile", async ({ page }) => {
   await page.setViewportSize(mobile);
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Planning Poker" }),
+    page.getByRole("heading", { name: appInfo.appName }),
   ).toBeVisible();
   const response = await page.request.post("/__pp_screenshots__/disconnect");
   expect(response.status()).toBe(204);

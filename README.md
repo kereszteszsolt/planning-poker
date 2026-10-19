@@ -105,7 +105,7 @@ Run `pnpm verify` for the complete local gate or `pnpm verify:release:container`
 - [Development guide](docs/development.md)
 - [Testing and verification](docs/testing.md)
 - [Package verification report](docs/verification.md)
-- [Brand configuration](docs/brand-configuration.md)
+- [App configuration](docs/app-configuration.md)
 - [Design-system and token plan](docs/design-system.md)
 - [Penpot design handoff](docs/design/README.md)
 - [Screenshot gallery and capture policy](docs/screenshots/README.md)
@@ -118,10 +118,10 @@ Run `pnpm verify` for the complete local gate or `pnpm verify:release:container`
 
 | Property | Canonical value |
 | --- | --- |
-| Product | `Planning Poker` |
+| Product | `PointFlip` |
 | Descriptor | `Real-time team estimation` |
 | Tagline | `Estimate. Discuss. Align.` |
-| Repository | `planning-poker` |
+| Repository | `point-flip` |
 | Frontend package | `@planning-poker/web` (`apps/web`) |
 | Backend package | `@planning-poker/server` (`apps/server`) |
 | Shared contracts | `@planning-poker/contracts` (`packages/contracts`) |
@@ -129,7 +129,7 @@ Run `pnpm verify` for the complete local gate or `pnpm verify:release:container`
 | Story prefix | `PP-` |
 | Maintainer | Keresztes Zsolt — [kereszteszsolt.hu](https://kereszteszsolt.hu/) |
 
-The product name is intentionally descriptive. Repository URLs and commands above refer to the current `planning-poker` repository.
+The product name is PointFlip; Planning Poker names the estimation technique. The repository is `point-flip`, while the existing package names and `PP-*` story IDs stay stable.
 
 ## Privacy and deployment boundary
 

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480" role="img" aria-labelledby="title desc">
+  <title id="title">PointFlip project poster</title>
+  <desc id="desc">PointFlip with Point in white and Flip in mint on blue, with four fanned estimation cards showing 3, 5, 8 and a question mark.</desc>
+  <rect width="780" height="480" rx="24" fill="#1d4ed8"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="390" y="88" fill="#ffffff" font-size="62" font-weight="800" letter-spacing="-2"><tspan fill="#ffffff">Point</tspan><tspan fill="#bbf7d0">Flip</tspan></text>
+    <text x="390" y="132" fill="#dbeafe" font-size="28" font-weight="500">Estimate. Flip. Align.</text>
+  </g>
+  <g transform="rotate(-15 210 305)">
+    <rect x="163" y="232" width="104" height="162" rx="14" fill="#123992" opacity="0.55"/>
+    <rect x="158" y="224" width="104" height="162" rx="14" fill="#dbeafe" stroke="#9bbcff" stroke-width="3"/>
+    <text x="210" y="334" fill="#1e40af" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" text-anchor="middle">3</text>
+  </g>
+  <g transform="rotate(-5 330 271)">
+    <rect x="283" y="198" width="104" height="162" rx="14" fill="#123992" opacity="0.55"/>
+    <rect x="278" y="190" width="104" height="162" rx="14" fill="#ffffff" stroke="#9bbcff" stroke-width="3"/>
+    <text x="330" y="300" fill="#1e40af" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" text-anchor="middle">5</text>
+  </g>
+  <g transform="rotate(5 450 271)">
+    <rect x="403" y="198" width="104" height="162" rx="14" fill="#123992" opacity="0.55"/>
+    <rect x="398" y="190" width="104" height="162" rx="14" fill="#bbf7d0" stroke="#9bbcff" stroke-width="3"/>
+    <text x="450" y="300" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" text-anchor="middle">8</text>
+  </g>
+  <g transform="rotate(15 570 305)">
+    <rect x="523" y="232" width="104" height="162" rx="14" fill="#123992" opacity="0.55"/>
+    <rect x="518" y="224" width="104" height="162" rx="14" fill="#123992" stroke="#9bbcff" stroke-width="3"/>
+    <text x="570" y="334" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" text-anchor="middle">?</text>
+  </g>
+</svg>

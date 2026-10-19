@@ -1,3 +1,4 @@
+import appInfo from '../../../brand/branding.json' with { type: 'json' };
 import { expect, test } from "@playwright/test";
 
 const desktop = { width: 1280, height: 900 };
@@ -15,7 +16,7 @@ const watchBrowserErrors = (page) => {
 const openHome = async (page) => {
   await page.goto("/index.html");
   await expect(
-    page.getByRole("heading", { name: "Planning Poker" }),
+    page.getByRole("heading", { name: appInfo.appName }),
   ).toBeVisible();
 };
 

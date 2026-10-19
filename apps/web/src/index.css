@@ -527,3 +527,8 @@ input {
     animation-iteration-count: 1 !important;
   }
 }
+
+.pp-app-shell { min-height: 100dvh; display: flex; flex-direction: column; }
+.pp-app-shell > .pp-page { flex: 1; min-height: 0; }
+.pp-navbar-title { display: flex; align-items: center; gap: 10px; }
+.pp-navbar-link:is(button) { border: 0; font: inherit; background: transparent; cursor: pointer; }

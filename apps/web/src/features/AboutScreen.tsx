@@ -1,10 +1,11 @@
 import React from "react";
+import { appInfo } from "../shared/app-info";
 
 const AboutScreen: React.FC = () => {
   return (
     <main className="pp-page pp-page-centered">
       <article className="pp-panel pp-about-panel pp-stack">
-        <h1 className="pp-title text-center">About Planning Poker</h1>
+        <h1 className="pp-title text-center">About {appInfo.appName}</h1>
         <p className="pp-copy text-center">Estimate. Discuss. Align.</p>
 
         <section>

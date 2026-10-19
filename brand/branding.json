@@ -1,0 +1,17 @@
+{
+  "appName": "PointFlip",
+  "appTagline": "Estimate. Discuss. Align.",
+  "appDescription": "Real-time team estimation",
+  "appWebsite": "",
+  "appGithubUrl": "https://github.com/kereszteszsolt/point-flip",
+  "appFavicon": "",
+  "appIcon": "assets/mark.svg",
+  "appPoster": "assets/point-flip-poster.svg",
+  "authorName": "Keresztes Zsolt",
+  "authorWebsite": "https://kereszteszsolt.hu",
+  "authorWebsiteLanguages": ["hu", "en", "ro", "de"],
+  "authorGithub": "https://github.com/kereszteszsolt",
+  "authorWaysToSupportUrl": "https://kereszteszsolt.hu/ways-to-support",
+  "authorBuyMeACoffeeUrl": "https://buymeacoffee.com/kereszteszsolt",
+  "supportRemarkText": "Support is voluntary and does not create any obligation, priority service, special access or other consideration. Thank you for your attention, and also if you support my work in any way!"
+}

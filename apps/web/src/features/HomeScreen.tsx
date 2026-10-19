@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { appInfo } from "../shared/app-info";
 import { useNavigate } from "react-router-dom";
 import Connecting from "../shared/components/Connecting.tsx";
 import {
@@ -44,9 +45,9 @@ const HomeScreen: React.FC = () => {
     <main className="pp-page pp-page-centered">
       <section className="pp-panel pp-form-panel" aria-labelledby="home-title">
         <h1 id="home-title" className="pp-title text-center">
-          Planning Poker
+          {appInfo.appName}
         </h1>
-        <p className="pp-copy text-center">Estimate. Discuss. Align.</p>
+        <p className="pp-copy text-center">{appInfo.appTagline}</p>
         <p className="pp-copy text-center">
           Create a room or join your team with a room ID.
         </p>

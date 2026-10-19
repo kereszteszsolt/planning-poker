@@ -5,7 +5,7 @@ set -euo pipefail
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 playwright_image="mcr.microsoft.com/playwright:v1.62.1-noble"
 
-docker run --rm --init \
+docker run --rm --init --restart=no \
   -e CI=1 \
   -e TZ=UTC \
   -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \

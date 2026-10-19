@@ -31,7 +31,7 @@ Creating a real Penpot project, changing the React UI, generating new product sc
 - `docs/user-guide.md`
 - `docs/development.md`
 - `docs/testing.md`
-- `docs/brand-configuration.md`
+- `docs/app-configuration.md`
 - `docs/design-system.md`
 - `docs/design/README.md`
 - `docs/design/planning-poker.tokens.draft.json`
